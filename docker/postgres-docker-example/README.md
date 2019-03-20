@@ -140,5 +140,5 @@ O mais importante sair da sessão:
 tecweb=# \q
 ```
 
-(PGWEB)[https://github.com/sosedoff/pgweb]
+[PGWEB](https://github.com/sosedoff/pgweb)
 pgweb --host localhost --user tecweb --db tecweb
