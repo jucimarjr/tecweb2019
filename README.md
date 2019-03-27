@@ -4,7 +4,7 @@
 ## Modelagem
 Foi utilizado o programa [Toad Data Modeler](http://www.toadworld.com/products/toad-data-modeler) para criar modelagem.
 A partir dele foi gerado o arquivo "taxi_modelagem.txp". 
-![Modelagem do Banco](/Modelagem/taxi_modelagem.png)
+![Modelagem do Banco](/Modelagem/taxi_modelagem.bmp)
 O programa permite a criação de um arquivo ".sql" a partir do modelo resultante, onde foi gerado o arquivo "create_table.sql".
 
 ## Banco PostgreSQL
