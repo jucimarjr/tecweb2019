@@ -364,9 +364,6 @@ def create_permissao():
 
     if(cpf and True): # Substituir True por função de verificar se já foi cadastrado.
 
-        senha = request.form['senha'] if request.form['senha'] else '123456'
-        senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
-
         usuario = {
             "cpf": cpf,
             "nome": request.form["nome"] if "nome" in request.form else "Não informado",
@@ -376,12 +373,12 @@ def create_permissao():
         
         usuario = Usuario(usuario)
 
-        return mensagem_feedback(True, "Usuário cadastrado com sucesso!")
+        return mensagem_feedback(True, "Permissão cadastrada com sucesso!")
 
     elif(cpf):
-        return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
+        return mensagem_feedback(False, "Dados já cadastrados na base de dados!")
 
-    return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
+    return mensagem_feedback(False, "Não foi possível cadastrar a Permissão!")
     
 
 @app.route('/permissao/update', methods=['POST'])
@@ -392,10 +389,6 @@ def update_permissao():
 
     if(cpf):
 
-        senha = request.form["senha"] if request.form["senha"] else None
-        if(senha):
-            senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
-
         usuario = {
             "cpf": cpf,
             "nome": request.form["nome"] if "nome" in request.form else None,
@@ -405,9 +398,9 @@ def update_permissao():
 
         usuario = Usuario().update(usuario)
         
-        return mensagem_feedback(True, "Usuário atualizado com sucesso!")
+        return mensagem_feedback(True, "Permissão atualizada com sucesso!")
 
-    return mensagem_feedback(False, "É necessário informar um CPF")
+    return mensagem_feedback(False, "Dados insuficientes para atualização")
     
 @app.route('/permissao/delete', methods=['POST'])
 @jwt_required()
@@ -419,7 +412,7 @@ def delete_permissao():
 
         usuario = Usuario().delete(cpf)
         
-        return mensagem_feedback(True, "Usuário desativado com sucesso!")
+        return mensagem_feedback(True, "Permissão desativado com sucesso!")
 
-    return mensagem_feedback(False, "É necessário informar um CPF")
+    return mensagem_feedback(False, "Dados insuficientes para exclusão")
 
