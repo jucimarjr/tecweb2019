@@ -5,6 +5,10 @@ from Angelica.database import Base, db_session
 from Angelica import app, bcrypt
 import jwt
 
+#---------------------------------#
+# Usuário
+#---------------------------------#
+
 class Usuario(Base):
     __tablename__ = "reg_usuario"
     __table_args__ = (
@@ -88,6 +92,10 @@ class Usuario(Base):
             {"cpf": usuario.cpf, "nome": usuario.nome, "status": usuario.status } for usuario in self.query.all()
         ]
         return usuarios
+
+#---------------------------------#
+# Motorista
+#---------------------------------#
 
 class Motorista(Base):
     __tablename__ = "reg_motorista"
@@ -176,6 +184,10 @@ class Motorista(Base):
         ]
         return motoristas
 
+#---------------------------------#
+# Taxi
+#---------------------------------#
+
 class Taxi(Base):
     __tablename__ = "reg_taxi"
     __table_args__ = (
@@ -253,6 +265,9 @@ class Taxi(Base):
             } for taxi in self.query.all()
         ]
         return taxis
+#---------------------------------#
+# Permissão
+#---------------------------------#
 
 class Permissao(Base):
     __tablename__ = "reg_permissao"
