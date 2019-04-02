@@ -334,15 +334,15 @@ class Permissao(Base):
         db_session.commit()
 
     def list(self):
-        taxis = [
+        permissoes = [
             {
-                "placa": taxi.placa,
-                "renavam": taxi.renavam,
-                "chassi": taxi.chassi,
-                "marca": taxi.marca,
-                "modelo": taxi.modelo,
-                "ano": taxi.ano,
-                "status": taxi.status
-            } for taxi in self.query.all()
+                "placa": permissao.taxi,
+                "motorista": permissao.motorista,
+                "usuario": permissao.usuario,
+                "inicio": permissao.data_inicio,
+                "fim": permissao.data_fim,
+                "tipo": permissao.tipo,
+                "status": permissao.status
+            } for permissao in self.query.all()
         ]
-        return taxis
+        return permissoes
