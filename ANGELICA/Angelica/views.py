@@ -1,7 +1,7 @@
 from Angelica import app, bcrypt
 from flask_jwt import jwt_required
 from flask import request, jsonify
-from Angelica.models import Usuario, Motorista, Taxi
+from Angelica.models import Usuario, Motorista, Taxi, Permissao
 from Angelica.methods import mensagem_feedback
 from flask_jwt import jwt_required
 
@@ -333,13 +333,12 @@ def delete_taxi():
 @jwt_required()
 def get_permissao():
 
-    mot_cpf = request.form["mot_cpf"] if "mot_cpf" in request.form else None
-    usu_cpf = request.form["usu_cpf"] if "usu_cpf" in request.form else None
-    placa = request.form["placa"] if "placa" in request.form else None
+    motorista = request.form["motorista"] if "motorista" in request.form else None
+    usuario = request.form["usuario"] if "usuario" in request.form else None
+    taxi = request.form["taxi"] if "taxi" in request.form else None
 
-    if(mot_cpf & usu_cpf & placa):
-
-        permissao = Permissao().read(cpf)
+    if(taxi and usuario and motorista):
+        permissao = Permissao().read(taxi,motorista,usuario)
 
         if(permissao != {}):
             return jsonify(permissao)
@@ -354,28 +353,33 @@ def get_permissao():
 def get_permissoes():
     permissoes = Permissao().list()
 
-    return jsonify(usuarios)
+    return jsonify(permissoes)
 
 @app.route('/permissao/create', methods=['POST'])
 @jwt_required()
 def create_permissao():
     
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    motorista = request.form["motorista"] if "motorista" in request.form else None
+    usuario = request.form["usuario"] if "usuario" in request.form else None
+    taxi = request.form["taxi"] if "taxi" in request.form else None
 
-    if(cpf and True): # Substituir True por função de verificar se já foi cadastrado.
+    if(taxi and usuario and motorista and True): # Substituir True por função de verificar se já foi cadastrado.
 
-        usuario = {
-            "cpf": cpf,
-            "nome": request.form["nome"] if "nome" in request.form else "Não informado",
-            "senha": senha_hash,
+        permissao = {
+            "taxi": taxi,
+            "motorista": motorista,
+            "usuario": usuario,
+            "inicio": request.form["nome"] if "nome" in request.form else "Não informado",
+            "fim": request.form["nome"] if "nome" in request.form else "Não informado",
+            "tipo": request.form["nome"] if "nome" in request.form else "Não informado",
             "status": request.form["status"] if "status" in request.form else 1,
         }
         
-        usuario = Usuario(usuario)
+        permissao = Permissao(permissao)
 
         return mensagem_feedback(True, "Permissão cadastrada com sucesso!")
 
-    elif(cpf):
+    elif(taxi and usuario and motorista and True):
         return mensagem_feedback(False, "Dados já cadastrados na base de dados!")
 
     return mensagem_feedback(False, "Não foi possível cadastrar a Permissão!")
@@ -385,18 +389,23 @@ def create_permissao():
 @jwt_required()
 def update_permissao():
 
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    motorista = request.form["motorista"] if "motorista" in request.form else None
+    usuario = request.form["usuario"] if "usuario" in request.form else None
+    taxi = request.form["taxi"] if "taxi" in request.form else None
 
-    if(cpf):
+    if(taxi and usuario and motorista):
 
-        usuario = {
-            "cpf": cpf,
-            "nome": request.form["nome"] if "nome" in request.form else None,
-            "senha": senha_hash,
-            "status": request.form["status"] if "status" in request.form else None,
+        permissao = {
+            "taxi": taxi,
+            "motorista": motorista,
+            "usuario": usuario,
+            "data_inicio": request.form["data_inicio"] if "data_inicio" in request.form else "Não informado",
+            "data_fim": request.form["data_fim"] if "data_fim" in request.form else "Não informado",
+            "tipo": request.form["tipo"] if "tipo" in request.form else "Não informado",
+            "status": request.form["status"] if "status" in request.form else 1,
         }
 
-        usuario = Usuario().update(usuario)
+        permissao = Permissao().update(permissao)
         
         return mensagem_feedback(True, "Permissão atualizada com sucesso!")
 
@@ -406,11 +415,13 @@ def update_permissao():
 @jwt_required()
 def delete_permissao():
 
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    motorista = request.form["motorista"] if "motorista" in request.form else None
+    usuario = request.form["usuario"] if "usuario" in request.form else None
+    taxi = request.form["taxi"] if "taxi" in request.form else None
 
-    if(cpf):
+    if(taxi and usuario and motorista):
 
-        usuario = Usuario().delete(cpf)
+        permissao = Permissao().delete(taxi,motorista,usuario)
         
         return mensagem_feedback(True, "Permissão desativado com sucesso!")
 

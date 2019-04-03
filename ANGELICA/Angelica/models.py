@@ -299,23 +299,23 @@ class Permissao(Base):
     def __repr__(self):
         return "<Permissão %r>" % self.taxi
 
-    def read(self, taxi):        
+    def read(self, taxi, motorista, usuario):        
         
-        permissao = self.query.get(taxi)
+        permissao = self.query.get({"taxi" : taxi,"motorista" : motorista,"usuario" : usuario})
 
         return {
-            "placa": permissao.taxi,
+            "taxi": permissao.taxi,
             "motorista": permissao.motorista,
             "usuario": permissao.usuario,
-            "inicio": permissao.data_inicio,
-            "fim": permissao.data_fim,
+            "data_inicio": permissao.data_inicio,
+            "data_fim": permissao.data_fim,
             "tipo": permissao.tipo,
             "status": permissao.status
         } if permissao else {}
         
     def update(self, permissao):
         
-        self = self.query.get(permissao["taxi"])
+        self = self.query.get({"taxi" : permissao["taxi"],"motorista" : permissao["motorista"],"usuario" : permissao["usuario"]})
 
         self.taxi = permissao["taxi"] if permissao["taxi"] else self.taxi
         self.motorista = permissao["motorista"] if permissao["motorista"] else self.motorista
@@ -327,20 +327,20 @@ class Permissao(Base):
     
         db_session.commit()
     
-    def delete(self, taxi, mot, usu):
+    def delete(self, taxi, motorista, usuario):
         
-        self = self.query.get(taxi)
+        self = self.query.get({"taxi" : taxi,"motorista" : motorista,"usuario" : usuario})
         self.status = 0
         db_session.commit()
 
     def list(self):
         permissoes = [
             {
-                "placa": permissao.taxi,
+                "taxi": permissao.taxi,
                 "motorista": permissao.motorista,
                 "usuario": permissao.usuario,
-                "inicio": permissao.data_inicio,
-                "fim": permissao.data_fim,
+                "data_inicio": permissao.data_inicio,
+                "data_fim": permissao.data_fim,
                 "tipo": permissao.tipo,
                 "status": permissao.status
             } for permissao in self.query.all()
