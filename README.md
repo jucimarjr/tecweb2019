@@ -22,3 +22,6 @@ Entre no PGAdmin para criar as tabelas com os scripts que estão no git
 
 Passo 5.
 Se ainda estiver sem front use o POSTMAN para testar as API's feitas durante a criação dos CRUD
+
+Passo 6. 
+Rodar este comando "pip install -r requirements.txt" no terminal, acessando a pasta do crud (flask )
