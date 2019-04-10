@@ -29,5 +29,7 @@ Para consultar, deletar, criar, atualizar e inserir dados na tabela foram utiliz
 
 ## Tutoriais de instalação
 > [Toad Data Modeler](https://docs.google.com/presentation/d/1AftzuOf6OyY5GEoVzc7FN5HfHqPxcuxvNae7naCpE9Q/edit#slide=id.p)
+
 > [PostgreSQL](https://docs.google.com/presentation/d/1E3VaxYO0eKJvomFVsq7f-9Ew7qPNto1mlkPua7LDckI/edit?usp=sharing)
+
 > [Spawner Data Generator](https://docs.google.com/presentation/d/1Lkgant0khzNb9vnKff1msWQ2937txd3Y1JBgku01Ckg/edit?usp=sharing)
