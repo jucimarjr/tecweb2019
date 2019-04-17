@@ -66,7 +66,7 @@ def get_usuario():
     
 
 @app.route('/usuarios/get', methods=['GET'])
-#@jwt_required()
+@jwt_required()
 def get_usuarios():
     usuarios = Usuario().list()
 

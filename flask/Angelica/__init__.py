@@ -15,7 +15,7 @@ config = {
     'ENV': os.getenv('ENV') if os.getenv('ENV') else 'development',
     'DEBUG': os.getenv('DEBUG') if os.getenv('DEBUG') else True,
     'SECRET_KEY': os.getenv('SECRET_KEY') if os.getenv('SECRET_KEY') else 'SECRET_KEY',
-    'SQLALCHEMY_URL': os.getenv('postgres://tecweb:qaz123wsx@localhost/tecwebDB') if os.getenv('postgres://tecweb:qaz123wsx@localhost/tecwebDB') else 'postgres://tecweb:qaz123wsx@localhost/tecwebDB'
+    'SQLALCHEMY_URL': os.getenv('postgres://tecweb:qaz123wsx@postgres:5432/tecwebDB') if os.getenv('postgres://tecweb:qaz123wsx@postgres:5432/tecwebDB') else 'postgres://tecweb:qaz123wsx@postgres:5432/tecwebDB'
 }
 
 app.config['ENV'] = config['ENV']

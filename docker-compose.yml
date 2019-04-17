@@ -1,7 +1,6 @@
 version: "3.7"
 
 services:
-
   flask:
     build: ./flask
     container_name: flask
@@ -9,10 +8,10 @@ services:
     env_file: postgres/database.conf
     environment:
       - APP_NAME=TecWeb
+    links:
+      - postgres:postgres
     expose:
-      - 8080
-    depends_on:
-      - database
+      - "8080"
 
   nginx:
     build: ./nginx
@@ -20,15 +19,17 @@ services:
     restart: always
     ports:
       - "80:80"
+    links:
+      - flask:flask
 
-  database:
+  postgres:
+    build: ./postgres
     container_name: postgres
-    image: postgres:latest
     environment:
       - TZ=GMT
     env_file: postgres/database.conf
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - db_volume:/var/lib/postgresql
 
