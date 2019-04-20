@@ -25,3 +25,32 @@ Se ainda estiver sem front use o POSTMAN para testar as API's feitas durante a c
 
 Passo 6. 
 Rodar este comando "pip install -r requirements.txt" no terminal, acessando a pasta do crud (flask )
+
+
+
+Projeto Angélica
+  
+- Visão geral do Projeto
+  - Escopo 
+  - Equipe
+  
+- Requisitos ( Equipe Anne )
+  - Requisitos funcionais, não-funcionais e regras de negócio
+  - Casos de Uso - Diagrama, Atores e descrição
+  - UI/UX
+  
+- Arquitetura de Software ( Equipe Neto )
+  - Restrições e objetivos
+  - Topologia de rede
+  - Representação gráfica
+  - Estrutura de pacotes
+  - Banco de dados ( modelo e dicionário de dados )
+
+- Codificação ( Equipe Eduardo )
+  - Boas práticas ( manual de codificação )
+  - Estrutura de pastas
+  
+- Configuracão e Ambiente ( Equipe Rodrigos )
+  - Estrutura de branches
+  - Repositórios
+  - Boas práticas
