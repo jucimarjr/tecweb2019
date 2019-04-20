@@ -30,7 +30,7 @@ Rodar este comando "pip install -r requirements.txt" no terminal, acessando a pa
 
 Projeto Angélica
   
-- Visão geral do Projeto
+- Visão geral do Projeto ( Equipe Anne )
   - Escopo 
   - Equipe
   
@@ -45,6 +45,8 @@ Projeto Angélica
   - Representação gráfica
   - Estrutura de pacotes
   - Banco de dados ( modelo e dicionário de dados )
+  - Segurança
+
 
 - Codificação ( Equipe Eduardo )
   - Boas práticas ( manual de codificação )
@@ -54,3 +56,12 @@ Projeto Angélica
   - Estrutura de branches
   - Repositórios
   - Boas práticas
+  
+ - Tecnologias ( TUtorial com instação ) - Equipe Anne
+  - Docker
+  - Nginx 
+  - Flask
+  - React 
+  - Kit Creative Tim
+  - Integrando todas as tecnologias do projeto
+  - Instalando as tecnologias no computador de um novo desenvolvedor
