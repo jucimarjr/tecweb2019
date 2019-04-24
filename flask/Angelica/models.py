@@ -17,7 +17,7 @@ class Usuario(Base):
 
     cpf = Column("usu_cpf", String(11), nullable=False)
     nome = Column("usu_nome", String(100), nullable=False)
-    senha = Column("usu_senha", String(60), nullable=False)
+    senha = Column("usu_senha", String(100), nullable=False)
     status = Column("usu_status", Integer, nullable=False)
 
     def __init__(self, usuario=None):

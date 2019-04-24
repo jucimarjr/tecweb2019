@@ -40,7 +40,7 @@ CREATE TABLE "reg_usuario"(
  "usu_cpf" Character varying(11) NOT NULL,
  "usu_nome" Character varying(100) NOT NULL,
  "usu_status" Smallint NOT NULL,
- "usu_senha" Character varying(50) NOT NULL
+ "usu_senha" Character varying(100) NOT NULL
 )
 WITH (
  autovacuum_enabled=true)

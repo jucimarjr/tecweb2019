@@ -20,7 +20,7 @@ def index():
     Método de Autenticação
 '''
 
-@app.route('/autenticar')
+@app.route('/autenticar', methods=['POST'])
 def autenticar():
 
     cpf = request.form["cpf"] if "cpf" in request.form else None
