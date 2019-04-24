@@ -73,7 +73,7 @@ def get_usuarios():
     return jsonify(usuarios)
 
 @app.route('/usuario/create', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def create_usuario():
     
     cpf = request.form["cpf"] if "cpf" in request.form else None
