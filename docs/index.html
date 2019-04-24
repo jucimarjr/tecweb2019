@@ -1,1 +1,116 @@
-Hello World!
+<!DOCTYPE html>
+<html lang="PT-BR">
+	<head>
+		<meta charset="UTF-8">
+		<title>Documentação TecWeb</title>
+		<link rel="stylesheet" href="static/styles.css">
+	</head>
+	<body>
+		<div id="main-div" class="sub">
+			<h1 class="title">Documentação do Sistema TecWeb</h1>
+
+			<!-- 1 OBJETIVO -->
+			<h1>1. Objetivo</h1>
+			<p>
+				Desenvolver um Sistema Web e um Aplicativo para o monitoramento de veículos, em específicos, para taxis. 
+			</p>
+			<p>
+				Para acessar o código do projeto, <a href="https://github.com/jucimarjr/tecweb2019">clique aqui</a>.
+			</p>
+			<hr>
+
+			<!-- 2 REQUISITOS -->
+			<h1>2. Requisitos</h1 >
+			<p>
+				Os requisitos de um sistema são descrições dos serviços fornecidos pelo sistema e as suas restrições operacionais. Esses requisitos refletem as necessidades dos clientes de 					um sistema que ajuda a resolver algum problema, por exemplo, controlar um dispositivo, enviar um pedido ou encontrar informações (SOMMERVILLE,2011).
+			</p>
+			<div class="sub">
+				<h2>2.1 Não funcionais</h2>
+				<p>
+					São restrições aos serviços ou funções oferecidos pelo sistema. Incluem restrições de timing, restrições no processo de desenvolvimento e restrições im postas pelas normas 					(SOMMERVILLE,2011). <br><br>
+					Para acessar os requisitos não funcionais <a href="">clique aqui</a>.
+				</p>
+
+				<h2>2.2 Funcionais</h2>
+				<p>
+					Os requisitos funcionais são declarações que o sistema deve fornecer, de como o sistema deve reagir a entradas específicas e de como o sistema deve se comportar em 					determinadas situações (SOMMERVILLE,2011). <br><br>
+					Para acessar os requisitos funcionais <a href="">clique aqui</a>
+				</p>
+
+
+			<!-- 3 ANÁLISE E PROJETO -->
+			<h1>3. Análise e Projeto</h1>
+			<p>
+				Abrange o conjunto de princípios, conceitos e práticas que levam ao desenvolvimento de um sistema ou produto de alta qualidade(PRESSMAN, 2016).
+			</p>
+
+			<hr>
+
+			<!-- 4 IMPLEMENTAÇÃO -->
+			<h1>4. Implementação</h1>
+
+			<!-- 5 Configuração e Ambiente -->
+			<h1>5. Configuração e Ambiente</h1>
+
+			<div class="sub">
+				<h2>5.1 Estrutura de Branches</h2>
+				<ul>
+                    <li><a href="https://github.com/jucimarjr/tecweb2019/tree/CRUD-FLASK">Angelica</a> - Branch específica para o back-end do sistema, utilizando o Flask;</li>
+                    <li><a href="https://github.com/jucimarjr/tecweb2019/tree/database">Database</a> - Branch específica para toda a estrutura do banco de dados do Angelica;</li>
+                    <li><a href="https://github.com/jucimarjr/tecweb2019/tree/docker">Docker</a> - Branch específica para o tutorial de docker, nele encontra-se algumas aplicações abordando os principais conceitos do Docker;</li>
+                    <li><a href="https://github.com/jucimarjr/tecweb2019/tree/master">Master</a> - Principal Branch do TecWeb, encontrando os principais arquivos do Angelica, Database, Docker, React;</li>
+                    <li><a href="https://github.com/jucimarjr/tecweb2019/tree/react">React</a> - Branch específica para o front-end do sistema, utilizando o React;</li>
+                </ul>
+                <h2>5.2 Repositórios</h2>
+				<ul>
+					<li><a href="https://github.com/jucimarjr/zelda/commits/master">Iterações</a></li>
+                </ul>
+                <h2>5.3 Boas Práticas</h2>
+                <h3>5.3.1 Git</h3>
+				<ul>
+					<li><a href="https://trello-attachments.s3.amazonaws.com/597fada6ae0a14cabbf63a1a/5994d748ba8c2a1265e6f487/5eb459c775d2a4d96157d5ee705c4ec8/Udacity_Nanodegree_Style_Guide.pdf">Guia de Estilo de Commit - Udacity</a></li>
+				</ul>
+                <h3>5.3.1 Back-end</h3>
+				<ul>
+					<li><a href="https://www.python.org/dev/peps/pep-0008/">Boas práticas PEP8 com Python</a></li>
+                </ul>
+                <h3>5.3.1 Front-end</h3>
+				<ul>
+					<li><a href="https://itforum365.com.br/dicas-e-boas-praticas-com-react/">Boas práticas com React</a></li>
+				</ul>
+			</div>
+			<hr>
+
+			<div class="sub">
+			<img id="UEA-LOGO" src="images/uea-logo.png" alt="UEA Logo">
+		    </div>
+
+		<script src="statics/jquery-3.2.1.min.js"></script>
+
+		<script>
+			$(document).ready(function(){
+				var tabs = 1;
+
+				// adiciona margens recursivamente às divs marcadas com a classe sub
+				function calcula_subs(elem) {
+					console.log($(elem));
+					var divs = $(elem).children(".sub");
+					divs.each( (index, elem) => {
+						$(elem).attr("style", "margin-left: " + tabs * 2.5 + "%;");
+					});
+
+					if(tabs < 5) {
+						tabs++;
+					}
+
+					divs.each( (index, elem) => {
+						calcula_subs(elem);
+					});
+				};
+
+				var div = $(".sub").first();
+				calcula_subs(div);				
+			});
+		</script>
+	</body>
+</html>
