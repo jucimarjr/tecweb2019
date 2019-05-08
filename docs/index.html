@@ -61,23 +61,76 @@
                     <li><a href="https://github.com/jucimarjr/tecweb2019/tree/master">Master</a> - Principal Branch do TecWeb, encontrando os principais arquivos do Angelica, Database, Docker, React;</li>
                     <li><a href="https://github.com/jucimarjr/tecweb2019/tree/react">React</a> - Branch específica para o front-end do sistema, utilizando o React;</li>
                 </ul>
-                <h2>5.2 Repositórios</h2>
+                <h2>5.2 Boas Práticas</h2>
+				<h3>5.2.1 Git</h3>
+				
+				<h3>5.2.1.1 Estrutura de Mensagem</h3>
+				Uma mensagem de commit consiste em três partes distintas separadas por uma linha em branco: título, um corpo (opcional) e um rodapé (opcional). O layout é assim:
+				<p align="center">
+					<img id="messageBody" src="images/messageBody.PNG" alt="Message Body">
+				</p>
+				O título consiste no tipo de mensagem e assunto
+				
+				
+				<h3>5.2.1.2 Tipo de Mensagem (Type)</h3>
+				O tipo está contido no título e pode ser um desses tipos:
 				<ul>
-					<li><a href="https://github.com/jucimarjr/zelda/commits/master">Iterações</a></li>
-                </ul>
-                <h2>5.3 Boas Práticas</h2>
-                <h3>5.3.1 Git</h3>
-				<ul>
-					<li><a href="https://trello-attachments.s3.amazonaws.com/597fada6ae0a14cabbf63a1a/5994d748ba8c2a1265e6f487/5eb459c775d2a4d96157d5ee705c4ec8/Udacity_Nanodegree_Style_Guide.pdf">Guia de Estilo de Commit - Udacity</a></li>
+					<li><b>feat:</b> uma nova feature;</li>
+					<li><b>fix:</b> uma correção de bug;</li>
+					<li><b>docs:</b> mudanças na documentação;</li>
+					<li><b>style:</b> formatação, falta de dois pontos, etc - sem alteração de código;</li>
+					<li><b>refactor:</b> refatorar código de produção;</li>
+					<li><b>test:</b> adicionar testes, teste de refatoração - nenhuma mudança de código de produção;</li>
+					<li><b>chore:</b> atualizando: features, gerenciador de pacotes, etc - mudança de código</li>
 				</ul>
-                <h3>5.3.1 Back-end</h3>
+				
+				
+				<h3>5.2.1.3 Assunto da Mensagem (Subject)</h3>
+				
 				<ul>
-					<li><a href="https://www.python.org/dev/peps/pep-0008/">Boas práticas PEP8 com Python</a></li>
-                </ul>
-                <h3>5.3.1 Front-end</h3>
-				<ul>
-					<li><a href="https://itforum365.com.br/dicas-e-boas-praticas-com-react/">Boas práticas com React</a></li>
+					<li>Os assuntos não devem ter mais de 50 caracteres, devem começar com letra maiúscula;</li>
+					<li>Use um tom imperativo para descrever o que um commit faz, e não o que ele fez;</li>
+					<li>Por exemplo, utilize <b>Criar</b>, não criou ou criado.</li>
 				</ul>
+				
+
+				<h3>5.2.1.4 Rodapé da Mensagem (Footer)</h3>
+				
+				O rodapé é opcional e é utilizado para referenciar códigos para rastrear problemas.
+				<br><br><br><br>
+				Ref: <a href="https://trello-attachments.s3.amazonaws.com/597fada6ae0a14cabbf63a1a/5994d748ba8c2a1265e6f487/5eb459c775d2a4d96157d5ee705c4ec8/Udacity_Nanodegree_Style_Guide.pdf">Guia de estilo de commit no Git - Udacity</a>
+
+				<h3>5.2.2 Back-end</h3>
+				<h3>Python - Layout de código</h3>
+				<ul>
+					<li><a>Indentação: </a> utilizar 4 espaços por nível de indentação;</li>
+					<li><a>Limite máximo por linha: </a> 79 caracteres;</li>
+					<li><a>Snake Case: </a> é a prática de escrever palavras ou frases compostas nas quais os elementos são separados por um caractere sublinhado (_) e nenhum espaço ;</li>
+				</ul>
+				
+				<br><br>
+				Ref: <a href="https://www.python.org/dev/peps/pep-0008/">Boas práticas PEP8 com Python</a>
+
+				<h3>5.2.3 Front-end</h3>
+				<h3>5.2.3.1 Organizar os métodos da sua classe</h3>
+				<ol>
+					<li>Construtor</li>
+					<li>Métodos do ciclo de vida do react</li>
+					<li>Métodos do componente</li>
+					<li>Render</li>
+				</ol>
+				
+				<h3>5.2.3.2 Um componente por arquivo</h3>
+
+				Evitar criar vários componentes no mesmo arquivo, isso facilita quando procuramos por eles no editor de texto, principalmente quando os nomes de ambos são os mesmos.
+
+				<h3>5.2.3.3 Usar keys em listas</h3>
+
+				Sempre que for usar uma lista utilize keys, elas ajudam a melhorar a performance de renderização do seu componente. Essa recomendação está na documentação básica do react. (https://reactjs.org/docs/lists-and-keys.html)
+
+				<br><br><br><br>
+				Ref: <a href="https://itforum365.com.br/dicas-e-boas-praticas-com-react/">Boas práticas com React</a>
+
 			</div>
 			<hr>
 
