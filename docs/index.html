@@ -61,10 +61,88 @@
                     <li><a href="https://github.com/jucimarjr/tecweb2019/tree/master">Master</a> - Principal Branch do TecWeb, encontrando os principais arquivos do Angelica, Database, Docker, React;</li>
                     <li><a href="https://github.com/jucimarjr/tecweb2019/tree/react">React</a> - Branch específica para o front-end do sistema, utilizando o React;</li>
                 </ul>
-                <h2>5.2 Boas Práticas</h2>
-				<h3>5.2.1 Git</h3>
+
+                <h2>5.2 Estrutura principal</h2>
+                Existem 4 pastas principais dentro do projeto:
+                <ol>
+					<li><b>flask</b> - Nesta pasta fica o backend que realiza as requisições ao banco de dados, bem como o tratamento das entradas vindas do telas da aplicação.</li>
+					<li><b>nginx</b> - É nesta pasta que as configurações a serem usadas pelo Nginx se encontra.</li>
+					<li><b>postgres</b> - Esta é onde fica armazenados qualquer script relacionado diretamente ao banco de dados, como a configuração, modelagem e popularização do banco de dados.</li>
+					<li><b>react</b> - Aqui fica a codificação, em React, das telas que serão usadas pela aplicação.</li>
+				</ol>
+
+				<h3>5.2.1 Estruturas internas</h3>
+				<h3>5.2.1.1 Flask</h3>
+				Dentro do projeto existem 3 pastas principais:
+
+				<ol>
+					<li><b>Angelica</b> 
+						Nesta pasta temos os scripts para a criação da API flask:
+						<ul>
+							<li>A inicialização do ambiente: __init__.py</li>
+							<li><b>fix:</b> uma correção de bug;</li>
+							<li>A instanciação do banco: database.py</li>
+							<li>A declaração de como será declarado cada coluna e tabelas disponíveis no banco: models.py</li>
+							<li>A separação de funções gerais a serem usadas: methods.py</li>
+							<li>As API's para realização das funções necessárias do sistema:  views.py</li>
+							<li><b>chore:</b> atualizando: features, gerenciador de pacotes, etc - mudança de código</li>
+						</ul>
+					</li>
+					<li><b>__Pycache__</b>
+						Possui os dados gerados durante a execução do sistema.
+					</li>
+					<li><b>env</b>
+						Possui as configurações do ambiente virtual que é usado para testes.
+					</li>
+				</ol>
+
+				<h3>5.2.1.2 NGINX</h3>
+				Nesta pasta existe apenas o arquivo "nginx.conf", que serve para configurar o Nginx para ser usado.
+
+				<h3>5.2.1.3 Postgres</h3>
+				Aqui existem dois arquivos principais:
+				<ol>
+					<li><b>Adatabase.conf :</b> 
+						Este arquivo armazena as configurações necessárias para o banco, como o nome do modelo a ser usado, usuário padrão, senha e entre outros.
+					</li>
+					<li><b>init.sql : </b>
+						Este é o arquivo responsável de modelar e popular o banco, caso o mesmo não esteja ainda instanciado.
+					</li>
+				</ol>
+				<h3>5.2.1.4 React</h3>
+				Este é o local onde a aplicação React se encontrará, onde em sua raiz existe um arquivo importante e uma pasta a ser melhor explicada:
+				<ol>
+					<li><b>package.json:</b> 
+						Arquivo que possui as dependências e versões necessárias para que a aplicação funcione normalmente.
+					</li>
+					<li><b>src:</b> 
+						Nesta pasta que se encontra os arquivos .js que formam a aplicação como um todo.
+					</li>
+				</ol>
+
+				A pasta src é dividida em quatro pastas principais:
+				<ol>
+					<li><b>assets:</b> 
+						Onde serão colocados arquivos como imagens, sons, fontes e entre outros.
+					</li>
+					<li><b>componentes:</b> 
+						Components React que serão usados no projeto.
+					</li>
+					<li><b>layouts:</b> 
+						Que contem os layouts gerais do sistema.
+					</li>
+					<li><b>screens:</b> 
+						Onde se encontram os arquivos responsáveis em juntar os componentes e criar a tela a ser exibida.
+					</li>
+				</ol>
+
+				<h3>5.2.2 Por que essa distribuição?</h3>
+				Essa distribuição fi realizada com o intuito de otimizar e organizar cada parte do sistema de forma a facilitar o uso do Docker-Compose, que configura cada uma das pastas como um     container docker separado um do outro, permitindo que uma parte do sistema, caso seja necessário atualizações ou manutenções, possa ser alterada em tempo de execução e não afetar as demais.
+
+                <h2>5.3 Boas Práticas</h2>
+				<h3>5.3.1 Git</h3>
 				
-				<h3>5.2.1.1 Estrutura de Mensagem</h3>
+				<h3>5.3.1.1 Estrutura de Mensagem</h3>
 				Uma mensagem de commit consiste em três partes distintas separadas por uma linha em branco: título, um corpo (opcional) e um rodapé (opcional). O layout é assim:
 				<p align="center">
 					<img id="messageBody" src="images/messageBody.PNG" alt="Message Body">
@@ -72,7 +150,7 @@
 				O título consiste no tipo de mensagem e assunto
 				
 				
-				<h3>5.2.1.2 Tipo de Mensagem (Type)</h3>
+				<h3>5.3.1.2 Tipo de Mensagem (Type)</h3>
 				O tipo está contido no título e pode ser um desses tipos:
 				<ul>
 					<li><b>feat:</b> uma nova feature;</li>
@@ -85,7 +163,7 @@
 				</ul>
 				
 				
-				<h3>5.2.1.3 Assunto da Mensagem (Subject)</h3>
+				<h3>5.3.1.3 Assunto da Mensagem (Subject)</h3>
 				
 				<ul>
 					<li>Os assuntos não devem ter mais de 50 caracteres, devem começar com letra maiúscula;</li>
@@ -94,25 +172,33 @@
 				</ul>
 				
 
-				<h3>5.2.1.4 Rodapé da Mensagem (Footer)</h3>
+				<h3>5.3.1.4 Rodapé da Mensagem (Footer)</h3>
 				
 				O rodapé é opcional e é utilizado para referenciar códigos para rastrear problemas.
 				<br><br><br><br>
 				Ref: <a href="https://trello-attachments.s3.amazonaws.com/597fada6ae0a14cabbf63a1a/5994d748ba8c2a1265e6f487/5eb459c775d2a4d96157d5ee705c4ec8/Udacity_Nanodegree_Style_Guide.pdf">Guia de estilo de commit no Git - Udacity</a>
 
-				<h3>5.2.2 Back-end</h3>
+				<h3>5.3.2 Back-end</h3>
+				Ao escrever os códigos para um sistema, o desenvolvedor deve ter em mente que seus scripts devem estar legíveis tanto para si quanto para outros que possam ler e contribuir no desenvolvimento do projeto. Além disso, ao fazer uso das boas práticas de programação, seus códigos possuem maiores chances de produzir menos erros. Caso ocorra algum erro de execução, será mais fácil de identificá-lo.
 				<h3>Python - Layout de código</h3>
 				<ul>
-					<li><a>Indentação: </a> utilizar 4 espaços por nível de indentação;</li>
+					<li><a>Indentação: </a> identação é obrigatória. Utilizar 4 espaços por nível de indentação;</li>
 					<li><a>Limite máximo por linha: </a> 79 caracteres;</li>
-					<li><a>Snake Case: </a> é a prática de escrever palavras ou frases compostas nas quais os elementos são separados por um caractere sublinhado (_) e nenhum espaço ;</li>
+					<li><a>Comentários e Documentação: </a> textos curtos e relevantes no código, informando a finalidade e o retorno dos métodos;</li>
+					<li><a>Convenções de nomes: </a> nomes adequados e padronizados, indicando, por exemplo, o que uma variável irá armazenar ou o que um determinado método irá fazer;</li>
+					<li><a>Convenções de nomes: </a> nomes adequados e padronizados, indicando, por exemplo, o que uma variável irá armazenar ou o que um determinado método irá fazer;</li>
+					<li><a>Tratamento de erros (try/catch): </a> fazer tratamento de erros, mostrando uma mensagem quando uma exceção ocorrer;</li>
+					<li><a>Padrões de Projetos (Design Patterns): </a> MVC (Model-View-Controller;</li>
+					<li><a>Testar e Depurar: </a> depurar para analisar o código em tempo de execução e manter a realização de testes;</li>
+					<li><a>Tamanho: </a> nomes de classes curtos;</li>
+					<li><a>Snake Case: </a> é a prática de escrever palavras ou frases compostas nas quais os elementos são separados por um caractere sublinhado (_) e nenhum espaço .</li>
 				</ul>
 				
 				<br><br>
 				Ref: <a href="https://www.python.org/dev/peps/pep-0008/">Boas práticas PEP8 com Python</a>
 
-				<h3>5.2.3 Front-end</h3>
-				<h3>5.2.3.1 Organizar os métodos da sua classe</h3>
+				<h3>5.3.3 Front-end</h3>
+				<h3>5.3.3.1 Organizar os métodos da sua classe</h3>
 				<ol>
 					<li>Construtor</li>
 					<li>Métodos do ciclo de vida do react</li>
@@ -120,11 +206,11 @@
 					<li>Render</li>
 				</ol>
 				
-				<h3>5.2.3.2 Um componente por arquivo</h3>
+				<h3>5.3.3.2 Um componente por arquivo</h3>
 
 				Evitar criar vários componentes no mesmo arquivo, isso facilita quando procuramos por eles no editor de texto, principalmente quando os nomes de ambos são os mesmos.
 
-				<h3>5.2.3.3 Usar keys em listas</h3>
+				<h3>5.3.3.3 Usar keys em listas</h3>
 
 				Sempre que for usar uma lista utilize keys, elas ajudam a melhorar a performance de renderização do seu componente. Essa recomendação está na documentação básica do react. (https://reactjs.org/docs/lists-and-keys.html)
 
