@@ -55,13 +55,16 @@ def identidade(payload):
 @jwt_required()
 def get_usuario():
 
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    req_data = request.get_json()
+    cpf = req_data['cpf']
+
+    #cpf = request.form["cpf"] if "cpf" in request.form else None
 
     if(cpf):
 
         usuario = Usuario().read(cpf)
 
-        if(usuario != {}):
+        if(usuario):
             return jsonify(usuario)
         
         return mensagem_feedback(False, "Usuário não encontrado na base de dados")
@@ -79,7 +82,35 @@ def get_usuarios():
 @app.route('/usuario/create', methods=['POST'])
 #@jwt_required()
 def create_usuario():
-    
+
+    req_data = request.get_json()
+    cpf = req_data['cpf']
+
+    if(cpf):
+        usuario = Usuario().read(cpf)
+        if(not usuario):
+            senha = req_data['senha']
+            if(senha):
+                senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
+                nome = req_data['nome']
+                if(nome):            
+                    usuario = {
+                        "cpf": cpf,
+                        "nome": nome,
+                        "senha": senha_hash,
+                        "status": 1,
+                    }
+                    usuario = Usuario(usuario)
+                    return mensagem_feedback(True, "Usuário cadastrado com sucesso!")
+                else:
+                    return mensagem_feedback(False, "Nome não pode estar em branco!")
+            else:
+                return mensagem_feedback(False, "Senha não pode estar em branco!")
+        elif(cpf):
+            return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
+    return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
+
+    '''
     cpf = request.form["cpf"] if "cpf" in request.form else None
 
     if(cpf and True): # Substituir True por função de verificar se já foi cadastrado.
@@ -102,7 +133,7 @@ def create_usuario():
         return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
 
     return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
-    
+    '''    
 
 @app.route('/usuario/update', methods=['POST'])
 @jwt_required()
