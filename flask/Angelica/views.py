@@ -139,25 +139,37 @@ def create_usuario():
 @jwt_required()
 def update_usuario():
 
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    #cpf = request.form["cpf"] if "cpf" in request.form else None
+    req_data = request.get_json()
+    cpf = req_data['cpf']
 
     if(cpf):
 
-        senha = request.form["senha"] if request.form["senha"] else None
+        #senha = request.form["senha"] if request.form["senha"] else None
+        senha = req_data['senha']
         if(senha):
             senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
+            nome = req_data['nome']
+            if(nome):
+                status = req_data['status']
+                if(status):
 
-        usuario = {
-            "cpf": cpf,
-            "nome": request.form["nome"] if "nome" in request.form else None,
-            "senha": senha_hash,
-            "status": request.form["status"] if "status" in request.form else None,
-        }
+                    usuario = {
+                        "cpf": cpf,
+                        "nome": nome,
+                        "senha": senha_hash,
+                        "status": status,
+                    }
 
-        usuario = Usuario().update(usuario)
-        
-        return mensagem_feedback(True, "Usuário atualizado com sucesso!")
-
+                    usuario = Usuario().update(usuario)
+                
+                    return mensagem_feedback(True, "Usuário atualizado com sucesso!")
+                else:
+                    return mensagem_feedback(False, "Status faltando!")
+            else:
+                return mensagem_feedback(False, "Nome fatando!")
+        else:
+            return mensagem_feedback(False, "Senha fatando!")
     return mensagem_feedback(False, "É necessário informar um CPF")
     
 @app.route('/usuario/delete', methods=['POST'])
