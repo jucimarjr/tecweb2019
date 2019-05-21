@@ -23,8 +23,12 @@ def index():
 @app.route('/autenticar', methods=['POST'])
 def autenticar():
 
-    cpf = request.form["cpf"] if "cpf" in request.form else None
-    senha = request.form["senha"] if "senha" in request.form else None
+    #cpf = request.form["cpf"] if "cpf" in request.form else None
+    #senha = request.form["senha"] if "senha" in request.form else None
+
+    req_data = request.get_json()
+    cpf = req_data['cpf']
+    senha = req_data['senha']
 
     if(cpf and senha):
 
