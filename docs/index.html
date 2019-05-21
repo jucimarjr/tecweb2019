@@ -19,41 +19,37 @@
 			</p>
 			<hr>
 
-			<!-- 2 REQUISITOS -->
-			<h1>2. Requisitos</h1 >
-			<p>
-				Os requisitos de um sistema são descrições dos serviços fornecidos pelo sistema e as suas restrições operacionais. Esses requisitos refletem as necessidades dos clientes de 					um sistema que ajuda a resolver algum problema, por exemplo, controlar um dispositivo, enviar um pedido ou encontrar informações (SOMMERVILLE,2011).
-			</p>
-			<div class="sub">
-				<h2>2.1 Não funcionais</h2>
-				<p>
-					São restrições aos serviços ou funções oferecidos pelo sistema. Incluem restrições de timing, restrições no processo de desenvolvimento e restrições im postas pelas normas 					(SOMMERVILLE,2011). <br><br>
-					Para acessar os requisitos não funcionais <a href="">clique aqui</a>.
-				</p>
-
-				<h2>2.2 Funcionais</h2>
-				<p>
-					Os requisitos funcionais são declarações que o sistema deve fornecer, de como o sistema deve reagir a entradas específicas e de como o sistema deve se comportar em 					determinadas situações (SOMMERVILLE,2011). <br><br>
-					Para acessar os requisitos funcionais <a href="">clique aqui</a>
-				</p>
-
-
-			<!-- 3 ANÁLISE E PROJETO -->
-			<h1>3. Análise e Projeto</h1>
+			
+			<!-- 2 ANÁLISE E PROJETO -->
+			<h1>2. Análise e Projeto</h1>
 			<p>
 				Abrange o conjunto de princípios, conceitos e práticas que levam ao desenvolvimento de um sistema ou produto de alta qualidade(PRESSMAN, 2016).
 			</p>
 
+			<h2>2.1 Rotas</h2>
+				<p>
+					Caminhos e protocolos de comunicação necessários para realizar requisições no servidor. O documento inclui os cabeçados e valores correspondentes. <br><br>
+					Para acessar as rotas <a href="rotas.html">clique aqui</a>
+				</p>
+			
+			<h2>2.2 Diagrama de rede</h2>
+			<p>
+				O diagrama de rede oferece de forma visual o fluxo de comunicação entre clientes e servidor e como está organizado segundo especificado nos containers. <br><br>
+				Para acessar o diagrama de rede <a href="diagrama_redes.html">clique aqui</a>
+			</p>
+			<h2>2.3 Projeto de banco de dados</h2>
+			<p>
+				O arquivo oferece de forma detalhada todos os campos e tabelas do banco de dados, bem como exemplos de utilização e possíveis valores. <br><br>
+				Para acessar o projeto de banco de dados <a href="Codificação/banco_de_dados.pdf">clique aqui</a>
+			</p>
+
 			<hr>
 
-			<!-- 4 IMPLEMENTAÇÃO -->
-			<h1>4. Implementação</h1>
-
 			<!-- 5 Configuração e Ambiente -->
-			<h1>5. Configuração e Ambiente</h1>
+			<h1>3. Configuração e Ambiente</h1>
 
 			<div class="sub">
-				<h2>5.1 Estrutura de Branches</h2>
+				<h2>3.1 Estrutura de Branches</h2>
 				<ul>
                     <li><a href="https://github.com/jucimarjr/tecweb2019/tree/CRUD-FLASK">Angelica</a> - Branch específica para o back-end do sistema, utilizando o Flask;</li>
                     <li><a href="https://github.com/jucimarjr/tecweb2019/tree/database">Database</a> - Branch específica para toda a estrutura do banco de dados do Angelica;</li>
@@ -62,7 +58,7 @@
                     <li><a href="https://github.com/jucimarjr/tecweb2019/tree/react">React</a> - Branch específica para o front-end do sistema, utilizando o React;</li>
                 </ul>
 
-                <h2>5.2 Estrutura principal</h2>
+                <h2>3.2 Estrutura principal</h2>
                 Existem 4 pastas principais dentro do projeto:
                 <ol>
 					<li><b>flask</b> - Nesta pasta fica o backend que realiza as requisições ao banco de dados, bem como o tratamento das entradas vindas do telas da aplicação.</li>
@@ -71,8 +67,8 @@
 					<li><b>react</b> - Aqui fica a codificação, em React, das telas que serão usadas pela aplicação.</li>
 				</ol>
 
-				<h3>5.2.1 Estruturas internas</h3>
-				<h3>5.2.1.1 Flask</h3>
+				<h3>3.2.1 Estruturas internas</h3>
+				<h3>3.2.1.1 Flask</h3>
 				Dentro do projeto existem 3 pastas principais:
 
 				<ol>
@@ -96,10 +92,10 @@
 					</li>
 				</ol>
 
-				<h3>5.2.1.2 NGINX</h3>
+				<h3>3.2.1.2 NGINX</h3>
 				Nesta pasta existe apenas o arquivo "nginx.conf", que serve para configurar o Nginx para ser usado.
 
-				<h3>5.2.1.3 Postgres</h3>
+				<h3>3.2.1.3 Postgres</h3>
 				Aqui existem dois arquivos principais:
 				<ol>
 					<li><b>Adatabase.conf :</b> 
@@ -109,7 +105,7 @@
 						Este é o arquivo responsável de modelar e popular o banco, caso o mesmo não esteja ainda instanciado.
 					</li>
 				</ol>
-				<h3>5.2.1.4 React</h3>
+				<h3>3.2.1.4 React</h3>
 				Este é o local onde a aplicação React se encontrará, onde em sua raiz existe um arquivo importante e uma pasta a ser melhor explicada:
 				<ol>
 					<li><b>package.json:</b> 
@@ -136,13 +132,13 @@
 					</li>
 				</ol>
 
-				<h3>5.2.2 Por que essa distribuição?</h3>
+				<h3>3.2.2 Por que essa distribuição?</h3>
 				Essa distribuição fi realizada com o intuito de otimizar e organizar cada parte do sistema de forma a facilitar o uso do Docker-Compose, que configura cada uma das pastas como um     container docker separado um do outro, permitindo que uma parte do sistema, caso seja necessário atualizações ou manutenções, possa ser alterada em tempo de execução e não afetar as demais.
 
-                <h2>5.3 Boas Práticas</h2>
-				<h3>5.3.1 Git</h3>
+                <h2>3.3 Boas Práticas</h2>
+				<h3>3.3.1 Git</h3>
 				
-				<h3>5.3.1.1 Estrutura de Mensagem</h3>
+				<h3>3.3.1.1 Estrutura de Mensagem</h3>
 				Uma mensagem de commit consiste em três partes distintas separadas por uma linha em branco: título, um corpo (opcional) e um rodapé (opcional). O layout é assim:
 				<p align="center">
 					<img id="messageBody" src="images/messageBody.PNG" alt="Message Body">
@@ -150,7 +146,7 @@
 				O título consiste no tipo de mensagem e assunto
 				
 				
-				<h3>5.3.1.2 Tipo de Mensagem (Type)</h3>
+				<h3>3.3.1.2 Tipo de Mensagem (Type)</h3>
 				O tipo está contido no título e pode ser um desses tipos:
 				<ul>
 					<li><b>feat:</b> uma nova feature;</li>
@@ -163,7 +159,7 @@
 				</ul>
 				
 				
-				<h3>5.3.1.3 Assunto da Mensagem (Subject)</h3>
+				<h3>3.3.1.3 Assunto da Mensagem (Subject)</h3>
 				
 				<ul>
 					<li>Os assuntos não devem ter mais de 50 caracteres, devem começar com letra maiúscula;</li>
@@ -172,13 +168,13 @@
 				</ul>
 				
 
-				<h3>5.3.1.4 Rodapé da Mensagem (Footer)</h3>
+				<h3>3.3.1.4 Rodapé da Mensagem (Footer)</h3>
 				
 				O rodapé é opcional e é utilizado para referenciar códigos para rastrear problemas.
 				<br><br><br><br>
 				Ref: <a href="https://trello-attachments.s3.amazonaws.com/597fada6ae0a14cabbf63a1a/5994d748ba8c2a1265e6f487/5eb459c775d2a4d96157d5ee705c4ec8/Udacity_Nanodegree_Style_Guide.pdf">Guia de estilo de commit no Git - Udacity</a>
 
-				<h3>5.3.2 Back-end</h3>
+				<h3>3.3.2 Back-end</h3>
 				Ao escrever os códigos para um sistema, o desenvolvedor deve ter em mente que seus scripts devem estar legíveis tanto para si quanto para outros que possam ler e contribuir no desenvolvimento do projeto. Além disso, ao fazer uso das boas práticas de programação, seus códigos possuem maiores chances de produzir menos erros. Caso ocorra algum erro de execução, será mais fácil de identificá-lo.
 				<h3>Python - Layout de código</h3>
 				<ul>
@@ -197,8 +193,8 @@
 				<br><br>
 				Ref: <a href="https://www.python.org/dev/peps/pep-0008/">Boas práticas PEP8 com Python</a>
 
-				<h3>5.3.3 Front-end</h3>
-				<h3>5.3.3.1 Organizar os métodos da sua classe</h3>
+				<h3>3.3.3 Front-end</h3>
+				<h3>3.3.3.1 Organizar os métodos da sua classe</h3>
 				<ol>
 					<li>Construtor</li>
 					<li>Métodos do ciclo de vida do react</li>
@@ -206,11 +202,11 @@
 					<li>Render</li>
 				</ol>
 				
-				<h3>5.3.3.2 Um componente por arquivo</h3>
+				<h3>3.3.3.2 Um componente por arquivo</h3>
 
 				Evitar criar vários componentes no mesmo arquivo, isso facilita quando procuramos por eles no editor de texto, principalmente quando os nomes de ambos são os mesmos.
 
-				<h3>5.3.3.3 Usar keys em listas</h3>
+				<h3>3.3.3.3 Usar keys em listas</h3>
 
 				Sempre que for usar uma lista utilize keys, elas ajudam a melhorar a performance de renderização do seu componente. Essa recomendação está na documentação básica do react. (https://reactjs.org/docs/lists-and-keys.html)
 
