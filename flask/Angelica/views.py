@@ -516,3 +516,19 @@ def delete_permissao():
 
     return mensagem_feedback(False, "Dados insuficientes para exclusão")
 
+@app.route('/info/taxi', methods=['POST'])
+def info_taxi():
+
+    req_data = request.get_json()
+    placa = req_data['placa']
+
+    if(placa):
+        info = Permissao().info_taxi(placa)
+        return mensagem_feedback(True, info)
+    else:
+        return mensagem_feedback(False, "Placa não encontrada!")
+
+
+
+
+

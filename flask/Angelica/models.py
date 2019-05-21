@@ -347,5 +347,7 @@ class Permissao(Base):
         ]
         return permissoes
     
-    def get_list_motorista_taxi(self, placa):
-        pass
+    def info_taxi(self, placa):
+        
+        info = self.query.get({"taxi": placa})
+        return info
