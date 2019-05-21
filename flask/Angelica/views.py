@@ -176,7 +176,9 @@ def update_usuario():
 @jwt_required()
 def delete_usuario():
 
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    #cpf = request.form["cpf"] if "cpf" in request.form else None
+    req_data = request.get_json()
+    cpf = req_data['cpf']
 
     if(cpf):
 
