@@ -324,13 +324,15 @@ def delete_motorista():
 @jwt_required()
 def get_taxi():
 
-    placa = request.form["placa"] if "placa" in request.form else None
+    #placa = request.form["placa"] if "placa" in request.form else None
+    req_data = request.get_json()
+    placa = req_data['placa']
 
     if(placa):
 
         taxi = Taxi().read(placa)
 
-        if(taxi != {}):
+        if(taxi):
             return jsonify(taxi)
         
         return mensagem_feedback(False, "Taxi não encontrado na base de dados")
