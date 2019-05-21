@@ -20,6 +20,38 @@ import {
 } from "reactstrap";
 
 class Auth extends React.Component {
+
+    signIn = () => {
+        let formdata = new FormData();
+        formdata.append('cpf',this.cpf);
+        formdata.append('senha',this.senha);
+
+        console.log(formdata);
+
+        const requestInfo = {
+            method: 'POST',
+            body: formdata,
+        };
+
+        fetch('/autenticar', requestInfo)
+            .then(response => {
+                if(response.ok) {
+                    console.log(response);
+                    return response.json()
+                }
+                throw new Error("Login inválido...");
+            })
+            .then(token => {
+                localStorage.setItem('token', token);
+                this.props.history.push("/admin");
+                return;
+            })
+            .catch(e => {
+                this.setState({ message: e.message });
+            });
+
+    }
+
   render() {
     return (
       <> 
@@ -49,7 +81,7 @@ class Auth extends React.Component {
                         <i className="ni ni-single-02" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="CPF" type="cpf" />
+                    <Input  placeholder="CPF" type="CPF" id="cpf" onChange={e => this.cpf = e.target.value}  />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -59,7 +91,7 @@ class Auth extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Senha" type="password" />
+                    <Input id="senha" placeholder="Senha" type="password" onChange={e => this.senha = e.target.value} />
                   </InputGroup>
                 </FormGroup>
                 <div className="custom-control custom-control-alternative custom-checkbox">
@@ -76,7 +108,7 @@ class Auth extends React.Component {
                   </label>
                 </div>
                 <div className="text-center">
-                  <Button className="my-4" color="primary" type="button">
+                  <Button className="my-4" color="primary" block onClick={this.signIn}  type="button">
                     Entrar
                   </Button>
                 </div>
