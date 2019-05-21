@@ -47,6 +47,37 @@ def identidade(payload):
     cpf = payload["usuario"]["cpf"] if "usuario" in payload else None
     return Usuario().read(cpf)
 
+@app.route('/admin/create', methods=['POST'])
+#@jwt_required()
+def create_admin():
+
+    req_data = request.get_json()
+    cpf = req_data['cpf']
+
+    if(cpf):
+        usuario = Usuario().read(cpf)
+        if(not usuario):
+            senha = req_data['senha']
+            if(senha):
+                senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
+                nome = req_data['nome']
+                if(nome):            
+                    usuario = {
+                        "cpf": cpf,
+                        "nome": nome,
+                        "senha": senha_hash,
+                        "status": 1,
+                    }
+                    usuario = Usuario(usuario)
+                    return mensagem_feedback(True, "Usuário cadastrado com sucesso!")
+                else:
+                    return mensagem_feedback(False, "Nome não pode estar em branco!")
+            else:
+                return mensagem_feedback(False, "Senha não pode estar em branco!")
+        else:
+            return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
+    return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
+
 '''
     CRUD - Usuário
 '''
