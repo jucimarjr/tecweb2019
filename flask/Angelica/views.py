@@ -250,77 +250,78 @@ def get_motorista():
     return mensagem_feedback(False, "É necessário informar um CPF")
 
 @app.route('/motoristas/get', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_motoristas():
     motoristas = Motorista().list()
 
     return jsonify(motoristas)
 
 @app.route('/motorista/create', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def create_motorista():
-
-    cpf = request.form["cpf"] if "cpf" in request.form else None
-
-    if(cpf and True): # Substituir True por função de verificar se já foi cadastrado.
-
-        motorista = {
-            "cpf": cpf,
-            "rg": request.form["rg"] if "rg" in request.form else "Não informado",
-            "nome": request.form["nome"] if "nome" in request.form else "Não informado",
-            "renach": request.form["renach"] if "renach" in request.form else "Não informado",
-            "telefone": request.form["telefone"] if "telefone" in request.form else "Não informado",
-            "cep": request.form["cep"] if "cep" in request.form else "Não informado",
-            "rua": request.form["rua"] if "rua" in request.form else "Não informada",
-            "bairro": request.form["bairro"] if "bairro" in request.form else "Não informado",
-            "status": request.form["status"] if "status" in request.form else 1,
-        }
-        
-        motorista = Motorista(motorista)
-
-        return mensagem_feedback(True, "Motorista cadastrado com sucesso!")
-
-    elif(cpf):
-        return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
-
-    return mensagem_feedback(False, "Não foi possível cadastrar o Motorista!")
-
-@app.route('/motorista/update', methods=['POST'])
-@jwt_required()
-def update_motorista():
-
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    req_data = request.get_json()
+    cpf = req_data['cpf']
 
     if(cpf):
+        motorista = Motorista().read(cpf)
+        if(not motorista):
+            if(req_data['rg'] and req_data['nome'] and req_data['renach'] and req_data['telefone'] and req_data['cep'] and req_data['rua'] and req_data['bairro']):
+                motorista = {
+                    'cpf': cpf,
+                    'rg': req_data['rg'],
+                    'nome': req_data['nome'],
+                    'renach': req_data['renach'],
+                    'telefone': req_data['telefone'],
+                    'cep': req_data['cep'],
+                    'rua': req_data['rua'],
+                    'bairro': req_data['bairro'],
+                    'status': 1,
+                }
+                motorista = Motorista(motorista)
+                return mensagem_feedback(True, "Motorista cadastrado com sucesso!")
+            else:
+                return mensagem_feedback(False, "Preencha todos os campos.")
+        else:
+            return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
+    
+    return mensagem_feedback(False, "Não foi possível cadastrar o Motorista.")
 
-        motorista = {
-            "cpf": cpf,
-            "rg": request.form["rg"] if "rg" in request.form else None,
-            "nome": request.form["nome"] if "nome" in request.form else None,
-            "renach": request.form["renach"] if "renach" in request.form else None,
-            "telefone": request.form["telefone"] if "telefone" in request.form else None,
-            "cep": request.form["cep"] if "cep" in request.form else None,
-            "rua": request.form["rua"] if "rua" in request.form else None,
-            "bairro": request.form["bairro"] if "bairro" in request.form else None,
-            "status": request.form["status"] if "status" in request.form else None,
-        }
-
-        motorista = Motorista().update(motorista)
         
-        return mensagem_feedback(True, "Motorista atualizado com sucesso!")
+
+@app.route('/motorista/update', methods=['POST'])
+#@jwt_required()
+def update_motorista():
+    req_data = request.get_json()
+    cpf = req_data['cpf']
+
+    if(cpf):
+        if(req_data['rg'] and req_data['nome'] and req_data['renach'] and req_data['telefone'] and req_data['cep'] and req_data['rua'] and req_data['bairro'] and req_data['status']):
+            motorista = {
+                'cpf': cpf,
+                'rg': req_data['rg'],
+                'nome': req_data['nome'],
+                'renach': req_data['renach'],
+                'telefone': req_data['telefone'],
+                'cep': req_data['cep'],
+                'rua': req_data['rua'],
+                'bairro': req_data['bairro'],
+                'status': req_data['status']
+            }
+            motorista = Motorista().update(motorista)
+            return mensagem_feedback(True, "Motorista atualizado com sucesso!")
+        else:
+            return mensagem_feedback(False, "Preencha todos os campos.")
 
     return mensagem_feedback(False, "É necessário informar um CPF")
 
 @app.route('/motorista/delete', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def delete_motorista():
-
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    req_data = request.get_json()
+    cpf = req_data['cpf']
 
     if(cpf):
-
         motorista = Motorista().delete(cpf)
-        
         return mensagem_feedback(True, "Motorista desativado com sucesso!")
 
     return mensagem_feedback(False, "É necessário informar um CPF")
