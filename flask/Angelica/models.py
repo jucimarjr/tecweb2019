@@ -348,6 +348,4 @@ class Permissao(Base):
         return permissoes
     
     def info_taxi(self, placa):
-        
-        info = self.query.get({"taxi": placa})
-        return info
+        pass

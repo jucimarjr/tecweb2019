@@ -1,9 +1,18 @@
 from Angelica import app, bcrypt
 from flask_jwt import jwt_required
 from flask import request, jsonify
+
 from Angelica.models import Usuario, Motorista, Taxi, Permissao
+from Angelica.schemas import TaxiSchema
+
+from Angelica.responses import resp_already_exists, resp_exception, resp_data_invalid, resp_ok
+from Angelica.messages import MSG_NO_DATA, MSG_INVALID_DATA
+from Angelica.messages import MSG_RESOURCE_CREATED
 from Angelica.methods import mensagem_feedback
 from flask_jwt import jwt_required
+
+from sqlalchemy.exc import IntegrityError
+
 import os
 
 @app.route('/')
@@ -347,13 +356,53 @@ def get_taxis():
     return jsonify(taxis)
 
 @app.route('/taxi/create', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def create_taxi():
 
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+    schema = TaxiSchema()
+
+    if req_data is None:
+        return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
+
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('Taxi', errors)
+
+    try:
+        model = Taxi(data)
+        model.save()
+    
+    except IntegrityError:
+        return resp_already_exists('Taxi', 'placa')
+
+    except Exception as e:
+        return resp_exception('Taxi', description=e)
+    
+    schema = TaxiSchema()
+    result = schema.dump(model)
+
+    # Retorno 200 o meu endpoint
+    return resp_ok(
+        'Taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=result.data,
+    )
+
+    '''
+    if(errors):
+        return jsonify(errors)
+    else:
+        taxi = Taxi(req_data)
+        result = schema.dump(taxi)
+        return jsonify(result)   
+
+    
     placa = request.form["placa"] if "placa" in request.form else None
 
     if(placa and True): # Substituir True por função de verificar se já foi cadastrado.
 
+        
         taxi = {
             "placa": placa,
             "renavam": request.form["renavam"] if "renavam" in request.form else "Não informado",
@@ -364,19 +413,37 @@ def create_taxi():
             "status": request.form["status"] if "status" in request.form else 1,
         }
         
+
+
+        
         taxi = Taxi(taxi)
 
         return mensagem_feedback(True, "Taxi cadastrado com sucesso!")
 
     elif(cpf):
         return mensagem_feedback(False, "placa já cadastrada na base de dados!")
-
-    return mensagem_feedback(False, "Não foi possível cadastrar o Taxi!")
+    
+    return mensagem_feedback(False, "Não foi possível cadastrar o Taxi!")    
+    '''
 
 @app.route('/taxi/update', methods=['POST'])
 @jwt_required()
 def update_taxi():
 
+    req_data = request.get_json()
+
+    schema = TaxiSchema()
+
+    data, errors = schema.load(req_data)
+
+    if(errors):
+        return jsonify(errors)
+    else:
+        taxi = Taxi().update(req_data)
+        result = schema.dump(taxi)
+        return jsonify(result.data) 
+
+'''
     placa = request.form["placa"] if "placa" in request.form else None
 
     if(placa):
@@ -399,6 +466,7 @@ def update_taxi():
         return mensagem_feedback(False, "placa já cadastrada na base de dados!")
 
     return mensagem_feedback(False, "Não foi possível cadastrar o Taxi!")
+'''
 
 @app.route('/taxi/delete', methods=['POST'])
 @jwt_required()
@@ -518,17 +586,4 @@ def delete_permissao():
 
 @app.route('/info/taxi', methods=['POST'])
 def info_taxi():
-
-    req_data = request.get_json()
-    placa = req_data['placa']
-
-    if(placa):
-        info = Permissao().info_taxi(placa)
-        return mensagem_feedback(True, info)
-    else:
-        return mensagem_feedback(False, "Placa não encontrada!")
-
-
-
-
-
+    pass
