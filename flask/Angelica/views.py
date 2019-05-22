@@ -233,10 +233,11 @@ def delete_usuario():
 '''
 
 @app.route('/motorista/get', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def get_motorista():
 
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    req_data = request.get_json()
+    cpf = req_data['cpf']
 
     if(cpf):
 
@@ -331,7 +332,7 @@ def delete_motorista():
 '''
 
 @app.route('/taxi/get', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def get_taxi():
 
     #placa = request.form["placa"] if "placa" in request.form else None
