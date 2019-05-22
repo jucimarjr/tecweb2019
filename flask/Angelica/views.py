@@ -92,7 +92,7 @@ def create_admin():
 '''
 
 @app.route('/usuario/get', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def get_usuario():
 
     req_data = request.get_json()
@@ -113,7 +113,7 @@ def get_usuario():
     
 
 @app.route('/usuarios/get', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_usuarios():
     usuarios = Usuario().list()
 
@@ -176,7 +176,7 @@ def create_usuario():
     '''    
 
 @app.route('/usuario/update', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def update_usuario():
 
     #cpf = request.form["cpf"] if "cpf" in request.form else None
@@ -213,7 +213,7 @@ def update_usuario():
     return mensagem_feedback(False, "É necessário informar um CPF")
     
 @app.route('/usuario/delete', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def delete_usuario():
 
     #cpf = request.form["cpf"] if "cpf" in request.form else None
