@@ -13,23 +13,23 @@ var routes = [
   },
   {
     path: "/user-profile",
-    name: "User Profile",
+    name: "Perfil do usuario",
     icon: "ni ni-single-02 text-yellow",
     component: Profile,
     layout: "/admin"
   },
   {
-    path: "/auth",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: Login,
+    path: "/register",
+    name: "Registrar",
+    icon: "ni ni-circle-08 text-pink",
+    component: Register,
     layout: "/login"
   },
   {
-    path: "/register",
-    name: "Register",
-    icon: "ni ni-circle-08 text-pink",
-    component: Register,
+    path: "/auth",
+    name: "Logout",
+    icon: "ni ni-key-25 text-info",
+    component: Login,
     layout: "/login"
   }
 ];
