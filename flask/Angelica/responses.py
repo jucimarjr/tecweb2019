@@ -1,7 +1,6 @@
 from flask import jsonify
 
-from .messages import MSG_INVALID_DATA, MSG_DOES_NOT_EXIST, MSG_EXCEPTION
-from .messages import MSG_ALREADY_EXISTS
+from .messages import MSG_INVALID_DATA, MSG_DOES_NOT_EXIST, MSG_EXCEPTION, MSG_ALREADY_EXISTS, MSG_DOES_NOT_EXIST
 
 def resp_data_invalid(resource :str, errors: dict, msg: str = MSG_INVALID_DATA):
     '''
@@ -55,6 +54,25 @@ def resp_already_exists(resource :str, description :str):
     resp.status_code = 400
 
     return resp
+
+def resp_not_exist(resource :str, errors: dict, msg: str = MSG_DOES_NOT_EXIST):
+    '''
+    Responses 404
+    '''
+
+    if not isinstance(resource, str):
+        raise ValueError('O recurso precisa ser uma string.')
+
+    resp = jsonify({
+        'resource': resource,
+        'message': msg,
+        'errors': errors,
+    })
+
+    resp.status_code = 404
+
+    return resp
+    
 
 def resp_ok(resource :str, message :str, data=None, **extras):
     '''

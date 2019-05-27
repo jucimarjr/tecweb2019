@@ -230,7 +230,7 @@ class Taxi(Base):
             "modelo": taxi.modelo,
             "ano": taxi.ano,
             "status": taxi.status
-        } if taxi else {}
+        } if taxi else None
         
     def update(self, taxi):
         
