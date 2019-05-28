@@ -55,7 +55,7 @@ def resp_already_exists(resource :str, description :str):
 
     return resp
 
-def resp_not_exist(resource :str, errors: dict, msg: str = MSG_DOES_NOT_EXIST):
+def resp_not_exist(resource :str, description :str):
     '''
     Responses 404
     '''
@@ -65,8 +65,7 @@ def resp_not_exist(resource :str, errors: dict, msg: str = MSG_DOES_NOT_EXIST):
 
     resp = jsonify({
         'resource': resource,
-        'message': msg,
-        'errors': errors,
+        'message': MSG_DOES_NOT_EXIST.format(description),
     })
 
     resp.status_code = 404

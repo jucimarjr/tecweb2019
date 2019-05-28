@@ -3,7 +3,7 @@ from flask_jwt import jwt_required
 from flask import request, jsonify
 
 from Angelica.models import Usuario, Motorista, Taxi, Permissao
-from Angelica.schemas import TaxiSchema, TaxiSchema2, TaxiInfoSchema
+from Angelica.schemas import TaxiSchema, TaxiInfoSchema, TaxiPlacaSchema
 
 from Angelica.responses import resp_already_exists, resp_exception, resp_data_invalid, resp_not_exist, resp_ok
 from Angelica.messages import MSG_NO_DATA, MSG_INVALID_DATA, MSG_RESOURCE_FIND
@@ -13,6 +13,7 @@ from flask_jwt import jwt_required
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import update
 
 import os
 
@@ -342,39 +343,40 @@ def get_taxi():
     if req_data is None:
         return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
 
-    schema = TaxiInfoSchema() 
+    schema = TaxiPlacaSchema() 
     data, errors = schema.load(req_data)
 
     if errors:
         return resp_data_invalid('Taxi', errors)
-    
-    taxi = Taxi().read(data)
-    print("taxi: ", taxi)
 
-    if taxi:
-        schema = TaxiSchema2()
-        data, errors = schema.load(taxi)
-        print("errors: ", errors)
-        print("data:", data)
-        if errors:
-            return resp_not_exist('Taxi', [], MSG_DOES_NOT_EXIST.format('placa'))
-    else:
-        resp_not_exist('Taxi', [], MSG_DOES_NOT_EXIST.format('placa'))
-    
-    result = schema.dump(taxi)
-    print("result: ", result)
-    
-    # Retorno 200
-    return resp_ok(
-        'Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,
-    )
+    try:
+        model = Taxi().query.get(data)
+
+    except Exception as e:
+        return resp_exception('Taxi', description=e)
+
+    if not model:
+        return resp_not_exist('Taxi', data['placa'])
+
+    schema = TaxiInfoSchema()
+    result = schema.dump(model)
+
+    return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
 
 @app.route('/taxis/get', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_taxis():
-    taxis = Taxi().list()
 
-    return jsonify(taxis)
+    try:
+        model = Taxi().query.all()
+
+    except Exception as e:
+        return resp_exception('Taxi', description=e)
+
+    schema = TaxiInfoSchema(many=True)
+    result = schema.dump(model)
+
+    return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
 
 @app.route('/taxi/create', methods=['POST'])
 #@jwt_required()
@@ -396,11 +398,11 @@ def create_taxi():
         model = Taxi(data)
 
     except IntegrityError:
-        return resp_already_exists('Taxi', 'placa')
+        return resp_already_exists('Taxi', data['placa'])
 
     except Exception as e:
         return resp_exception('Taxi', description=e)
-    
+
     schema = TaxiSchema()
     result = schema.dump(model)
 
@@ -410,9 +412,46 @@ def create_taxi():
     )
 
 @app.route('/taxi/update', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def update_taxi():
 
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
+    
+    schema = TaxiInfoSchema()
+    data, errors = schema.load(req_data)
+
+    print(data)
+
+    if errors:
+        return resp_data_invalid('Taxi', errors)
+
+    try:
+        taxi = Taxi().query.get(data['placa'])
+        #data, errors = schema.load(data, instance=Taxi().query.get(data['placa']), partial=True)
+        #model = Taxi().update().where(placa==data['placa']).values(data)
+    
+    except Taxi.DoesNotExist:
+        return resp_not_exist('Taxi', data['placa'])
+    
+    except Exception as e:
+        return resp_exception('Taxi', description=e)
+
+    print(taxi)
+
+    update_query = taxi.update(data)
+    update_query.execute()
+    result = schema.dump(taxi)
+
+    # Retorno 200 
+    return resp_ok(
+        'Taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=data,
+    )
+
+    '''
     req_data = request.get_json()
 
     schema = TaxiSchema()
@@ -424,7 +463,8 @@ def update_taxi():
     else:
         taxi = Taxi().update(req_data)
         result = schema.dump(taxi)
-        return jsonify(result.data) 
+        return jsonify(result.data)
+'''
 
 '''
     placa = request.form["placa"] if "placa" in request.form else None
