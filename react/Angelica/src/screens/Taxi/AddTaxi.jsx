@@ -32,7 +32,7 @@ class Profile extends React.Component {
                     </h6>
                     <div className="pl-lg-4">
                       <Row>
-                        <Col lg="12">
+                        <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -46,8 +46,6 @@ class Profile extends React.Component {
                               type="text"
                             />
                           </FormGroup>
-                        </Col>
-                        <Col lg="12">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -61,8 +59,6 @@ class Profile extends React.Component {
                               type="text"
                             />
                           </FormGroup>
-                        </Col>
-                        <Col lg="12">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -76,8 +72,6 @@ class Profile extends React.Component {
                               type="text"
                             />
                           </FormGroup>
-                        </Col>
-                        <Col lg="12">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -91,8 +85,6 @@ class Profile extends React.Component {
                               type="text"
                             />
                           </FormGroup>
-                        </Col>
-                        <Col lg="12">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -106,8 +98,6 @@ class Profile extends React.Component {
                               type="text"
                             />
                           </FormGroup>
-                        </Col>
-                        <Col lg="12">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -122,10 +112,40 @@ class Profile extends React.Component {
                             />
                           </FormGroup>
                         </Col>
+                        <Col lg="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-ano"
+                            >
+                              Proprietario
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-ano"
+                              type="integer"
+                              placeholder="Digite o CPF"
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-ano"
+                            >
+                              Motorista Auxiliar
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-ano"
+                              type="integer"
+                              placeholder="Digite o CPF"
+                            />
+                          </FormGroup>
+                        </Col>
                       </Row>
                     </div>
-                    <Button className="mt-4" color="primary" type="button">
-                      Registrar
+                    <Button className="mt-4 center" color="primary" type="button">
+                      Cadastrar
                     </Button>
                   </Form>
                 </CardBody>
