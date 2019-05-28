@@ -2,6 +2,7 @@ import Index from "screens/Index.jsx";
 import Profile from "screens/Login/Profile.jsx";
 import Register from "screens/Login/Register.jsx";
 import Login from "screens/Login/Auth.jsx";
+import Taxi from "screens/Taxi/AddTaxi.jsx";
 
 var routes = [
   {
@@ -31,6 +32,13 @@ var routes = [
     icon: "ni ni-circle-08 text-pink",
     component: Register,
     layout: "/login"
+  },
+  {
+    path: "/add-taxi",
+    name: "Taxi",
+    icon: "ni ni-key-25 text-info",
+    component: Taxi,
+    layout: "/taxi"
   }
 ];
 export default routes;
