@@ -2,6 +2,9 @@ import Index from "screens/Index.jsx";
 import Profile from "screens/Login/Profile.jsx";
 import Register from "screens/Login/Register.jsx";
 import Login from "screens/Login/Auth.jsx";
+import ListUser from "screens/User/ListUsers.jsx";
+import AddUser from "screens/User/AddUser.jsx";
+import EditUser from "screens/User/EditUser.jsx";
 
 var routes = [
   {
@@ -12,10 +15,10 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/user-profile",
-    name: "Perfil do usuario",
+    path: "/list-user",
+    name: "Usuários",
     icon: "ni ni-single-02 text-yellow",
-    component: Profile,
+    component: ListUser,
     layout: "/admin"
   },
   {
@@ -31,6 +34,16 @@ var routes = [
     icon: "ni ni-key-25 text-info",
     component: Login,
     layout: "/login"
+  },
+  {
+    path: "/add-user",
+    component: AddUser,
+    layout: "/admin"
+  },
+  {
+    path: "/edit-user",
+    component: EditUser,
+    layout: "/admin"
   }
 ];
 export default routes;
