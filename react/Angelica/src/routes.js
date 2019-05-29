@@ -2,6 +2,7 @@ import Index from "screens/Index.jsx";
 import Profile from "screens/Login/Profile.jsx";
 import Register from "screens/Login/Register.jsx";
 import Login from "screens/Login/Auth.jsx";
+import List from "screens/Taxi/List.jsx";
 
 var routes = [
   {
@@ -26,11 +27,11 @@ var routes = [
     layout: "/login"
   },
   {
-    path: "/register",
-    name: "Register",
+    path: "/taxi/list",
+    name: "Táxi",
     icon: "ni ni-circle-08 text-pink",
-    component: Register,
-    layout: "/login"
+    component: List,
+    layout: "/admin"
   }
 ];
 export default routes;
