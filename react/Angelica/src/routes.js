@@ -3,6 +3,7 @@ import Profile from "screens/Login/Profile.jsx";
 import Register from "screens/Login/Register.jsx";
 import Login from "screens/Login/Auth.jsx";
 import List from "screens/Taxi/List.jsx";
+import AddTaxi from "screens/Taxi/AddTaxi.jsx";
 
 var routes = [
   {
@@ -27,11 +28,21 @@ var routes = [
     layout: "/login"
   },
   {
-    path: "/taxi/list",
+    path: "/list",
     name: "Táxi",
     icon: "ni ni-circle-08 text-pink",
     component: List,
-    layout: "/admin"
-  }
+    layout: "/taxi"
+   
+  },
+  {
+    path: "/addTaxi",
+    name: "Adicionar",
+    icon: "ni ni-circle-08 text-pink",
+    component: AddTaxi,
+    layout: "/taxi"
+   
+  },
+ 
 ];
 export default routes;

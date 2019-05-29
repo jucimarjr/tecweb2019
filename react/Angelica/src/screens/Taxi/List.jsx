@@ -4,6 +4,7 @@ import React from "react";
 import {
   Badge,
   Card,
+  Button,
   CardHeader,
   CardFooter,
   DropdownMenu,
@@ -18,10 +19,19 @@ import {
   Table,
   Container,
   Row,
-  UncontrolledTooltip
+  UncontrolledTooltip,
+  InputGroupText,
+  InputGroupAddon,
+  InputGroup,
+  Input,
+
+
+
+
 } from "reactstrap";
 // core components
 import Header from "components/Taxi/Headers/Header.jsx";
+
 
 class List extends React.Component {
   render() {
@@ -36,6 +46,21 @@ class List extends React.Component {
               <Card className="shadow">
                 <CardHeader className="border-0">
                   <h3 className="mb-0">Buscar Táxi</h3>
+                  <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i className="fas fa-search" /> 
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input placeholder="Placa" type="text" />
+                  <Button className="btn-icon btn-2" color="primary" type="button">
+                  <span className="btn-inner--icon">
+                    <i className="ni ni-fat-add" />
+                  </span>
+                </Button>
+                </InputGroup>
+                
+
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
@@ -80,12 +105,7 @@ class List extends React.Component {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
-                            >
-                              Adicionar
-                            </DropdownItem>
+                            
                             <DropdownItem
                               href="#pablo"
                               onClick={e => e.preventDefault()}
