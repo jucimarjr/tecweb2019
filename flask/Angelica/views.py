@@ -451,46 +451,6 @@ def update_taxi():
         'Taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=data,
     )
 
-    '''
-    req_data = request.get_json()
-
-    schema = TaxiSchema()
-
-    data, errors = schema.load(req_data)
-
-    if(errors):
-        return jsonify(errors)
-    else:
-        taxi = Taxi().update(req_data)
-        result = schema.dump(taxi)
-        return jsonify(result.data)
-'''
-
-'''
-    placa = request.form["placa"] if "placa" in request.form else None
-
-    if(placa):
-
-        taxi = {
-            "placa": placa,
-            "renavam": request.form["renavam"] if "renavam" in request.form else None,
-            "chassi": request.form["chassi"] if "chassi" in request.form else None,
-            "marca": request.form["marca"] if "marca" in request.form else None,
-            "modelo": request.form["modelo"] if "modelo" in request.form else None,
-            "ano": request.form["ano"] if "ano" in request.form else None,
-            "status": request.form["status"] if "status" in request.form else None,
-        }
-        
-        taxi = Taxi().update(taxi)
-
-        return mensagem_feedback(True, "Taxi atualizado com sucesso!")
-
-    elif(cpf):
-        return mensagem_feedback(False, "placa já cadastrada na base de dados!")
-
-    return mensagem_feedback(False, "Não foi possível cadastrar o Taxi!")
-'''
-
 @app.route('/taxi/delete', methods=['POST'])
 @jwt_required()
 def delete_taxi():
