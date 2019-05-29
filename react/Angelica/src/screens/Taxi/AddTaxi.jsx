@@ -3,6 +3,7 @@ import React from "react";
 // reactstrap components
 import {
   Button,
+  Alert,
   Card,
   CardHeader,
   CardBody,
@@ -17,7 +18,57 @@ import {
 import Header from "components/Taxi/Headers/Header.jsx";
 
 
+
+
 class AddTaxi extends React.Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+        message : ''
+    };
+}
+
+  add = () => {
+    const data = { renavam: this.renavam, 
+                  chassi: this.chassi,
+                  marca: this.marca,
+                  placa: this.placa,
+                  modelo: this.modelo,
+                  ano: this.ano,
+                  status: this.status
+                };
+    const requestInfo = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        }),
+    };
+
+    fetch('/taxi/create', requestInfo)
+            .then(response => {
+                if(response.ok) {
+                    return response.json()
+                }
+                throw new Error("...");
+            })
+            .then(resposta => {
+                if (resposta) {
+                    
+                }else {
+                    this.setState({message: resposta.message})
+                }
+            })
+            .catch(e => {
+                this.setState({ message: e.message });
+            });
+
+
+  }
+  
+
+
   render() {
     return (
       <>
@@ -32,33 +83,40 @@ class AddTaxi extends React.Component {
                     <h6 className="heading-small text-muted mb-4">
                       Cadastrar Táxi
                     </h6>
+                    {
+                    this.state.message !== ''? (
+                        <Alert color="danger" className="text-center"> {this.state.message} </Alert>
+                    ) : ''
+                }
                     <div className="pl-lg-4">
                       <Row>
                         <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-username"
+                              htmlFor="input-renavam"
                             >
                               Renavam
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-renavem"
+                              id="renavam"
                               type="text"
+                              onChange={e => this.renavam = e.target.value}
                             />
                           </FormGroup>
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-chassi"
+                              htmlFor="chassi"
                             >
                               Chassi
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-chassi"
+                              id="chassi"
                               type="text"
+                              onChange={e => this.chassi = e.target.value}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -70,8 +128,9 @@ class AddTaxi extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-marca"
+                              id="marca"
                               type="text"
+                              onChange={e => this.marca = e.target.value}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -83,8 +142,9 @@ class AddTaxi extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-placa"
+                              id="placa"
                               type="text"
+                              onChange={e => this.placa = e.target.value}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -96,8 +156,9 @@ class AddTaxi extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-modelo"
+                              id="modelo"
                               type="text"
+                              onChange={e => this.modelo = e.target.value}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -109,24 +170,9 @@ class AddTaxi extends React.Component {
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-ano"
+                              id="ano"
                               type="integer"
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-ano"
-                            >
-                              Proprietario
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              id="input-ano"
-                              type="integer"
-                              placeholder="Digite o CPF"
+                              onChange={e => this.ano = e.target.value}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -134,20 +180,20 @@ class AddTaxi extends React.Component {
                               className="form-control-label"
                               htmlFor="input-ano"
                             >
-                              Motorista Auxiliar
+                              Status
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-ano"
+                              id="status"
                               type="integer"
-                              placeholder="Digite o CPF"
+                              onChange={e => this.status = e.target.value}
                             />
                           </FormGroup>
                         </Col>
                       </Row>
                     </div>
-                    <Button className="mt-4 center" color="primary" type="button">
-                      Cadastrar
+                    <Button className="mt-4 center" color="primary" type="button" onClick={this.add} >
+                      Enviar
                     </Button>
                   </Form>
                 </CardBody>
