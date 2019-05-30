@@ -6,6 +6,8 @@ ENV POSTGRES_USER="" POSTGRES_PASSWORD="" POSTGRES_HOST=postgres POSTGRES_PORT=5
 
 ADD . /app
 
+RUN pip install --upgrade pip
+
 RUN pip install -r requirements.txt
 
 CMD ["uwsgi", "app.ini"]

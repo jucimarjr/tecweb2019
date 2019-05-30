@@ -2,8 +2,17 @@ import Index from "screens/Index.jsx";
 import Profile from "screens/Login/Profile.jsx";
 import Register from "screens/Login/Register.jsx";
 import Login from "screens/Login/Auth.jsx";
-import List from "screens/Taxi/List.jsx";
-import AddTaxi from "screens/Taxi/AddTaxi.jsx";
+import ListUser from "screens/User/ListUsers.jsx";
+import AddUser from "screens/User/AddUser.jsx";
+import EditUser from "screens/User/EditUser.jsx";
+
+import ListMotorista from "screens/Motorista/ListMotorista.jsx";
+import AddMotorista from "screens/Motorista/AddMotorista.jsx";
+import EditMotorista from "screens/Motorista/EditMotorista.jsx";
+
+import Search from "screens/User/Search.jsx";
+
+
 
 var routes = [
   {
@@ -14,15 +23,22 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/user-profile",
-    name: "User Profile",
+    path: "/list-user",
+    name: "Usuários",
     icon: "ni ni-single-02 text-yellow",
-    component: Profile,
+    component: ListUser,
     layout: "/admin"
   },
   {
+    path: "/register",
+    name: "Registrar",
+    icon: "ni ni-circle-08 text-pink",
+    component: Register,
+    layout: "/login"
+  },
+  {
     path: "/auth",
-    name: "Login",
+    name: "Logout",
     icon: "ni ni-key-25 text-info",
     component: Login,
     layout: "/login"

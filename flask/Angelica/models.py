@@ -230,7 +230,7 @@ class Taxi(Base):
             "modelo": taxi.modelo,
             "ano": taxi.ano,
             "status": taxi.status
-        } if taxi else {}
+        } if taxi else None
         
     def update(self, taxi):
         
@@ -346,3 +346,6 @@ class Permissao(Base):
             } for permissao in self.query.all()
         ]
         return permissoes
+    
+    def info_taxi(self, placa):
+        pass
