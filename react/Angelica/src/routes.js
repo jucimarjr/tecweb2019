@@ -43,6 +43,13 @@ var routes = [
     layout: "/taxi"
    
   },
+  {
+    path: "/search",
+    name: "Search",
+    icon: "ni ni-circle-08 text-pink",
+    component: Search,
+    layout: "/user"
+  },
  
 ];
 export default routes;
