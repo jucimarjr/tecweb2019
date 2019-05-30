@@ -17,6 +17,7 @@ ReactDOM.render(
       <Route path="/admin" render={props => <AdminLayout {...props} />} /> 
       <Route path="/taxi" render={props => <TaxiLayout {...props} />} /> 
       <Route path="/login" render={props => <AuthLayout {...props} />} />
+      <Route path="/motorista" render={props => <MotoristaLayout {...props} />} />
       <Route path="/user" render={props => <UserLayout {...props} />} />
 
       {/*<Route path="/login" render={props => <AuthLayout {...props} />} /> */}

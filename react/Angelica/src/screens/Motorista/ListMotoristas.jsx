@@ -26,7 +26,7 @@ import {
 
 import Header from "components/Login/Headers/UserHeader.jsx";
 
-class Tables extends React.Component {
+class ListMotoristas extends React.Component {
   render() {
     return (
       <>
@@ -139,4 +139,4 @@ class Tables extends React.Component {
   }
 }
 
-export default Tables;
+export default ListMotoristas;

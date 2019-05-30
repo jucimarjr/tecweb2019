@@ -5,8 +5,9 @@ import Login from "screens/Login/Auth.jsx";
 import ListUser from "screens/User/ListUsers.jsx";
 import AddUser from "screens/User/AddUser.jsx";
 import EditUser from "screens/User/EditUser.jsx";
-
-import ListMotorista from "screens/Motorista/ListMotorista.jsx";
+import AddTaxi from "screens/Taxi/AddTaxi.jsx";
+import List from "screens/Taxi/List.jsx";
+import ListMotoristas from "screens/Motorista/ListMotoristas.jsx";
 import AddMotorista from "screens/Motorista/AddMotorista.jsx";
 import EditMotorista from "screens/Motorista/EditMotorista.jsx";
 
