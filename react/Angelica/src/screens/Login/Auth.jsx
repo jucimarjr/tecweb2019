@@ -1,9 +1,8 @@
 import React from "react";
 
-
-
 // reactstrap components
 import {
+  Alert,
   Button,
   Card,
   CardHeader,
@@ -21,35 +20,40 @@ import {
 
 class Auth extends React.Component {
 
+    constructor(props) {
+        super(props)
+        this.state = {
+            message : ''
+        };
+    }
+
     signIn = () => {
-        let formdata = new FormData();
-        formdata.append('cpf',this.cpf);
-        formdata.append('senha',this.senha);
-
-        console.log(formdata);
-
+        const data = { cpf: this.cpf, senha: this.senha };
         const requestInfo = {
             method: 'POST',
-            body: formdata,
+            body: JSON.stringify(data),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
         };
 
         fetch('/autenticar', requestInfo)
             .then(response => {
                 if(response.ok) {
-                    console.log(response);
                     return response.json()
                 }
                 throw new Error("Login inválido...");
             })
-            .then(token => {
-                localStorage.setItem('token', token);
-                this.props.history.push("/admin");
-                return;
+            .then(resposta => {
+                if (resposta.token) {
+
+                }else {
+                    this.setState({message: resposta.message})
+                }
             })
             .catch(e => {
                 this.setState({ message: e.message });
             });
-
     }
 
   render() {
@@ -73,6 +77,12 @@ class Auth extends React.Component {
               <div className="text-center text-muted mb-4">
                 <small>Insira suas credenciais</small>
               </div>
+                {
+                    this.state.message !== ''? (
+                        <Alert color="danger" className="text-center"> {this.state.message} </Alert>
+                    ) : ''
+                }
+
               <Form role="form">
                 <FormGroup className="mb-2">
                   <InputGroup className="input-group-alternative">

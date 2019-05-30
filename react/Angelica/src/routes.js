@@ -5,6 +5,15 @@ import Login from "screens/Login/Auth.jsx";
 import ListUser from "screens/User/ListUsers.jsx";
 import AddUser from "screens/User/AddUser.jsx";
 import EditUser from "screens/User/EditUser.jsx";
+import AddTaxi from "screens/Taxi/AddTaxi.jsx";
+import List from "screens/Taxi/List.jsx";
+import ListMotoristas from "screens/Motorista/ListMotoristas.jsx";
+import AddMotorista from "screens/Motorista/AddMotorista.jsx";
+import EditMotorista from "screens/Motorista/EditMotorista.jsx";
+
+import Search from "screens/User/Search.jsx";
+
+
 
 var routes = [
   {
@@ -36,14 +45,28 @@ var routes = [
     layout: "/login"
   },
   {
-    path: "/add-user",
-    component: AddUser,
-    layout: "/admin"
+    path: "/list",
+    name: "Táxi",
+    icon: "ni ni-circle-08 text-pink",
+    component: List,
+    layout: "/taxi"
+   
   },
   {
-    path: "/edit-user",
-    component: EditUser,
-    layout: "/admin"
-  }
+    path: "/addTaxi",
+    name: "Adicionar",
+    icon: "ni ni-circle-08 text-pink",
+    component: AddTaxi,
+    layout: "/taxi"
+   
+  },
+  {
+    path: "/search",
+    name: "Search",
+    icon: "ni ni-circle-08 text-pink",
+    component: Search,
+    layout: "/user"
+  },
+ 
 ];
 export default routes;
