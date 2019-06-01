@@ -13,6 +13,7 @@ from Angelica.schemas import (
     AuthSchema,
     GetUserSchema,
     UserSchema,
+    RegisterUserSchema,
     TaxiSchema,
     TaxiInfoSchema,
     TaxiPlacaSchema
@@ -172,10 +173,10 @@ def get_user():
     schema = UserSchema()
     result = schema.dump(model)
 
-    return resp_ok('user', MSG_RESOURCE_FIND.format('user'),  data=result.data,)
+    return resp_ok('user', MSG_RESOURCE_FIND.format('Usuário'),  data=result.data,)
 
 
-@app.route('/user', methods=['GET'])
+@app.route('/users', methods=['GET'])
 # @jwt_required()
 def get_users():
 
@@ -188,65 +189,53 @@ def get_users():
     schema = UserSchema(many=True)
     result = schema.dump(model)
 
-    return resp_ok('user', MSG_RESOURCE_FIND.format('user'),  data=result.data,)
+    return resp_ok('users', MSG_RESOURCE_FIND.format('Usuários'),  data=result.data,)
 
 
-@app.route('/usuario/create', methods=['POST'])
+@app.route('/user/register', methods=['POST'])
 # @jwt_required()
-def create_usuario():
+def register_user():
+    """
+    Método para cração de um usuário
+    Recebe um objeto do tipo JSON com chaves cpf, nome, senha e status
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522',
+      'nome': 'Richardson Souza'
+      'senha': 'acb1234',
+      'status': 1
+    }
+    """
 
     req_data = request.get_json()
-    cpf = req_data['cpf']
+    data, errors, result = None, None, None
 
-    if(cpf):
-        usuario = Usuario().read(cpf)
-        if(not usuario):
-            senha = req_data['senha']
-            if(senha):
-                senha_hash = bcrypt.generate_password_hash(
-                    senha).decode("utf-8")
-                nome = req_data['nome']
-                if(nome):
-                    usuario = {
-                        "cpf": cpf,
-                        "nome": nome,
-                        "senha": senha_hash,
-                        "status": 1,
-                    }
-                    usuario = Usuario(usuario)
-                    return mensagem_feedback(True, "Usuário cadastrado com sucesso!")
-                else:
-                    return mensagem_feedback(False, "Nome não pode estar em branco!")
-            else:
-                return mensagem_feedback(False, "Senha não pode estar em branco!")
-        elif(cpf):
-            return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
-    return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
+    if req_data is None:
+        return resp_data_invalid('user', [], msg=MSG_NO_DATA)
+    
+    schema = RegisterUserSchema()
+    data, errors = schema.load(req_data)
 
-    '''
-    cpf = request.form["cpf"] if "cpf" in request.form else None
+    if errors:
+        return resp_data_invalid('user', errors)
 
-    if(cpf and True): # Substituir True por função de verificar se já foi cadastrado.
+    try:
+        data['senha'] = bcrypt.generate_password_hash(req_data['senha']).decode("utf-8")
+        model = Usuario(data)
 
-        senha = request.form['senha'] if request.form['senha'] else '123456'
-        senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
+    except IntegrityError:
+        return resp_already_exists('user', data['cpf'])
 
-        usuario = {
-            "cpf": cpf,
-            "nome": request.form["nome"] if "nome" in request.form else "Não informado",
-            "senha": senha_hash,
-            "status": request.form["status"] if "status" in request.form else 1,
-        }
-        
-        usuario = Usuario(usuario)
+    except Exception as e:
+        return resp_exception('user', description=e)
 
-        return mensagem_feedback(True, "Usuário cadastrado com sucesso!")
+    schema = UserSchema()
+    result = schema.dump(model)
 
-    elif(cpf):
-        return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
-
-    return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
-    '''
+    return resp_ok(
+        'user', MSG_RESOURCE_CREATED.format('Usuário'),  data=result.data,
+    )
 
 
 @app.route('/usuario/update', methods=['POST'])

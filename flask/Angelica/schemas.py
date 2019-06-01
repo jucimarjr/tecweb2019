@@ -14,6 +14,12 @@ class UserSchema(Schema):
     nome = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     status = Int(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
 
+class RegisterUserSchema(Schema):
+    cpf = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    nome = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    status = Int(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    senha = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+
 class TaxiSchema(Schema):
     placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     renavam = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
