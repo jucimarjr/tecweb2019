@@ -2,12 +2,39 @@ from Angelica import app, bcrypt
 from flask_jwt import jwt_required
 from flask import request, jsonify
 
-from Angelica.models import Usuario, Motorista, Taxi, Permissao
-from Angelica.schemas import TaxiSchema, TaxiInfoSchema, TaxiPlacaSchema
+from Angelica.models import (
+    Usuario,
+    Motorista,
+    Taxi,
+    Permissao
+)
+from Angelica.schemas import (
+    AuthSchema,
+    TaxiSchema,
+    TaxiInfoSchema,
+    TaxiPlacaSchema
+)
 
-from Angelica.responses import resp_already_exists, resp_exception, resp_data_invalid, resp_not_exist, resp_ok
-from Angelica.messages import MSG_NO_DATA, MSG_INVALID_DATA, MSG_RESOURCE_FIND
-from Angelica.messages import MSG_RESOURCE_CREATED, MSG_DOES_NOT_EXIST
+from Angelica.responses import (
+    resp_already_exists,
+    resp_refused_credentials,
+    resp_exception,
+    resp_data_invalid,
+    resp_not_exist,
+    resp_ok
+)
+
+from Angelica.messages import (
+    MSG_NO_DATA,
+    MSG_INVALID_DATA,
+    MSG_RESOURCE_FIND,
+    MSG_USER_AUTH
+)
+from Angelica.messages import (
+    MSG_RESOURCE_CREATED,
+    MSG_DOES_NOT_EXIST
+)
+
 from Angelica.methods import mensagem_feedback
 from flask_jwt import jwt_required
 
@@ -16,6 +43,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy import update
 
 import os
+
 
 @app.route('/')
 def index():
@@ -27,39 +55,52 @@ def index():
 
     return 'Hello World!'
 
-'''
-    Método de Autenticação
-'''
-
-@app.route('/autenticar', methods=['POST'])
-def autenticar():
-
-    #cpf = request.form["cpf"] if "cpf" in request.form else None
-    #senha = request.form["senha"] if "senha" in request.form else None
-
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-    senha = req_data['senha']
-
-    if(cpf and senha):
-
-        usuario = Usuario().authenticate(cpf, senha)
-
-        if(usuario):
-
-            return jsonify(usuario)
-
-        return mensagem_feedback(False, "Credenciais inválidas, favor tentar novamente!")
-
-    return mensagem_feedback(False, "Credenciais não informadas, favor tentar novamente!")
 
 def identidade(payload):
 
     cpf = payload["usuario"]["cpf"] if "usuario" in payload else None
     return Usuario().read(cpf)
 
+
+@app.route('/auth', methods=['POST'])
+def auth():
+    """
+    Método de autenticação
+    Recebe um objeto do tipo JSON com chaves cpf e senha
+    Exemplo
+    --------
+    {
+      'cpf': '88844455522',
+      'senha': 'acb1234'
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors = None, None
+
+    if req_data is None:
+        return resp_data_invalid('auth', [], msg=MSG_NO_DATA)
+
+    schema = AuthSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('auth', errors)
+    else:
+        try:
+            usuario = Usuario().auth(cpf=data['cpf'], senha=data['senha'])
+
+        except Exception as e:
+            return resp_exception('auth', description=e)
+
+    if usuario:
+        return resp_ok('auth', MSG_USER_AUTH.format(data['cpf']),  data=usuario,)
+    else:
+        return resp_refused_credentials('auth', [])
+
+
 @app.route('/admin/create', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def create_admin():
 
     req_data = request.get_json()
@@ -70,9 +111,10 @@ def create_admin():
         if(not usuario):
             senha = req_data['senha']
             if(senha):
-                senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
+                senha_hash = bcrypt.generate_password_hash(
+                    senha).decode("utf-8")
                 nome = req_data['nome']
-                if(nome):            
+                if(nome):
                     usuario = {
                         "cpf": cpf,
                         "nome": nome,
@@ -89,12 +131,14 @@ def create_admin():
             return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
     return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
 
+
 '''
     CRUD - Usuário
 '''
 
+
 @app.route('/usuario/get', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def get_usuario():
 
     req_data = request.get_json()
@@ -108,21 +152,22 @@ def get_usuario():
 
         if(usuario):
             return jsonify(usuario)
-        
+
         return mensagem_feedback(False, "Usuário não encontrado na base de dados")
 
     return mensagem_feedback(False, "É necessário informar um CPF")
-    
+
 
 @app.route('/usuarios/get', methods=['GET'])
-#@jwt_required()
+# @jwt_required()
 def get_usuarios():
     usuarios = Usuario().list()
 
     return jsonify(usuarios)
 
+
 @app.route('/usuario/create', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def create_usuario():
 
     req_data = request.get_json()
@@ -133,9 +178,10 @@ def create_usuario():
         if(not usuario):
             senha = req_data['senha']
             if(senha):
-                senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
+                senha_hash = bcrypt.generate_password_hash(
+                    senha).decode("utf-8")
                 nome = req_data['nome']
-                if(nome):            
+                if(nome):
                     usuario = {
                         "cpf": cpf,
                         "nome": nome,
@@ -175,10 +221,11 @@ def create_usuario():
         return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
 
     return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
-    '''    
+    '''
+
 
 @app.route('/usuario/update', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def update_usuario():
 
     #cpf = request.form["cpf"] if "cpf" in request.form else None
@@ -204,7 +251,7 @@ def update_usuario():
                     }
 
                     usuario = Usuario().update(usuario)
-                
+
                     return mensagem_feedback(True, "Usuário atualizado com sucesso!")
                 else:
                     return mensagem_feedback(False, "Status faltando!")
@@ -213,9 +260,10 @@ def update_usuario():
         else:
             return mensagem_feedback(False, "Senha fatando!")
     return mensagem_feedback(False, "É necessário informar um CPF")
-    
+
+
 @app.route('/usuario/delete', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def delete_usuario():
 
     #cpf = request.form["cpf"] if "cpf" in request.form else None
@@ -225,17 +273,19 @@ def delete_usuario():
     if(cpf):
 
         usuario = Usuario().delete(cpf)
-        
+
         return mensagem_feedback(True, "Usuário desativado com sucesso!")
 
     return mensagem_feedback(False, "É necessário informar um CPF")
+
 
 '''
     CRUD - Motorista
 '''
 
+
 @app.route('/motorista/get', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def get_motorista():
 
     req_data = request.get_json()
@@ -247,20 +297,22 @@ def get_motorista():
 
         if(motorista != {}):
             return jsonify(motorista)
-        
+
         return mensagem_feedback(False, "Motorista não encontrado na base de dados")
 
     return mensagem_feedback(False, "É necessário informar um CPF")
 
+
 @app.route('/motoristas/get', methods=['GET'])
-#@jwt_required()
+# @jwt_required()
 def get_motoristas():
     motoristas = Motorista().list()
 
     return jsonify(motoristas)
 
+
 @app.route('/motorista/create', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def create_motorista():
     req_data = request.get_json()
     cpf = req_data['cpf']
@@ -286,13 +338,12 @@ def create_motorista():
                 return mensagem_feedback(False, "Preencha todos os campos.")
         else:
             return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
-    
+
     return mensagem_feedback(False, "Não foi possível cadastrar o Motorista.")
 
-        
 
 @app.route('/motorista/update', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def update_motorista():
     req_data = request.get_json()
     cpf = req_data['cpf']
@@ -317,8 +368,9 @@ def update_motorista():
 
     return mensagem_feedback(False, "É necessário informar um CPF")
 
+
 @app.route('/motorista/delete', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def delete_motorista():
     req_data = request.get_json()
     cpf = req_data['cpf']
@@ -329,12 +381,14 @@ def delete_motorista():
 
     return mensagem_feedback(False, "É necessário informar um CPF")
 
+
 '''
     CRUD - Taxi
 '''
 
+
 @app.route('/taxi/get', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def get_taxi():
 
     req_data = request.get_json()
@@ -343,7 +397,7 @@ def get_taxi():
     if req_data is None:
         return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
 
-    schema = TaxiPlacaSchema() 
+    schema = TaxiPlacaSchema()
     data, errors = schema.load(req_data)
 
     if errors:
@@ -363,8 +417,9 @@ def get_taxi():
 
     return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
 
+
 @app.route('/taxis/get', methods=['GET'])
-#@jwt_required()
+# @jwt_required()
 def get_taxis():
 
     try:
@@ -378,8 +433,9 @@ def get_taxis():
 
     return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
 
+
 @app.route('/taxi/create', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def create_taxi():
 
     req_data = request.get_json()
@@ -406,13 +462,14 @@ def create_taxi():
     schema = TaxiSchema()
     result = schema.dump(model)
 
-    # Retorno 200 
+    # Retorno 200
     return resp_ok(
         'Taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=result.data,
     )
 
+
 @app.route('/taxi/update', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def update_taxi():
 
     req_data = request.get_json()
@@ -420,7 +477,7 @@ def update_taxi():
 
     if req_data is None:
         return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
-    
+
     schema = TaxiInfoSchema()
     data, errors = schema.load(req_data)
 
@@ -433,10 +490,10 @@ def update_taxi():
         taxi = Taxi().query.get(data['placa'])
         #data, errors = schema.load(data, instance=Taxi().query.get(data['placa']), partial=True)
         #model = Taxi().update().where(placa==data['placa']).values(data)
-    
+
     except Taxi.DoesNotExist:
         return resp_not_exist('Taxi', data['placa'])
-    
+
     except Exception as e:
         return resp_exception('Taxi', description=e)
 
@@ -446,28 +503,31 @@ def update_taxi():
     update_query.execute()
     result = schema.dump(taxi)
 
-    # Retorno 200 
+    # Retorno 200
     return resp_ok(
         'Taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=data,
     )
 
+
 @app.route('/taxi/delete', methods=['POST'])
 @jwt_required()
 def delete_taxi():
-    
+
     placa = request.form["placa"] if "placa" in request.form else None
 
     if(placa):
 
         motorista = Taxi().delete(placa)
-        
+
         return mensagem_feedback(True, "Taxi desativado com sucesso!")
 
     return mensagem_feedback(False, "É necessário informar uma placa")
 
+
 '''
     CRUD - Permissão
 '''
+
 
 @app.route('/permissao/get', methods=['POST'])
 @jwt_required()
@@ -478,15 +538,15 @@ def get_permissao():
     taxi = request.form["taxi"] if "taxi" in request.form else None
 
     if(taxi and usuario and motorista):
-        permissao = Permissao().read(taxi,motorista,usuario)
+        permissao = Permissao().read(taxi, motorista, usuario)
 
         if(permissao != {}):
             return jsonify(permissao)
-        
+
         return mensagem_feedback(False, "Permissão não encontrada na base de dados")
 
     return mensagem_feedback(False, "Faltam informações necessárias")
-    
+
 
 @app.route('/permissoes/get', methods=['GET'])
 @jwt_required()
@@ -495,15 +555,17 @@ def get_permissoes():
 
     return jsonify(permissoes)
 
+
 @app.route('/permissao/create', methods=['POST'])
 @jwt_required()
 def create_permissao():
-    
+
     motorista = request.form["motorista"] if "motorista" in request.form else None
     usuario = request.form["usuario"] if "usuario" in request.form else None
     taxi = request.form["taxi"] if "taxi" in request.form else None
 
-    if(taxi and usuario and motorista and True): # Substituir True por função de verificar se já foi cadastrado.
+    # Substituir True por função de verificar se já foi cadastrado.
+    if(taxi and usuario and motorista and True):
 
         permissao = {
             "taxi": taxi,
@@ -514,7 +576,7 @@ def create_permissao():
             "tipo": request.form["nome"] if "nome" in request.form else "Não informado",
             "status": request.form["status"] if "status" in request.form else 1,
         }
-        
+
         permissao = Permissao(permissao)
 
         return mensagem_feedback(True, "Permissão cadastrada com sucesso!")
@@ -523,7 +585,7 @@ def create_permissao():
         return mensagem_feedback(False, "Dados já cadastrados na base de dados!")
 
     return mensagem_feedback(False, "Não foi possível cadastrar a Permissão!")
-    
+
 
 @app.route('/permissao/update', methods=['POST'])
 @jwt_required()
@@ -546,11 +608,12 @@ def update_permissao():
         }
 
         permissao = Permissao().update(permissao)
-        
+
         return mensagem_feedback(True, "Permissão atualizada com sucesso!")
 
     return mensagem_feedback(False, "Dados insuficientes para atualização")
-    
+
+
 @app.route('/permissao/delete', methods=['POST'])
 @jwt_required()
 def delete_permissao():
@@ -561,11 +624,12 @@ def delete_permissao():
 
     if(taxi and usuario and motorista):
 
-        permissao = Permissao().delete(taxi,motorista,usuario)
-        
+        permissao = Permissao().delete(taxi, motorista, usuario)
+
         return mensagem_feedback(True, "Permissão desativado com sucesso!")
 
     return mensagem_feedback(False, "Dados insuficientes para exclusão")
+
 
 @app.route('/info/taxi', methods=['POST'])
 def info_taxi():

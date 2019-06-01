@@ -33,7 +33,7 @@ class Usuario(Base):
     def __repr__(self):
         return "<Usuario %r>" % self.nome
 
-    def authenticate(self, cpf, senha):
+    def auth(self, cpf, senha):
         self = self.query.get(cpf)
         
         if(self):

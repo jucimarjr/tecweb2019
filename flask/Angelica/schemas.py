@@ -2,6 +2,10 @@ from marshmallow import Schema
 from marshmallow.fields import Str, Int
 from Angelica.messages import MSG_FIELD_REQUIRED
 
+class AuthSchema(Schema):
+    cpf = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    senha = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+
 class TaxiSchema(Schema):
     placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     renavam = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
