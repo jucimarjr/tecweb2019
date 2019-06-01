@@ -137,7 +137,7 @@ def create_admin():
 
 @app.route('/user', methods=['POST'])
 # @jwt_required()
-def get_usuario():
+def get_user():
     """
     Método retirna um usuário existente
     Recebe um objeto do tipo JSON com chaves cpf
@@ -174,28 +174,21 @@ def get_usuario():
 
     return resp_ok('user', MSG_RESOURCE_FIND.format('user'),  data=result.data,)
 
-    '''
-    cpf = req_data['cpf']
 
-    if(cpf):
-
-        usuario = Usuario().read(cpf)
-
-        if(usuario):
-            return jsonify(usuario)
-
-        return mensagem_feedback(False, "Usuário não encontrado na base de dados")
-
-    return mensagem_feedback(False, "É necessário informar um CPF")
-    '''
-
-
-@app.route('/usuarios/get', methods=['GET'])
+@app.route('/user', methods=['GET'])
 # @jwt_required()
-def get_usuarios():
-    usuarios = Usuario().list()
+def get_users():
 
-    return jsonify(usuarios)
+    try:
+        model = Usuario().query.all()
+
+    except Exception as e:
+        return resp_exception('user', description=e)
+
+    schema = UserSchema(many=True)
+    result = schema.dump(model)
+
+    return resp_ok('user', MSG_RESOURCE_FIND.format('user'),  data=result.data,)
 
 
 @app.route('/usuario/create', methods=['POST'])
