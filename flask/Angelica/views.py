@@ -8,8 +8,11 @@ from Angelica.models import (
     Taxi,
     Permissao
 )
+
 from Angelica.schemas import (
     AuthSchema,
+    GetUserSchema,
+    UserSchema,
     TaxiSchema,
     TaxiInfoSchema,
     TaxiPlacaSchema
@@ -67,7 +70,7 @@ def auth():
     """
     Método de autenticação
     Recebe um objeto do tipo JSON com chaves cpf e senha
-    Exemplo
+    Exemplo:
     --------
     {
       'cpf': '88844455522',
@@ -132,19 +135,47 @@ def create_admin():
     return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
 
 
-'''
-    CRUD - Usuário
-'''
-
-
-@app.route('/usuario/get', methods=['POST'])
+@app.route('/user', methods=['POST'])
 # @jwt_required()
 def get_usuario():
+    """
+    Método retirna um usuário existente
+    Recebe um objeto do tipo JSON com chaves cpf
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522'
+    }
+    """
 
     req_data = request.get_json()
-    cpf = req_data['cpf']
+    data, errors, result = None, None, None
 
-    #cpf = request.form["cpf"] if "cpf" in request.form else None
+    if req_data is None:
+        return resp_data_invalid('usuario', [], msg=MSG_NO_DATA)
+
+    schema = GetUserSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('usuario', errors)
+
+    try:
+        model = Usuario().query.get(data)
+
+    except Exception as e:
+        return resp_exception('user', description=e)
+
+    if not model:
+        return resp_not_exist('user', data['cpf'])
+
+    schema = UserSchema()
+    result = schema.dump(model)
+
+    return resp_ok('user', MSG_RESOURCE_FIND.format('user'),  data=result.data,)
+
+    '''
+    cpf = req_data['cpf']
 
     if(cpf):
 
@@ -156,6 +187,7 @@ def get_usuario():
         return mensagem_feedback(False, "Usuário não encontrado na base de dados")
 
     return mensagem_feedback(False, "É necessário informar um CPF")
+    '''
 
 
 @app.route('/usuarios/get', methods=['GET'])

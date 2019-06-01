@@ -6,6 +6,14 @@ class AuthSchema(Schema):
     cpf = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     senha = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
 
+class GetUserSchema(Schema):
+    cpf = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+
+class UserSchema(Schema):
+    cpf = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    nome = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    status = Int(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+
 class TaxiSchema(Schema):
     placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     renavam = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
