@@ -56,12 +56,12 @@ class TaxiSchema(Schema):
 class TaxiBoardSchema(Schema):
     placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
 
-class PermitFindSchema(Schema):
+class PermFindSchema(Schema):
     taxi = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     motorista = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     usuario = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
 
-class PermitSchema(Schema):
+class PermSchema(Schema):
     placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     mototista = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     ususario = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})

@@ -21,8 +21,8 @@ from Angelica.schemas import (
     UpdateDriverSchema,
     TaxiSchema,
     TaxiBoardSchema,
-    PermitFindSchema,
-    PermitSchema
+    PermFindSchema,
+    PermSchema
 )
 
 from Angelica.responses import (
@@ -635,21 +635,6 @@ def get_taxis():
     return resp_ok('taxi', MSG_RESOURCE_FIND.format('Taxis'),  data=result.data,)
 
 
-    '''
-
-    try:
-        model = Taxi().query.all()
-
-    except Exception as e:
-        return resp_exception('Taxi', description=e)
-
-    schema = TaxiInfoSchema(many=True)
-    result = schema.dump(model)
-
-    return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
-    '''
-
-
 @app.route('/taxi/register', methods=['POST'])
 # @jwt_required()
 def register_taxi():
@@ -812,7 +797,7 @@ def delete_taxi():
     return resp_ok('taxi', MSG_RESOURCE_DELETE.format('Taxi'),  data=result.data,)
 
 
-@app.route('/permit', methods=['POST'])
+@app.route('/perm', methods=['POST'])
 #@jwt_required()
 def get_permit():
     """
@@ -834,7 +819,7 @@ def get_permit():
     if req_data is None:
         return resp_data_invalid('permit', [], msg=MSG_NO_DATA)
 
-    schema = PermitFindSchema()
+    schema = PermFindSchema()
     data, errors = schema.load(req_data)
 
     if errors:
@@ -852,18 +837,26 @@ def get_permit():
     if not model:
         return resp_not_exist('permit', data)
 
-    schema = PermitSchema()
+    schema = PermSchema()
     result = schema.dump(model)
 
     return resp_ok('permit', MSG_RESOURCE_FIND.format('Permit'),  data=result.data,)
 
 
-@app.route('/permissoes/get', methods=['GET'])
+@app.route('/permissions', methods=['GET'])
 #@jwt_required()
 def get_permissoes():
-    permissoes = Permissao().list()
 
-    return jsonify(permissoes)
+    try:
+        model = Permissao().query.all()
+
+    except Exception as e:
+        return resp_exception('permissions', description=e)
+
+    schema = PermSchema(many=True)
+    result = schema.dump(model)
+
+    return resp_ok('permissions', MSG_RESOURCE_FIND.format('Permissões'),  data=result.data,)
 
 
 @app.route('/permissao/create', methods=['POST'])
