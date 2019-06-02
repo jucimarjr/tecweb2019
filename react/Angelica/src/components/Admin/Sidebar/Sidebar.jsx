@@ -93,13 +93,13 @@ class Sidebar extends React.Component {
             Motoristas
           </NavLink>
           <NavLink
-            to="/taxi/list-motorista"
+            to="/taxi/list-taxi"
             tag={NavLinkRRD}
             onClick={this.closeCollapse}
             activeClassName="active"
           >
             <i className="ni ni-single-02 text-yellow" />
-            Motoristas
+            Táxi
           </NavLink>
         </NavItem>
       );
