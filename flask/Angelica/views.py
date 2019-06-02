@@ -942,7 +942,13 @@ def update_perm():
         return resp_data_invalid('perm', errors)
 
     try:
-        model = Permissao().query.get(data['taxi'], data['motorista'], data['usuario'])
+        key = {
+            "taxi": data['taxi'],
+            "motorista": data['motorista'],
+            "usuario": data['usuario']
+            }
+
+        model = Permissao().query.get(key)
 
     except IntegrityError:
         return resp_already_exists('perm', data)
@@ -976,31 +982,6 @@ def update_perm():
     result = schema.dump(model)
 
     return resp_ok('perm', MSG_RESOURCE_UPDATE.format('Permissão'),  data=result.data,)
-
-
-    '''
-    motorista = request.form["motorista"] if "motorista" in request.form else None
-    usuario = request.form["usuario"] if "usuario" in request.form else None
-    taxi = request.form["taxi"] if "taxi" in request.form else None
-
-    if(taxi and usuario and motorista):
-
-        permissao = {
-            "taxi": taxi,
-            "motorista": motorista,
-            "usuario": usuario,
-            "data_inicio": request.form["data_inicio"] if "data_inicio" in request.form else "Não informado",
-            "data_fim": request.form["data_fim"] if "data_fim" in request.form else "Não informado",
-            "tipo": request.form["tipo"] if "tipo" in request.form else "Não informado",
-            "status": request.form["status"] if "status" in request.form else 1,
-        }
-
-        permissao = Permissao().update(permissao)
-
-        return mensagem_feedback(True, "Permissão atualizada com sucesso!")
-
-    return mensagem_feedback(False, "Dados insuficientes para atualização")
-    '''
 
 
 @app.route('/permissao/delete', methods=['POST'])
