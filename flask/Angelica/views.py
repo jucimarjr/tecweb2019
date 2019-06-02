@@ -461,35 +461,6 @@ def register_driver():
 
     return resp_ok('driver', MSG_RESOURCE_CREATED.format('Motorista'),  data=result.data,)
 
-    '''
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-
-    if(cpf):
-        motorista = Motorista().read(cpf)
-        if(not motorista):
-            if(req_data['rg'] and req_data['nome'] and req_data['renach'] and req_data['telefone'] and req_data['cep'] and req_data['rua'] and req_data['bairro']):
-                motorista = {
-                    'cpf': cpf,
-                    'rg': req_data['rg'],
-                    'nome': req_data['nome'],
-                    'renach': req_data['renach'],
-                    'telefone': req_data['telefone'],
-                    'cep': req_data['cep'],
-                    'rua': req_data['rua'],
-                    'bairro': req_data['bairro'],
-                    'status': 1,
-                }
-                motorista = Motorista(motorista)
-                return mensagem_feedback(True, "Motorista cadastrado com sucesso!")
-            else:
-                return mensagem_feedback(False, "Preencha todos os campos.")
-        else:
-            return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
-
-    return mensagem_feedback(False, "Não foi possível cadastrar o Motorista.")
-    '''
-
 
 @app.route('/driver/update', methods=['POST'])
 # @jwt_required()
@@ -558,31 +529,6 @@ def update_driver():
     result = schema.dump(model)
 
     return resp_ok('driver', MSG_RESOURCE_UPDATE.format('Motorista'),  data=result.data,)
-
-    '''
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-
-    if(cpf):
-        if(req_data['rg'] and req_data['nome'] and req_data['renach'] and req_data['telefone'] and req_data['cep'] and req_data['rua'] and req_data['bairro'] and req_data['status']):
-            motorista = {
-                'cpf': cpf,
-                'rg': req_data['rg'],
-                'nome': req_data['nome'],
-                'renach': req_data['renach'],
-                'telefone': req_data['telefone'],
-                'cep': req_data['cep'],
-                'rua': req_data['rua'],
-                'bairro': req_data['bairro'],
-                'status': req_data['status']
-            }
-            motorista = Motorista().update(motorista)
-            return mensagem_feedback(True, "Motorista atualizado com sucesso!")
-        else:
-            return mensagem_feedback(False, "Preencha todos os campos.")
-
-    return mensagem_feedback(False, "É necessário informar um CPF")
-    '''
 
 
 @app.route('/driver/delete', methods=['POST'])
@@ -727,38 +673,54 @@ def get_taxis():
     '''
 
 
-@app.route('/taxi/create', methods=['POST'])
+@app.route('/taxi/register', methods=['POST'])
 # @jwt_required()
-def create_taxi():
+def register_taxi():
+    """
+    Método para registrar um taxi no sistema
+    Recebe um objeto do tipo JSON com chaves placa,
+    renavam, chassi, marca, modelo, ano e status.
+    Exemplo:
+    --------
+    {
+        "placa": "27555738996",
+        "renavam": "Amir Berry",
+        "chassi": "17808343",
+        "marca": "Wisconsin",
+        "modelo": "Kennewick",
+        "ano": "69025571",
+        "status": 1,
+    }
+    """
 
     req_data = request.get_json()
     data, errors, result = None, None, None
-    schema = TaxiSchema()
 
     if req_data is None:
-        return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
+        return resp_data_invalid('taxi', [], msg=MSG_NO_DATA)
 
+    schema = TaxiSchema()
     data, errors = schema.load(req_data)
 
     if errors:
-        return resp_data_invalid('Taxi', errors)
+        return resp_data_invalid('taxi', errors)
 
     try:
         model = Taxi(data)
 
     except IntegrityError:
-        return resp_already_exists('Taxi', data['placa'])
+        return resp_already_exists('taxi', data['placa'])
+    
+    except DataError:
+        return resp_data_error('taxi')
 
     except Exception as e:
-        return resp_exception('Taxi', description=e)
+        return resp_exception('taxi', description=e)
 
     schema = TaxiSchema()
     result = schema.dump(model)
 
-    # Retorno 200
-    return resp_ok(
-        'Taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=result.data,
-    )
+    return resp_ok('taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=result.data,)
 
 
 @app.route('/taxi/update', methods=['POST'])
