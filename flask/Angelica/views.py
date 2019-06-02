@@ -585,9 +585,50 @@ def update_driver():
     '''
 
 
-@app.route('/motorista/delete', methods=['POST'])
+@app.route('/driver/delete', methods=['POST'])
 # @jwt_required()
-def delete_motorista():
+def delete_driver():
+    """
+    Método para desativar um motorista no sistema
+    Recebe um objeto do tipo JSON com a chave cpf
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522'
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('driver', [], msg=MSG_NO_DATA)
+
+    schema = GetDriverSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('motorista', errors)
+
+    try:
+        model = Motorista().query.get(data)
+
+    except Exception as e:
+        return resp_exception('driver', description=e)
+
+    if model:
+        model.status = 0
+        db_session.commit()
+    else:
+        return resp_not_exist('driver', data['cpf'])
+
+    schema = DriverSchema()
+    result = schema.dump(model)
+
+    return resp_ok('driver', MSG_RESOURCE_DELETE.format('Motorista'),  data=result.data,)
+
+
+    '''
     req_data = request.get_json()
     cpf = req_data['cpf']
 
@@ -596,6 +637,7 @@ def delete_motorista():
         return mensagem_feedback(True, "Motorista desativado com sucesso!")
 
     return mensagem_feedback(False, "É necessário informar um CPF")
+    '''
 
 
 '''
