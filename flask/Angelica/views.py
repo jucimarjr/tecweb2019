@@ -16,6 +16,8 @@ from Angelica.schemas import (
     GetUserSchema,
     UserSchema,
     RegisterUserSchema,
+    GetDriverSchema,
+    DriverSchema,
     TaxiSchema,
     TaxiInfoSchema,
     TaxiPlacaSchema
@@ -48,7 +50,6 @@ from flask_jwt import jwt_required
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import update
 
 import os
 
@@ -144,7 +145,7 @@ def create_admin():
 # @jwt_required()
 def get_user():
     """
-    Método retirna um usuário existente
+    Método retorna um usuário existente
     Recebe um objeto do tipo JSON com chaves cpf
     Exemplo:
     --------
@@ -217,7 +218,7 @@ def register_user():
 
     if req_data is None:
         return resp_data_invalid('user', [], msg=MSG_NO_DATA)
-    
+
     schema = RegisterUserSchema()
     data, errors = schema.load(req_data)
 
@@ -225,7 +226,8 @@ def register_user():
         return resp_data_invalid('user', errors)
 
     try:
-        data['senha'] = bcrypt.generate_password_hash(req_data['senha']).decode("utf-8")
+        data['senha'] = bcrypt.generate_password_hash(
+            req_data['senha']).decode("utf-8")
         model = Usuario(data)
 
     except IntegrityError:
@@ -263,7 +265,7 @@ def update_user():
 
     if req_data is None:
         return resp_data_invalid('user', [], msg=MSG_NO_DATA)
-    
+
     schema = RegisterUserSchema()
     data, errors = schema.load(req_data)
 
@@ -278,10 +280,11 @@ def update_user():
 
     except Exception as e:
         return resp_exception('user', description=e)
-    
-    if model:        
+
+    if model:
         try:
-            data['senha'] = bcrypt.generate_password_hash(req_data['senha']).decode("utf-8")
+            data['senha'] = bcrypt.generate_password_hash(
+                req_data['senha']).decode("utf-8")
             model.nome = data['nome']
             model.senha = data['senha']
             model.status = data['status']
@@ -330,7 +333,7 @@ def delete_user():
 
     except Exception as e:
         return resp_exception('user', description=e)
-    
+
     if model:
         model.status = 0
         db_session.commit()
@@ -342,28 +345,45 @@ def delete_user():
 
     return resp_ok('user', MSG_RESOURCE_DELETE.format('Usuário'),  data=result.data,)
 
-'''
-    CRUD - Motorista
-'''
 
-
-@app.route('/motorista/get', methods=['POST'])
+@app.route('/driver', methods=['POST'])
 # @jwt_required()
-def get_motorista():
+def get_driver():
+    """
+    Método retorna um motorista registrado no sistema
+    Recebe um objeto do tipo JSON com chaves cpf
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522'
+    }
+    """
 
     req_data = request.get_json()
-    cpf = req_data['cpf']
+    data, errors, result = None, None, None
 
-    if(cpf):
+    if req_data is None:
+        return resp_data_invalid('motorista', [], msg=MSG_NO_DATA)
 
-        motorista = Motorista().read(cpf)
+    schema = GetDriverSchema()
+    data, errors = schema.load(req_data)
 
-        if(motorista != {}):
-            return jsonify(motorista)
+    if errors:
+        return resp_data_invalid('motorista', errors)
 
-        return mensagem_feedback(False, "Motorista não encontrado na base de dados")
+    try:
+        model = Motorista().query.get(data)
 
-    return mensagem_feedback(False, "É necessário informar um CPF")
+    except Exception as e:
+        return resp_exception('driver', description=e)
+
+    if not model:
+        return resp_not_exist('driver', data['cpf'])
+
+    schema = DriverSchema()
+    result = schema.dump(model)
+
+    return resp_ok('driver', MSG_RESOURCE_FIND.format('Motorista'),  data=result.data,)
 
 
 @app.route('/motoristas/get', methods=['GET'])
