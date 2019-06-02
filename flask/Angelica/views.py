@@ -2,6 +2,8 @@ from Angelica import app, bcrypt
 from flask_jwt import jwt_required
 from flask import request, jsonify
 
+from Angelica.database import db_session
+
 from Angelica.models import (
     Usuario,
     Motorista,
@@ -32,7 +34,9 @@ from Angelica.messages import (
     MSG_NO_DATA,
     MSG_INVALID_DATA,
     MSG_RESOURCE_FIND,
-    MSG_USER_AUTH
+    MSG_USER_AUTH,
+    MSG_RESOURCE_UPDATE,
+    MSG_RESOURCE_DELETE
 )
 from Angelica.messages import (
     MSG_RESOURCE_CREATED,
@@ -196,7 +200,7 @@ def get_users():
 # @jwt_required()
 def register_user():
     """
-    Método para cração de um usuário
+    Método para registrar um usuário
     Recebe um objeto do tipo JSON com chaves cpf, nome, senha e status
     Exemplo:
     --------
@@ -238,60 +242,105 @@ def register_user():
     )
 
 
-@app.route('/usuario/update', methods=['POST'])
+@app.route('/user/update', methods=['POST'])
 # @jwt_required()
-def update_usuario():
+def update_user():
+    """
+    Método para atualizar um usuário registrado
+    Recebe um objeto do tipo JSON com chaves cpf, nome, senha e status
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522',
+      'nome': 'Richardson Souza'
+      'senha': 'acb1234',
+      'status': 1
+    }
+    """
 
-    #cpf = request.form["cpf"] if "cpf" in request.form else None
     req_data = request.get_json()
-    cpf = req_data['cpf']
+    data, errors, result = None, None, None
 
-    if(cpf):
+    if req_data is None:
+        return resp_data_invalid('user', [], msg=MSG_NO_DATA)
+    
+    schema = RegisterUserSchema()
+    data, errors = schema.load(req_data)
 
-        #senha = request.form["senha"] if request.form["senha"] else None
-        senha = req_data['senha']
-        if(senha):
-            senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
-            nome = req_data['nome']
-            if(nome):
-                status = req_data['status']
-                if(status):
+    if errors:
+        return resp_data_invalid('user', errors)
 
-                    usuario = {
-                        "cpf": cpf,
-                        "nome": nome,
-                        "senha": senha_hash,
-                        "status": status,
-                    }
+    try:
+        model = Usuario().query.get(data['cpf'])
 
-                    usuario = Usuario().update(usuario)
+    except IntegrityError:
+        return resp_already_exists('user', data['cpf'])
 
-                    return mensagem_feedback(True, "Usuário atualizado com sucesso!")
-                else:
-                    return mensagem_feedback(False, "Status faltando!")
-            else:
-                return mensagem_feedback(False, "Nome fatando!")
-        else:
-            return mensagem_feedback(False, "Senha fatando!")
-    return mensagem_feedback(False, "É necessário informar um CPF")
+    except Exception as e:
+        return resp_exception('user', description=e)
+    
+    if model:        
+        try:
+            data['senha'] = bcrypt.generate_password_hash(req_data['senha']).decode("utf-8")
+            model.nome = data['nome']
+            model.senha = data['senha']
+            model.status = data['status']
+            db_session.commit()
+
+        except Exception as e:
+            return resp_exception('user', description=e)
+    else:
+        return resp_not_exist('user', data['cpf'])
+
+    schema = UserSchema()
+    result = schema.dump(model)
+
+    return resp_ok(
+        'user', MSG_RESOURCE_UPDATE.format('Usuário'),  data=result.data,
+    )
 
 
-@app.route('/usuario/delete', methods=['POST'])
+@app.route('/user/delete', methods=['POST'])
 # @jwt_required()
-def delete_usuario():
+def delete_user():
+    """
+    Método para desativar o usuário no sistema
+    Recebe um objeto do tipo JSON com a chave cpf
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522'
+    }
+    """
 
-    #cpf = request.form["cpf"] if "cpf" in request.form else None
     req_data = request.get_json()
-    cpf = req_data['cpf']
+    data, errors, result = None, None, None
 
-    if(cpf):
+    if req_data is None:
+        return resp_data_invalid('usuario', [], msg=MSG_NO_DATA)
 
-        usuario = Usuario().delete(cpf)
+    schema = GetUserSchema()
+    data, errors = schema.load(req_data)
 
-        return mensagem_feedback(True, "Usuário desativado com sucesso!")
+    if errors:
+        return resp_data_invalid('usuario', errors)
 
-    return mensagem_feedback(False, "É necessário informar um CPF")
+    try:
+        model = Usuario().query.get(data)
 
+    except Exception as e:
+        return resp_exception('user', description=e)
+    
+    if model:
+        model.status = 0
+        db_session.commit()
+    else:
+        return resp_not_exist('user', data['cpf'])
+
+    schema = UserSchema()
+    result = schema.dump(model)
+
+    return resp_ok('user', MSG_RESOURCE_DELETE.format('Usuário'),  data=result.data,)
 
 '''
     CRUD - Motorista
