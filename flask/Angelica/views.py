@@ -859,35 +859,54 @@ def get_permissions():
     return resp_ok('permissions', MSG_RESOURCE_FIND.format('Permissões'),  data=result.data,)
 
 
-@app.route('/permissao/create', methods=['POST'])
+@app.route('/perm/register', methods=['POST'])
 #@jwt_required()
-def create_permissao():
+def register_perm():
+    """
+    Método para registrar uma permissão no sistema
+    Recebe um objeto do tipo JSON com chaves placa,
+    motorista, usuario, data_inicio, data_fim, tipo, status
+    Exemplo:
+    --------
+    {
+        "taxi": "IKH2241",
+        "motorista": "67786605673",
+        "usuario": "30759131091",
+        "data_inicio": "2018-11-14T00:00:00",
+        "data_fim": "2019-03-06T00:00:00",
+        "tipo": "motorista",
+        "status": 1
+    }
+    """
 
-    motorista = request.form["motorista"] if "motorista" in request.form else None
-    usuario = request.form["usuario"] if "usuario" in request.form else None
-    taxi = request.form["taxi"] if "taxi" in request.form else None
+    req_data = request.get_json()
+    data, errors, result = None, None, None
 
-    # Substituir True por função de verificar se já foi cadastrado.
-    if(taxi and usuario and motorista and True):
+    if req_data is None:
+        return resp_data_invalid('perm', [], msg=MSG_NO_DATA)
 
-        permissao = {
-            "taxi": taxi,
-            "motorista": motorista,
-            "usuario": usuario,
-            "inicio": request.form["nome"] if "nome" in request.form else "Não informado",
-            "fim": request.form["nome"] if "nome" in request.form else "Não informado",
-            "tipo": request.form["nome"] if "nome" in request.form else "Não informado",
-            "status": request.form["status"] if "status" in request.form else 1,
-        }
+    schema = PermSchema()
+    data, errors = schema.load(req_data)
 
-        permissao = Permissao(permissao)
+    if errors:
+        return resp_data_invalid('perm', errors)
 
-        return mensagem_feedback(True, "Permissão cadastrada com sucesso!")
+    try:
+        model = Permissao(data)
 
-    elif(taxi and usuario and motorista and True):
-        return mensagem_feedback(False, "Dados já cadastrados na base de dados!")
+    except IntegrityError:
+        return resp_already_exists('perm', data)
+    
+    except DataError:
+        return resp_data_error('perm')
 
-    return mensagem_feedback(False, "Não foi possível cadastrar a Permissão!")
+    except Exception as e:
+        return resp_exception('perm', description=e)
+
+    schema = PermSchema()
+    result = schema.dump(model)
+
+    return resp_ok('per', MSG_RESOURCE_CREATED.format('Permissão'),  data=result.data,)
 
 
 @app.route('/permissao/update', methods=['POST'])

@@ -62,9 +62,9 @@ class PermFindSchema(Schema):
     usuario = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
 
 class PermSchema(Schema):
-    placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
-    mototista = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
-    ususario = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    taxi = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    motorista = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    usuario = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     data_inicio = Date(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     data_fim = Date(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     tipo = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})

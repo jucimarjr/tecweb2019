@@ -303,7 +303,7 @@ class Permissao(Base):
             self.usuario = permissao['usuario']
             self.data_inicio = permissao['data_inicio']
             self.data_fim = permissao['data_fim']
-            self.tipo = int(permissao['tipo'])
+            self.tipo = permissao['tipo']
             self.status = int(permissao['status'])
 
             db_session.add(self)
