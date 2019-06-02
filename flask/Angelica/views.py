@@ -792,23 +792,46 @@ def update_taxi():
 
 
 @app.route('/taxi/delete', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def delete_taxi():
+    """
+    Método para desativar um taxi no sistema
+    Recebe um objeto do tipo JSON com a chave placa
+    Exemplo:
+    --------
+    {
+      "placa": "IKH2000"
+    }
+    """
 
-    placa = request.form["placa"] if "placa" in request.form else None
+    req_data = request.get_json()
+    data, errors, result = None, None, None
 
-    if(placa):
+    if req_data is None:
+        return resp_data_invalid('driver', [], msg=MSG_NO_DATA)
 
-        motorista = Taxi().delete(placa)
+    schema = TaxiBoardSchema()
+    data, errors = schema.load(req_data)
 
-        return mensagem_feedback(True, "Taxi desativado com sucesso!")
+    if errors:
+        return resp_data_invalid('taxi', errors)
 
-    return mensagem_feedback(False, "É necessário informar uma placa")
+    try:
+        model = Taxi().query.get(data)
 
+    except Exception as e:
+        return resp_exception('driver', description=e)
 
-'''
-    CRUD - Permissão
-'''
+    if model:
+        model.status = 0
+        db_session.commit()
+    else:
+        return resp_not_exist('taxi', data['placa'])
+
+    schema = TaxiSchema()
+    result = schema.dump(model)
+
+    return resp_ok('taxi', MSG_RESOURCE_DELETE.format('Taxi'),  data=result.data,)
 
 
 @app.route('/permissao/get', methods=['POST'])
