@@ -845,7 +845,7 @@ def get_permit():
 
 @app.route('/permissions', methods=['GET'])
 #@jwt_required()
-def get_permissoes():
+def get_permissions():
 
     try:
         model = Permissao().query.all()
