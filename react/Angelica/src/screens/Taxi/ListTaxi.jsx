@@ -19,6 +19,8 @@ import {
   Table,
   Container,
   Row,
+  Col,
+  FormGroup,
   UncontrolledTooltip,
   InputGroupText,
   InputGroupAddon,
@@ -42,25 +44,36 @@ class ListTaxi extends React.Component {
         <Container className="mt--7" fluid>
           {/* Table */}
           <Row>
+         
             <div className="col">
               <Card className="shadow">
                 <CardHeader className="border-0">
-                  <h3 className="mb-0">Buscar Táxi</h3>
-                  <InputGroup className="input-group-alternative">
-                  <InputGroupAddon addonType="prepend">
-                    <InputGroupText>
-                      <i className="fas fa-search" /> 
-                    </InputGroupText>
-                  </InputGroupAddon>
-                  <Input placeholder="Placa" type="text" />
-                  <Button className="btn-icon btn-2" color="primary" type="button">
-                  <span className="btn-inner--icon">
-                    <i className="ni ni-fat-add" />
-                  </span>
-                </Button>
-                </InputGroup>
-                
-
+                <Row>
+                  <Col md="4">
+                    <FormGroup>
+                      <h3 className="mb-0">Buscar Táxi</h3>
+                    </FormGroup>
+                  </Col>
+                  <Col md="4">
+                    <FormGroup>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="fas fa-search" /> 
+                          </InputGroupText>
+                        </InputGroupAddon>
+                      <Input placeholder="Placa" type="text" />
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                  <Col md="4">
+                    <Button className="btn-icon btn-2" color="primary" type="button" className="float-right">
+                          <span className="btn-inner--icon">
+                            <i className="ni ni-fat-add" />
+                          </span>
+                    </Button>
+                  </Col>
+                </Row>
                 </CardHeader>
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
