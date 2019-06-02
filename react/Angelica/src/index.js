@@ -10,6 +10,7 @@ import AdminLayout from "layouts/Admin.jsx";
 import AuthLayout from "layouts/Login.jsx";
 import TaxiLayout from "layouts/Taxi.jsx";
 import UserLayout from "layouts/User.jsx";
+import MotoristaLayout from "layouts/Motorista.jsx";
 
 ReactDOM.render(
   <BrowserRouter>

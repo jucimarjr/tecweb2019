@@ -63,21 +63,47 @@ class Sidebar extends React.Component {
   };
   // creates the links that appear in the left menu / Sidebar
   createLinks = routes => {
-    return routes.map((prop, key) => {
       return (
-        <NavItem key={key}>
+        <NavItem key="1">
           <NavLink
-            to={prop.layout + prop.path}
+            to="/admin/index"
             tag={NavLinkRRD}
             onClick={this.closeCollapse}
             activeClassName="active"
           >
-            <i className={prop.icon} />
-            {prop.name}
+            <i className="ni ni-tv-2 text-primary" />
+            Dashboard
+          </NavLink>
+          <NavLink
+            to="/admin/list-user"
+            tag={NavLinkRRD}
+            onClick={this.closeCollapse}
+            activeClassName="active"
+          >
+            <i className="ni ni-single-02 text-yellow" />
+            Usuários
+          </NavLink>
+          <NavLink
+            to="/motorista/list-motorista"
+            tag={NavLinkRRD}
+            onClick={this.closeCollapse}
+            activeClassName="active"
+          >
+            <i className="ni ni-single-02 text-yellow" />
+            Motoristas
+          </NavLink>
+          <NavLink
+            to="/taxi/list-motorista"
+            tag={NavLinkRRD}
+            onClick={this.closeCollapse}
+            activeClassName="active"
+          >
+            <i className="ni ni-single-02 text-yellow" />
+            Motoristas
           </NavLink>
         </NavItem>
       );
-    });
+    
   };
   render() {
     const { bgColor, routes, logo } = this.props;

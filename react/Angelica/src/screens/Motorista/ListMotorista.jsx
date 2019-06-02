@@ -26,11 +26,13 @@ import {
 
 import Header from "components/Login/Headers/UserHeader.jsx";
 
-class ListMotoristas extends React.Component {
+
+class ListMotorista extends React.Component {
   render() {
     return (
       <>
         {/* <Header /> */}
+        <Header/>
         {/* Page content */}
         <Container className="mt-3" fluid>
           {/* Dark table */}
@@ -139,4 +141,4 @@ class ListMotoristas extends React.Component {
   }
 }
 
-export default ListMotoristas;
+export default ListMotorista;
