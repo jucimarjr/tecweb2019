@@ -21,7 +21,7 @@ from Angelica.schemas import (
     UpdateDriverSchema,
     TaxiSchema,
     TaxiInfoSchema,
-    TaxiPlacaSchema
+    TaxiBoardSchema
 )
 
 from Angelica.responses import (
@@ -628,27 +628,46 @@ def delete_driver():
     return resp_ok('driver', MSG_RESOURCE_DELETE.format('Motorista'),  data=result.data,)
 
 
-    '''
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-
-    if(cpf):
-        motorista = Motorista().delete(cpf)
-        return mensagem_feedback(True, "Motorista desativado com sucesso!")
-
-    return mensagem_feedback(False, "É necessário informar um CPF")
-    '''
-
-
-'''
-    CRUD - Taxi
-'''
-
-
-@app.route('/taxi/get', methods=['POST'])
+@app.route('/taxi', methods=['POST'])
 # @jwt_required()
 def get_taxi():
+    """
+    Método retorna um taxi registrado no sistema
+    Recebe um objeto do tipo JSON com chave placa
+    Exemplo:
+    --------
+    {
+      'placa': 'IKH2241'
+    }
+    """
 
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('taxi', [], msg=MSG_NO_DATA)
+
+    schema = TaxiBoardSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('taxi', errors)
+
+    try:
+        model = Taxi().query.get(data)
+
+    except Exception as e:
+        return resp_exception('taxi', description=e)
+
+    if not model:
+        return resp_not_exist('taxi', data['placa'])
+
+    schema = TaxiSchema()
+    result = schema.dump(model)
+
+    return resp_ok('taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
+
+    '''
     req_data = request.get_json()
     data, errors, result = None, None, None
 
@@ -674,6 +693,7 @@ def get_taxi():
     result = schema.dump(model)
 
     return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
+    '''
 
 
 @app.route('/taxis/get', methods=['GET'])

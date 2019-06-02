@@ -62,5 +62,5 @@ class TaxiInfoSchema(Schema):
     modelo = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     status = Int(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
 
-class TaxiPlacaSchema(Schema):
+class TaxiBoardSchema(Schema):
     placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
