@@ -363,6 +363,3 @@ class Permissao(Base):
             } for permissao in self.query.all()
         ]
         return permissoes
-
-    def info_taxi(self, placa):
-        pass

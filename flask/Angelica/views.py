@@ -22,7 +22,8 @@ from Angelica.schemas import (
     TaxiSchema,
     TaxiBoardSchema,
     PermFindSchema,
-    PermSchema
+    PermSchema,
+    PermInfoSchema
 )
 
 from Angelica.responses import (
@@ -54,10 +55,10 @@ from sqlalchemy.exc import (
     IntegrityError,
     DataError,
     InvalidRequestError
-    
 )
 
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.orm import aliased
 
 import os
 
@@ -240,7 +241,7 @@ def register_user():
 
     except IntegrityError:
         return resp_already_exists('user', data['cpf'])
-    
+
     except DataError:
         return resp_data_error('user')
 
@@ -451,10 +452,10 @@ def register_driver():
 
     except IntegrityError:
         return resp_already_exists('driver', data['cpf'])
-    
+
     except DataError:
         return resp_data_error('driver')
-    
+
     except InvalidRequestError:
         return resp_invalid_request_error('driver')
 
@@ -518,10 +519,10 @@ def update_driver():
             model.bairro = data['bairro']
             model.status = data['status']
             db_session.commit()
-        
+
         except IntegrityError:
             return resp_already_exists('driver', data['cpf'])
-    
+
         except DataError:
             return resp_data_error('driver')
 
@@ -672,7 +673,7 @@ def register_taxi():
 
     except IntegrityError:
         return resp_already_exists('taxi', data['placa'])
-    
+
     except DataError:
         return resp_data_error('taxi')
 
@@ -736,10 +737,10 @@ def update_taxi():
             model.ano = data['ano']
             model.status = data['status']
             db_session.commit()
-        
+
         except IntegrityError:
             return resp_already_exists('taxi', data['placa'])
-    
+
         except DataError:
             return resp_data_error('taxi')
 
@@ -755,7 +756,7 @@ def update_taxi():
 
 
 @app.route('/taxi/delete', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def delete_taxi():
     """
     Método para desativar um taxi no sistema
@@ -798,7 +799,7 @@ def delete_taxi():
 
 
 @app.route('/perm', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def get_permit():
     """
     Método retorna um taxi registrado no sistema
@@ -827,7 +828,7 @@ def get_permit():
 
     try:
         model = Permissao().query.get(data)
-    
+
     except InvalidRequestError:
         return resp_invalid_request_error('permit')
 
@@ -844,7 +845,7 @@ def get_permit():
 
 
 @app.route('/permissions', methods=['GET'])
-#@jwt_required()
+# @jwt_required()
 def get_permissions():
 
     try:
@@ -860,7 +861,7 @@ def get_permissions():
 
 
 @app.route('/perm/register', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def register_perm():
     """
     Método para registrar uma permissão no sistema
@@ -896,7 +897,7 @@ def register_perm():
 
     except IntegrityError:
         return resp_already_exists('perm', data)
-    
+
     except DataError:
         return resp_data_error('perm')
 
@@ -910,7 +911,7 @@ def register_perm():
 
 
 @app.route('/perm/update', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def update_perm():
     """
     Método para atualizar uma permissão existente no sistema
@@ -946,7 +947,7 @@ def update_perm():
             "taxi": data['taxi'],
             "motorista": data['motorista'],
             "usuario": data['usuario']
-            }
+        }
 
         model = Permissao().query.get(key)
 
@@ -966,10 +967,10 @@ def update_perm():
             model.tipo = data['tipo']
             model.status = data['status']
             db_session.commit()
-        
+
         except IntegrityError:
             return resp_already_exists('perm', data)
-    
+
         except DataError:
             return resp_data_error('perm')
 
@@ -985,7 +986,7 @@ def update_perm():
 
 
 @app.route('/perm/delete', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def delete_perm():
     """
     Método para desativar uma permissão no sistema
@@ -1028,8 +1029,53 @@ def delete_perm():
     result = schema.dump(model)
 
     return resp_ok('perm', MSG_RESOURCE_DELETE.format('Permissão'),  data=result.data,)
-    
 
-@app.route('/info/taxi', methods=['POST'])
-def info_taxi():
-    pass
+
+@app.route('/perm/info', methods=['POST'])
+def perm_info():
+    """
+    Método retorna um taxi registrado no sistema
+    Recebe um objeto do tipo JSON com chave taxi,
+    motorista, usuario
+    Exemplo:
+    --------
+    {
+        'taxi': 'IKH2241',
+        'motorista': '09889009890',
+        'usuario': '12332112321'
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result, model = None, None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('permit', [], msg=MSG_NO_DATA)
+
+    schema = PermFindSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('permit', errors)
+
+    try:
+        model = db_session.query(Permissao, Taxi, Motorista).\
+            join(Taxi, Permissao.taxi == Taxi.placa).\
+            join(Motorista, Permissao.motorista == Motorista.cpf).\
+            filter(Permissao.taxi == data['taxi'])
+
+    except InvalidRequestError:
+        return resp_invalid_request_error('permit')
+
+    except Exception as e:
+        return resp_exception('permit', description=e)
+
+    if not model:
+        return resp_not_exist('permit', data)
+
+    model = db_session.execute(model).fetchall()
+
+    schema = PermInfoSchema(many=True)
+    result = schema.dump(model)
+
+    return resp_ok('permit', MSG_RESOURCE_FIND.format('Permit'),  data=result.data,)

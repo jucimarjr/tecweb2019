@@ -58,7 +58,7 @@ def resp_exception(resource: str, description: str = ''):
 
     resp = jsonify({
         'resource': resource,
-        'message': MSG_INVALIDI_REQUEST_ERROR.format(description),
+        'message': description,
         'status': 500
     })
 

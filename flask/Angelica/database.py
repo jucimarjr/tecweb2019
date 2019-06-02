@@ -5,7 +5,8 @@ from Angelica import app
 
 engine = create_engine(
     app.config['SQLALCHEMY_URL'], 
-    convert_unicode=True
+    convert_unicode=True,
+    echo=True
 )
 
 db_session = scoped_session(
