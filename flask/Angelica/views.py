@@ -29,6 +29,7 @@ from Angelica.responses import (
     resp_exception,
     resp_data_invalid,
     resp_not_exist,
+    resp_data_error,
     resp_ok
 )
 
@@ -48,7 +49,11 @@ from Angelica.messages import (
 from Angelica.methods import mensagem_feedback
 from flask_jwt import jwt_required
 
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import (
+    IntegrityError,
+    DataError
+)
+
 from sqlalchemy.orm.exc import NoResultFound
 
 import os
@@ -232,6 +237,9 @@ def register_user():
 
     except IntegrityError:
         return resp_already_exists('user', data['cpf'])
+    
+    except DataError:
+        return resp_data_error('user')
 
     except Exception as e:
         return resp_exception('user', description=e)
@@ -386,17 +394,73 @@ def get_driver():
     return resp_ok('driver', MSG_RESOURCE_FIND.format('Motorista'),  data=result.data,)
 
 
-@app.route('/motoristas/get', methods=['GET'])
+@app.route('/drivers', methods=['GET'])
 # @jwt_required()
-def get_motoristas():
-    motoristas = Motorista().list()
+def get_drivers():
+    try:
+        model = Motorista().query.all()
 
-    return jsonify(motoristas)
+    except Exception as e:
+        return resp_exception('user', description=e)
+
+    schema = DriverSchema(many=True)
+    result = schema.dump(model)
+
+    return resp_ok('drivers', MSG_RESOURCE_FIND.format('Motoristas'),  data=result.data,)
 
 
-@app.route('/motorista/create', methods=['POST'])
+@app.route('/driver/register', methods=['POST'])
 # @jwt_required()
-def create_motorista():
+def register_driver():
+    """
+    Método para registrar um motorista no sistema
+    Recebe um objeto do tipo JSON com chaves cpf, nome, 
+    rg, renach, bairro, rua, cep, telefone e status.
+    Exemplo:
+    --------
+    {
+        "cpf": "27555738996",
+        "nome": "Amir Berry",
+        "rg": "17808343",
+        "renach": "73403036740",
+        "bairro": "Wisconsin",
+        "rua": "Kennewick",
+        "cep": "69025571",
+        "telefone": "11993281"
+        "status": 1,
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('driver', [], msg=MSG_NO_DATA)
+
+    schema = DriverSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('driver', errors)
+
+    try:
+        model = Motorista(data)
+
+    except IntegrityError:
+        return resp_already_exists('driver', data['cpf'])
+    
+    except DataError:
+        return resp_data_error('driver')
+
+    except Exception as e:
+        return resp_exception('driver', description=e)
+
+    schema = DriverSchema()
+    result = schema.dump(model)
+
+    return resp_ok('driver', MSG_RESOURCE_CREATED.format('Motorista'),  data=result.data,)
+
+    '''
     req_data = request.get_json()
     cpf = req_data['cpf']
 
@@ -423,6 +487,7 @@ def create_motorista():
             return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
 
     return mensagem_feedback(False, "Não foi possível cadastrar o Motorista.")
+    '''
 
 
 @app.route('/motorista/update', methods=['POST'])
