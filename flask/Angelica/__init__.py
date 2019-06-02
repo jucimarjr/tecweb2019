@@ -23,9 +23,9 @@ app.config['DEBUG'] = config['DEBUG']
 app.config['SECRET_KEY'] = config['SECRET_KEY']
 app.config['SQLALCHEMY_URL'] = config['SQLALCHEMY_URL']
 
-from Angelica.views import autenticar, identidade
+from Angelica.views import auth, identidade
 
-jwt = JWT(app, autenticar, identidade)
+jwt = JWT(app, auth, identidade)
 
 from Angelica.database import db_session
 import Angelica.views

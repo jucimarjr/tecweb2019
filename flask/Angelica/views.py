@@ -2,20 +2,62 @@ from Angelica import app, bcrypt
 from flask_jwt import jwt_required
 from flask import request, jsonify
 
-from Angelica.models import Usuario, Motorista, Taxi, Permissao
-from Angelica.schemas import TaxiSchema, TaxiInfoSchema, TaxiPlacaSchema
+from Angelica.database import db_session
 
-from Angelica.responses import resp_already_exists, resp_exception, resp_data_invalid, resp_not_exist, resp_ok
-from Angelica.messages import MSG_NO_DATA, MSG_INVALID_DATA, MSG_RESOURCE_FIND
-from Angelica.messages import MSG_RESOURCE_CREATED, MSG_DOES_NOT_EXIST
+from Angelica.models import (
+    Usuario,
+    Motorista,
+    Taxi,
+    Permissao
+)
+
+from Angelica.schemas import (
+    AuthSchema,
+    GetUserSchema,
+    UserSchema,
+    RegisterUserSchema,
+    GetDriverSchema,
+    DriverSchema,
+    UpdateDriverSchema,
+    TaxiSchema,
+    TaxiBoardSchema
+)
+
+from Angelica.responses import (
+    resp_already_exists,
+    resp_refused_credentials,
+    resp_exception,
+    resp_data_invalid,
+    resp_not_exist,
+    resp_data_error,
+    resp_ok
+)
+
+from Angelica.messages import (
+    MSG_NO_DATA,
+    MSG_INVALID_DATA,
+    MSG_RESOURCE_FIND,
+    MSG_USER_AUTH,
+    MSG_RESOURCE_UPDATE,
+    MSG_RESOURCE_DELETE
+)
+from Angelica.messages import (
+    MSG_RESOURCE_CREATED,
+    MSG_DOES_NOT_EXIST
+)
+
 from Angelica.methods import mensagem_feedback
 from flask_jwt import jwt_required
 
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import (
+    IntegrityError,
+    DataError
+)
+
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy import update
 
 import os
+
 
 @app.route('/')
 def index():
@@ -27,39 +69,52 @@ def index():
 
     return 'Hello World!'
 
-'''
-    Método de Autenticação
-'''
-
-@app.route('/autenticar', methods=['POST'])
-def autenticar():
-
-    #cpf = request.form["cpf"] if "cpf" in request.form else None
-    #senha = request.form["senha"] if "senha" in request.form else None
-
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-    senha = req_data['senha']
-
-    if(cpf and senha):
-
-        usuario = Usuario().authenticate(cpf, senha)
-
-        if(usuario):
-
-            return jsonify(usuario)
-
-        return mensagem_feedback(False, "Credenciais inválidas, favor tentar novamente!")
-
-    return mensagem_feedback(False, "Credenciais não informadas, favor tentar novamente!")
 
 def identidade(payload):
 
     cpf = payload["usuario"]["cpf"] if "usuario" in payload else None
     return Usuario().read(cpf)
 
+
+@app.route('/auth', methods=['POST'])
+def auth():
+    """
+    Método de autenticação
+    Recebe um objeto do tipo JSON com chaves cpf e senha
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522',
+      'senha': 'acb1234'
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors = None, None
+
+    if req_data is None:
+        return resp_data_invalid('auth', [], msg=MSG_NO_DATA)
+
+    schema = AuthSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('auth', errors)
+    else:
+        try:
+            usuario = Usuario().auth(cpf=data['cpf'], senha=data['senha'])
+
+        except Exception as e:
+            return resp_exception('auth', description=e)
+
+    if usuario:
+        return resp_ok('auth', MSG_USER_AUTH.format(data['cpf']),  data=usuario,)
+    else:
+        return resp_refused_credentials('auth', [])
+
+
 @app.route('/admin/create', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def create_admin():
 
     req_data = request.get_json()
@@ -70,9 +125,10 @@ def create_admin():
         if(not usuario):
             senha = req_data['senha']
             if(senha):
-                senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
+                senha_hash = bcrypt.generate_password_hash(
+                    senha).decode("utf-8")
                 nome = req_data['nome']
-                if(nome):            
+                if(nome):
                     usuario = {
                         "cpf": cpf,
                         "nome": nome,
@@ -89,261 +145,481 @@ def create_admin():
             return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
     return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
 
-'''
-    CRUD - Usuário
-'''
 
-@app.route('/usuario/get', methods=['POST'])
-#@jwt_required()
-def get_usuario():
+@app.route('/user', methods=['POST'])
+# @jwt_required()
+def get_user():
+    """
+    Método retorna um usuário existente
+    Recebe um objeto do tipo JSON com chaves cpf
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522'
+    }
+    """
 
     req_data = request.get_json()
-    cpf = req_data['cpf']
+    data, errors, result = None, None, None
 
-    #cpf = request.form["cpf"] if "cpf" in request.form else None
+    if req_data is None:
+        return resp_data_invalid('usuario', [], msg=MSG_NO_DATA)
 
-    if(cpf):
+    schema = GetUserSchema()
+    data, errors = schema.load(req_data)
 
-        usuario = Usuario().read(cpf)
+    if errors:
+        return resp_data_invalid('usuario', errors)
 
-        if(usuario):
-            return jsonify(usuario)
-        
-        return mensagem_feedback(False, "Usuário não encontrado na base de dados")
+    try:
+        model = Usuario().query.get(data)
 
-    return mensagem_feedback(False, "É necessário informar um CPF")
+    except Exception as e:
+        return resp_exception('user', description=e)
+
+    if not model:
+        return resp_not_exist('user', data['cpf'])
+
+    schema = UserSchema()
+    result = schema.dump(model)
+
+    return resp_ok('user', MSG_RESOURCE_FIND.format('Usuário'),  data=result.data,)
+
+
+@app.route('/users', methods=['GET'])
+# @jwt_required()
+def get_users():
+
+    try:
+        model = Usuario().query.all()
+
+    except Exception as e:
+        return resp_exception('user', description=e)
+
+    schema = UserSchema(many=True)
+    result = schema.dump(model)
+
+    return resp_ok('users', MSG_RESOURCE_FIND.format('Usuários'),  data=result.data,)
+
+
+@app.route('/user/register', methods=['POST'])
+# @jwt_required()
+def register_user():
+    """
+    Método para registrar um usuário
+    Recebe um objeto do tipo JSON com chaves cpf, nome, senha e status
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522',
+      'nome': 'Richardson Souza'
+      'senha': 'acb1234',
+      'status': 1
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('user', [], msg=MSG_NO_DATA)
+
+    schema = RegisterUserSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('user', errors)
+
+    try:
+        data['senha'] = bcrypt.generate_password_hash(
+            req_data['senha']).decode("utf-8")
+        model = Usuario(data)
+
+    except IntegrityError:
+        return resp_already_exists('user', data['cpf'])
     
+    except DataError:
+        return resp_data_error('user')
 
-@app.route('/usuarios/get', methods=['GET'])
-#@jwt_required()
-def get_usuarios():
-    usuarios = Usuario().list()
+    except Exception as e:
+        return resp_exception('user', description=e)
 
-    return jsonify(usuarios)
+    schema = UserSchema()
+    result = schema.dump(model)
 
-@app.route('/usuario/create', methods=['POST'])
-#@jwt_required()
-def create_usuario():
+    return resp_ok(
+        'user', MSG_RESOURCE_CREATED.format('Usuário'),  data=result.data,
+    )
+
+
+@app.route('/user/update', methods=['POST'])
+# @jwt_required()
+def update_user():
+    """
+    Método para atualizar um usuário registrado
+    Recebe um objeto do tipo JSON com chaves cpf, nome, senha e status
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522',
+      'nome': 'Richardson Souza'
+      'senha': 'acb1234',
+      'status': 1
+    }
+    """
 
     req_data = request.get_json()
-    cpf = req_data['cpf']
+    data, errors, result = None, None, None
 
-    if(cpf):
-        usuario = Usuario().read(cpf)
-        if(not usuario):
-            senha = req_data['senha']
-            if(senha):
-                senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
-                nome = req_data['nome']
-                if(nome):            
-                    usuario = {
-                        "cpf": cpf,
-                        "nome": nome,
-                        "senha": senha_hash,
-                        "status": 1,
-                    }
-                    usuario = Usuario(usuario)
-                    return mensagem_feedback(True, "Usuário cadastrado com sucesso!")
-                else:
-                    return mensagem_feedback(False, "Nome não pode estar em branco!")
-            else:
-                return mensagem_feedback(False, "Senha não pode estar em branco!")
-        elif(cpf):
-            return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
-    return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
+    if req_data is None:
+        return resp_data_invalid('user', [], msg=MSG_NO_DATA)
+
+    schema = RegisterUserSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('user', errors)
+
+    try:
+        model = Usuario().query.get(data['cpf'])
+
+    except IntegrityError:
+        return resp_already_exists('user', data['cpf'])
+
+    except Exception as e:
+        return resp_exception('user', description=e)
+
+    if model:
+        try:
+            data['senha'] = bcrypt.generate_password_hash(
+                req_data['senha']).decode("utf-8")
+            model.nome = data['nome']
+            model.senha = data['senha']
+            model.status = data['status']
+            db_session.commit()
+
+        except Exception as e:
+            return resp_exception('user', description=e)
+    else:
+        return resp_not_exist('user', data['cpf'])
+
+    schema = UserSchema()
+    result = schema.dump(model)
+
+    return resp_ok(
+        'user', MSG_RESOURCE_UPDATE.format('Usuário'),  data=result.data,
+    )
+
+
+@app.route('/user/delete', methods=['POST'])
+# @jwt_required()
+def delete_user():
+    """
+    Método para desativar o usuário no sistema
+    Recebe um objeto do tipo JSON com a chave cpf
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522'
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('usuario', [], msg=MSG_NO_DATA)
+
+    schema = GetUserSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('usuario', errors)
+
+    try:
+        model = Usuario().query.get(data)
+
+    except Exception as e:
+        return resp_exception('user', description=e)
+
+    if model:
+        model.status = 0
+        db_session.commit()
+    else:
+        return resp_not_exist('user', data['cpf'])
+
+    schema = UserSchema()
+    result = schema.dump(model)
+
+    return resp_ok('user', MSG_RESOURCE_DELETE.format('Usuário'),  data=result.data,)
+
+
+@app.route('/driver', methods=['POST'])
+# @jwt_required()
+def get_driver():
+    """
+    Método retorna um motorista registrado no sistema
+    Recebe um objeto do tipo JSON com chaves cpf
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522'
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('motorista', [], msg=MSG_NO_DATA)
+
+    schema = GetDriverSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('motorista', errors)
+
+    try:
+        model = Motorista().query.get(data)
+
+    except Exception as e:
+        return resp_exception('driver', description=e)
+
+    if not model:
+        return resp_not_exist('driver', data['cpf'])
+
+    schema = DriverSchema()
+    result = schema.dump(model)
+
+    return resp_ok('driver', MSG_RESOURCE_FIND.format('Motorista'),  data=result.data,)
+
+
+@app.route('/drivers', methods=['GET'])
+# @jwt_required()
+def get_drivers():
+    try:
+        model = Motorista().query.all()
+
+    except Exception as e:
+        return resp_exception('drivers', description=e)
+
+    schema = DriverSchema(many=True)
+    result = schema.dump(model)
+
+    return resp_ok('drivers', MSG_RESOURCE_FIND.format('Motoristas'),  data=result.data,)
+
+
+@app.route('/driver/register', methods=['POST'])
+# @jwt_required()
+def register_driver():
+    """
+    Método para registrar um motorista no sistema
+    Recebe um objeto do tipo JSON com chaves cpf, nome, 
+    rg, renach, bairro, rua, cep, telefone e status.
+    Exemplo:
+    --------
+    {
+        "cpf": "27555738996",
+        "nome": "Amir Berry",
+        "rg": "17808343",
+        "renach": "73403036740",
+        "bairro": "Wisconsin",
+        "rua": "Kennewick",
+        "cep": "69025571",
+        "telefone": "11993281"
+        "status": 1,
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('driver', [], msg=MSG_NO_DATA)
+
+    schema = DriverSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('driver', errors)
+
+    try:
+        model = Motorista(data)
+
+    except IntegrityError:
+        return resp_already_exists('driver', data['cpf'])
+    
+    except DataError:
+        return resp_data_error('driver')
+
+    except Exception as e:
+        return resp_exception('driver', description=e)
+
+    schema = DriverSchema()
+    result = schema.dump(model)
+
+    return resp_ok('driver', MSG_RESOURCE_CREATED.format('Motorista'),  data=result.data,)
+
+
+@app.route('/driver/update', methods=['POST'])
+# @jwt_required()
+def update_driver():
+    """
+    Método para atualizar um motorista existente no sistema
+    Recebe um objeto do tipo JSON com chaves cpf, nome, 
+    bairro, rua, cep, telefone e status.
+    Apenas as chaves
+    Exemplo:
+    --------
+    {
+        "cpf": "27555738996",
+        "nome": "Amir Berry",
+        "bairro": "Wisconsin",
+        "rua": "Kennewick",
+        "cep": "69025571",
+        "telefone": "11993281"
+        "status": 1,
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('driver', [], msg=MSG_NO_DATA)
+
+    schema = UpdateDriverSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('driver', errors)
+
+    try:
+        model = Motorista().query.get(data['cpf'])
+
+    except IntegrityError:
+        return resp_already_exists('driver', data['cpf'])
+
+    except Exception as e:
+        return resp_exception('driver', description=e)
+
+    if model:
+        try:
+            model.nome = data['nome']
+            model.telefone = data['telefone']
+            model.cep = data['cep']
+            model.rua = data['rua']
+            model.bairro = data['bairro']
+            model.status = data['status']
+            db_session.commit()
+        
+        except IntegrityError:
+            return resp_already_exists('driver', data['cpf'])
+    
+        except DataError:
+            return resp_data_error('driver')
+
+        except Exception as e:
+            return resp_exception('driver', description=e)
+    else:
+        return resp_not_exist('driver', data['cpf'])
+
+    schema = DriverSchema()
+    result = schema.dump(model)
+
+    return resp_ok('driver', MSG_RESOURCE_UPDATE.format('Motorista'),  data=result.data,)
+
+
+@app.route('/driver/delete', methods=['POST'])
+# @jwt_required()
+def delete_driver():
+    """
+    Método para desativar um motorista no sistema
+    Recebe um objeto do tipo JSON com a chave cpf
+    Exemplo:
+    --------
+    {
+      'cpf': '88844455522'
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('driver', [], msg=MSG_NO_DATA)
+
+    schema = GetDriverSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('motorista', errors)
+
+    try:
+        model = Motorista().query.get(data)
+
+    except Exception as e:
+        return resp_exception('driver', description=e)
+
+    if model:
+        model.status = 0
+        db_session.commit()
+    else:
+        return resp_not_exist('driver', data['cpf'])
+
+    schema = DriverSchema()
+    result = schema.dump(model)
+
+    return resp_ok('driver', MSG_RESOURCE_DELETE.format('Motorista'),  data=result.data,)
+
+
+@app.route('/taxi', methods=['POST'])
+# @jwt_required()
+def get_taxi():
+    """
+    Método retorna um taxi registrado no sistema
+    Recebe um objeto do tipo JSON com chave placa
+    Exemplo:
+    --------
+    {
+      'placa': 'IKH2241'
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('taxi', [], msg=MSG_NO_DATA)
+
+    schema = TaxiBoardSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('taxi', errors)
+
+    try:
+        model = Taxi().query.get(data)
+
+    except Exception as e:
+        return resp_exception('taxi', description=e)
+
+    if not model:
+        return resp_not_exist('taxi', data['placa'])
+
+    schema = TaxiSchema()
+    result = schema.dump(model)
+
+    return resp_ok('taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
 
     '''
-    cpf = request.form["cpf"] if "cpf" in request.form else None
-
-    if(cpf and True): # Substituir True por função de verificar se já foi cadastrado.
-
-        senha = request.form['senha'] if request.form['senha'] else '123456'
-        senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
-
-        usuario = {
-            "cpf": cpf,
-            "nome": request.form["nome"] if "nome" in request.form else "Não informado",
-            "senha": senha_hash,
-            "status": request.form["status"] if "status" in request.form else 1,
-        }
-        
-        usuario = Usuario(usuario)
-
-        return mensagem_feedback(True, "Usuário cadastrado com sucesso!")
-
-    elif(cpf):
-        return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
-
-    return mensagem_feedback(False, "Não foi possível cadastrar o Usuário!")
-    '''    
-
-@app.route('/usuario/update', methods=['POST'])
-#@jwt_required()
-def update_usuario():
-
-    #cpf = request.form["cpf"] if "cpf" in request.form else None
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-
-    if(cpf):
-
-        #senha = request.form["senha"] if request.form["senha"] else None
-        senha = req_data['senha']
-        if(senha):
-            senha_hash = bcrypt.generate_password_hash(senha).decode("utf-8")
-            nome = req_data['nome']
-            if(nome):
-                status = req_data['status']
-                if(status):
-
-                    usuario = {
-                        "cpf": cpf,
-                        "nome": nome,
-                        "senha": senha_hash,
-                        "status": status,
-                    }
-
-                    usuario = Usuario().update(usuario)
-                
-                    return mensagem_feedback(True, "Usuário atualizado com sucesso!")
-                else:
-                    return mensagem_feedback(False, "Status faltando!")
-            else:
-                return mensagem_feedback(False, "Nome fatando!")
-        else:
-            return mensagem_feedback(False, "Senha fatando!")
-    return mensagem_feedback(False, "É necessário informar um CPF")
-    
-@app.route('/usuario/delete', methods=['POST'])
-#@jwt_required()
-def delete_usuario():
-
-    #cpf = request.form["cpf"] if "cpf" in request.form else None
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-
-    if(cpf):
-
-        usuario = Usuario().delete(cpf)
-        
-        return mensagem_feedback(True, "Usuário desativado com sucesso!")
-
-    return mensagem_feedback(False, "É necessário informar um CPF")
-
-'''
-    CRUD - Motorista
-'''
-
-@app.route('/motorista/get', methods=['POST'])
-#@jwt_required()
-def get_motorista():
-
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-
-    if(cpf):
-
-        motorista = Motorista().read(cpf)
-
-        if(motorista != {}):
-            return jsonify(motorista)
-        
-        return mensagem_feedback(False, "Motorista não encontrado na base de dados")
-
-    return mensagem_feedback(False, "É necessário informar um CPF")
-
-@app.route('/motoristas/get', methods=['GET'])
-#@jwt_required()
-def get_motoristas():
-    motoristas = Motorista().list()
-
-    return jsonify(motoristas)
-
-@app.route('/motorista/create', methods=['POST'])
-#@jwt_required()
-def create_motorista():
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-
-    if(cpf):
-        motorista = Motorista().read(cpf)
-        if(not motorista):
-            if(req_data['rg'] and req_data['nome'] and req_data['renach'] and req_data['telefone'] and req_data['cep'] and req_data['rua'] and req_data['bairro']):
-                motorista = {
-                    'cpf': cpf,
-                    'rg': req_data['rg'],
-                    'nome': req_data['nome'],
-                    'renach': req_data['renach'],
-                    'telefone': req_data['telefone'],
-                    'cep': req_data['cep'],
-                    'rua': req_data['rua'],
-                    'bairro': req_data['bairro'],
-                    'status': 1,
-                }
-                motorista = Motorista(motorista)
-                return mensagem_feedback(True, "Motorista cadastrado com sucesso!")
-            else:
-                return mensagem_feedback(False, "Preencha todos os campos.")
-        else:
-            return mensagem_feedback(False, "CPF já cadastrado na base de dados!")
-    
-    return mensagem_feedback(False, "Não foi possível cadastrar o Motorista.")
-
-        
-
-@app.route('/motorista/update', methods=['POST'])
-#@jwt_required()
-def update_motorista():
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-
-    if(cpf):
-        if(req_data['rg'] and req_data['nome'] and req_data['renach'] and req_data['telefone'] and req_data['cep'] and req_data['rua'] and req_data['bairro'] and req_data['status']):
-            motorista = {
-                'cpf': cpf,
-                'rg': req_data['rg'],
-                'nome': req_data['nome'],
-                'renach': req_data['renach'],
-                'telefone': req_data['telefone'],
-                'cep': req_data['cep'],
-                'rua': req_data['rua'],
-                'bairro': req_data['bairro'],
-                'status': req_data['status']
-            }
-            motorista = Motorista().update(motorista)
-            return mensagem_feedback(True, "Motorista atualizado com sucesso!")
-        else:
-            return mensagem_feedback(False, "Preencha todos os campos.")
-
-    return mensagem_feedback(False, "É necessário informar um CPF")
-
-@app.route('/motorista/delete', methods=['POST'])
-#@jwt_required()
-def delete_motorista():
-    req_data = request.get_json()
-    cpf = req_data['cpf']
-
-    if(cpf):
-        motorista = Motorista().delete(cpf)
-        return mensagem_feedback(True, "Motorista desativado com sucesso!")
-
-    return mensagem_feedback(False, "É necessário informar um CPF")
-
-'''
-    CRUD - Taxi
-'''
-
-@app.route('/taxi/get', methods=['POST'])
-#@jwt_required()
-def get_taxi():
-
     req_data = request.get_json()
     data, errors, result = None, None, None
 
     if req_data is None:
         return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
 
-    schema = TaxiPlacaSchema() 
+    schema = TaxiPlacaSchema()
     data, errors = schema.load(req_data)
 
     if errors:
@@ -362,10 +638,26 @@ def get_taxi():
     result = schema.dump(model)
 
     return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
+    '''
 
-@app.route('/taxis/get', methods=['GET'])
-#@jwt_required()
+
+@app.route('/taxis', methods=['GET'])
+# @jwt_required()
 def get_taxis():
+
+    try:
+        model = Taxi().query.all()
+
+    except Exception as e:
+        return resp_exception('taxi', description=e)
+
+    schema = TaxiSchema(many=True)
+    result = schema.dump(model)
+
+    return resp_ok('taxi', MSG_RESOURCE_FIND.format('Taxis'),  data=result.data,)
+
+
+    '''
 
     try:
         model = Taxi().query.all()
@@ -377,97 +669,170 @@ def get_taxis():
     result = schema.dump(model)
 
     return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
+    '''
 
-@app.route('/taxi/create', methods=['POST'])
-#@jwt_required()
-def create_taxi():
+
+@app.route('/taxi/register', methods=['POST'])
+# @jwt_required()
+def register_taxi():
+    """
+    Método para registrar um taxi no sistema
+    Recebe um objeto do tipo JSON com chaves placa,
+    renavam, chassi, marca, modelo, ano e status.
+    Exemplo:
+    --------
+    {
+        "placa": "IKH2000",
+        "renavam": "32819427000",
+        "chassi": "4LXSNPW2014JY4000",
+        "marca": "Volks",
+        "modelo": "Gol",
+        "ano": 2015,
+        "status": 1
+    }
+    """
 
     req_data = request.get_json()
     data, errors, result = None, None, None
-    schema = TaxiSchema()
 
     if req_data is None:
-        return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
+        return resp_data_invalid('taxi', [], msg=MSG_NO_DATA)
 
+    schema = TaxiSchema()
     data, errors = schema.load(req_data)
 
     if errors:
-        return resp_data_invalid('Taxi', errors)
+        return resp_data_invalid('taxi', errors)
 
     try:
         model = Taxi(data)
 
     except IntegrityError:
-        return resp_already_exists('Taxi', data['placa'])
+        return resp_already_exists('taxi', data['placa'])
+    
+    except DataError:
+        return resp_data_error('taxi')
 
     except Exception as e:
-        return resp_exception('Taxi', description=e)
+        return resp_exception('taxi', description=e)
 
     schema = TaxiSchema()
     result = schema.dump(model)
 
-    # Retorno 200 
-    return resp_ok(
-        'Taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=result.data,
-    )
+    return resp_ok('taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=result.data,)
+
 
 @app.route('/taxi/update', methods=['POST'])
-#@jwt_required()
+# @jwt_required()
 def update_taxi():
+    """
+    Método para atualizar um taxi existente no sistema
+    Recebe um objeto do tipo JSON com chaves placa,
+    renavam, chassi, marca, modelo, ano e status.
+    Exemplo:
+    --------
+    {
+        "placa": "IKH2000",
+        "renavam": "32819427000",
+        "chassi": "4LXSNPW2014JY4000",
+        "marca": "Volks",
+        "modelo": "Gol",
+        "ano": 2015,
+        "status": 1
+    }
+    """
 
     req_data = request.get_json()
     data, errors, result = None, None, None
 
     if req_data is None:
-        return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
-    
-    schema = TaxiInfoSchema()
+        return resp_data_invalid('taxi', [], msg=MSG_NO_DATA)
+
+    schema = TaxiSchema()
     data, errors = schema.load(req_data)
 
-    print(data)
-
     if errors:
-        return resp_data_invalid('Taxi', errors)
+        return resp_data_invalid('driver', errors)
 
     try:
-        taxi = Taxi().query.get(data['placa'])
-        #data, errors = schema.load(data, instance=Taxi().query.get(data['placa']), partial=True)
-        #model = Taxi().update().where(placa==data['placa']).values(data)
-    
-    except Taxi.DoesNotExist:
-        return resp_not_exist('Taxi', data['placa'])
-    
+        model = Taxi().query.get(data['placa'])
+
+    except IntegrityError:
+        return resp_already_exists('driver', data['placa'])
+
     except Exception as e:
-        return resp_exception('Taxi', description=e)
+        return resp_exception('taxi', description=e)
 
-    print(taxi)
+    if model:
+        try:
+            model.placa = data['placa']
+            model.renavam = data['renavam']
+            model.chassi = data['chassi']
+            model.marca = data['marca']
+            model.modelo = data['modelo']
+            model.ano = data['ano']
+            model.status = data['status']
+            db_session.commit()
+        
+        except IntegrityError:
+            return resp_already_exists('taxi', data['placa'])
+    
+        except DataError:
+            return resp_data_error('taxi')
 
-    update_query = taxi.update(data)
-    update_query.execute()
-    result = schema.dump(taxi)
+        except Exception as e:
+            return resp_exception('taxi', description=e)
+    else:
+        return resp_not_exist('taxi', data['placa'])
 
-    # Retorno 200 
-    return resp_ok(
-        'Taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=data,
-    )
+    schema = TaxiSchema()
+    result = schema.dump(model)
+
+    return resp_ok('taxi', MSG_RESOURCE_UPDATE.format('Taxi'),  data=result.data,)
+
 
 @app.route('/taxi/delete', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def delete_taxi():
-    
-    placa = request.form["placa"] if "placa" in request.form else None
+    """
+    Método para desativar um taxi no sistema
+    Recebe um objeto do tipo JSON com a chave placa
+    Exemplo:
+    --------
+    {
+      "placa": "IKH2000"
+    }
+    """
 
-    if(placa):
+    req_data = request.get_json()
+    data, errors, result = None, None, None
 
-        motorista = Taxi().delete(placa)
-        
-        return mensagem_feedback(True, "Taxi desativado com sucesso!")
+    if req_data is None:
+        return resp_data_invalid('driver', [], msg=MSG_NO_DATA)
 
-    return mensagem_feedback(False, "É necessário informar uma placa")
+    schema = TaxiBoardSchema()
+    data, errors = schema.load(req_data)
 
-'''
-    CRUD - Permissão
-'''
+    if errors:
+        return resp_data_invalid('taxi', errors)
+
+    try:
+        model = Taxi().query.get(data)
+
+    except Exception as e:
+        return resp_exception('driver', description=e)
+
+    if model:
+        model.status = 0
+        db_session.commit()
+    else:
+        return resp_not_exist('taxi', data['placa'])
+
+    schema = TaxiSchema()
+    result = schema.dump(model)
+
+    return resp_ok('taxi', MSG_RESOURCE_DELETE.format('Taxi'),  data=result.data,)
+
 
 @app.route('/permissao/get', methods=['POST'])
 @jwt_required()
@@ -478,15 +843,15 @@ def get_permissao():
     taxi = request.form["taxi"] if "taxi" in request.form else None
 
     if(taxi and usuario and motorista):
-        permissao = Permissao().read(taxi,motorista,usuario)
+        permissao = Permissao().read(taxi, motorista, usuario)
 
         if(permissao != {}):
             return jsonify(permissao)
-        
+
         return mensagem_feedback(False, "Permissão não encontrada na base de dados")
 
     return mensagem_feedback(False, "Faltam informações necessárias")
-    
+
 
 @app.route('/permissoes/get', methods=['GET'])
 @jwt_required()
@@ -495,15 +860,17 @@ def get_permissoes():
 
     return jsonify(permissoes)
 
+
 @app.route('/permissao/create', methods=['POST'])
 @jwt_required()
 def create_permissao():
-    
+
     motorista = request.form["motorista"] if "motorista" in request.form else None
     usuario = request.form["usuario"] if "usuario" in request.form else None
     taxi = request.form["taxi"] if "taxi" in request.form else None
 
-    if(taxi and usuario and motorista and True): # Substituir True por função de verificar se já foi cadastrado.
+    # Substituir True por função de verificar se já foi cadastrado.
+    if(taxi and usuario and motorista and True):
 
         permissao = {
             "taxi": taxi,
@@ -514,7 +881,7 @@ def create_permissao():
             "tipo": request.form["nome"] if "nome" in request.form else "Não informado",
             "status": request.form["status"] if "status" in request.form else 1,
         }
-        
+
         permissao = Permissao(permissao)
 
         return mensagem_feedback(True, "Permissão cadastrada com sucesso!")
@@ -523,7 +890,7 @@ def create_permissao():
         return mensagem_feedback(False, "Dados já cadastrados na base de dados!")
 
     return mensagem_feedback(False, "Não foi possível cadastrar a Permissão!")
-    
+
 
 @app.route('/permissao/update', methods=['POST'])
 @jwt_required()
@@ -546,11 +913,12 @@ def update_permissao():
         }
 
         permissao = Permissao().update(permissao)
-        
+
         return mensagem_feedback(True, "Permissão atualizada com sucesso!")
 
     return mensagem_feedback(False, "Dados insuficientes para atualização")
-    
+
+
 @app.route('/permissao/delete', methods=['POST'])
 @jwt_required()
 def delete_permissao():
@@ -561,11 +929,12 @@ def delete_permissao():
 
     if(taxi and usuario and motorista):
 
-        permissao = Permissao().delete(taxi,motorista,usuario)
-        
+        permissao = Permissao().delete(taxi, motorista, usuario)
+
         return mensagem_feedback(True, "Permissão desativado com sucesso!")
 
     return mensagem_feedback(False, "Dados insuficientes para exclusão")
+
 
 @app.route('/info/taxi', methods=['POST'])
 def info_taxi():

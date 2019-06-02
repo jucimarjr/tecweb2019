@@ -1,6 +1,14 @@
 from flask import jsonify
 
-from .messages import MSG_INVALID_DATA, MSG_DOES_NOT_EXIST, MSG_EXCEPTION, MSG_ALREADY_EXISTS, MSG_DOES_NOT_EXIST
+from .messages import (
+    MSG_INVALID_DATA,
+    MSG_DOES_NOT_EXIST,
+    MSG_EXCEPTION,
+    MSG_ALREADY_EXISTS,
+    MSG_DOES_NOT_EXIST,
+    MSG_REFUSED_CREDENTIALS,
+    MSG_DATA_ERROR
+)
 
 def resp_data_invalid(resource :str, errors: dict, msg: str = MSG_INVALID_DATA):
     '''
@@ -14,9 +22,25 @@ def resp_data_invalid(resource :str, errors: dict, msg: str = MSG_INVALID_DATA):
         'resource': resource,
         'message': msg,
         'errors': errors,
+        'status': 422
     })
 
-    resp.status_code = 422
+    return resp
+
+def resp_refused_credentials(resource :str, errors: dict, msg: str = MSG_REFUSED_CREDENTIALS):
+    '''
+    Responses 401 authorization has been refused for those credentials.
+    '''
+
+    if not isinstance(resource, str):
+        raise ValueError('O recurso precisa ser uma string.')
+
+    resp = jsonify({
+        'resource': resource,
+        'message': msg,
+        'errors': errors,
+        'status': 401
+    })
 
     return resp
 
@@ -31,10 +55,9 @@ def resp_exception(resource :str, description :str = '', msg :str = MSG_EXCEPTIO
     resp = jsonify({
         'resource': resource,
         'message': msg,
-        'description': description
+        'description': description,
+        'status': 500
     })
-
-    resp.status_code = 500
 
     return resp
 
@@ -49,9 +72,8 @@ def resp_already_exists(resource :str, description :str):
     resp = jsonify({
         'resource': resource,
         'message': MSG_ALREADY_EXISTS.format(description),
+        'status_code': 400
     })
-
-    resp.status_code = 400
 
     return resp
 
@@ -66,12 +88,27 @@ def resp_not_exist(resource :str, description :str):
     resp = jsonify({
         'resource': resource,
         'message': MSG_DOES_NOT_EXIST.format(description),
+        'status': 404
     })
 
-    resp.status_code = 404
+    return resp
+
+def resp_data_error(resource :str, description :str = ''):
+    '''
+    Responses 422
+    '''
+
+    if not isinstance(resource, str):
+        raise ValueError('O recurso precisa ser uma string.')
+
+    resp = jsonify({
+        'resource': resource,
+        'message': MSG_DATA_ERROR.format(description),
+        'status': 422
+    })
 
     return resp
-    
+
 
 def resp_ok(resource :str, message :str, data=None, **extras):
     '''
@@ -86,7 +123,5 @@ def resp_ok(resource :str, message :str, data=None, **extras):
     response.update(extras)
 
     resp = jsonify(response)
-
-    resp.status_code = 200
 
     return resp

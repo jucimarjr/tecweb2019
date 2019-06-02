@@ -9,6 +9,7 @@ import jwt
 # Usuário
 #---------------------------------#
 
+
 class Usuario(Base):
     __tablename__ = "reg_usuario"
     __table_args__ = (
@@ -33,36 +34,37 @@ class Usuario(Base):
     def __repr__(self):
         return "<Usuario %r>" % self.nome
 
-    def authenticate(self, cpf, senha):
+    def auth(self, cpf, senha):
         self = self.query.get(cpf)
-        
+
         if(self):
 
             auth = bcrypt.check_password_hash(self.senha, senha)
-            
+
             if(auth):
-    
+
                 usuario = {
                     "cpf": self.cpf,
                     "nome": self.nome,
-                    "status": self.status,                
+                    "status": self.status,
                 }
 
                 token = jwt.encode(
-                    {'iat': datetime.datetime.utcnow(), 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1), 'nbf': datetime.datetime.utcnow(), 'usuario': usuario}, 
-                    app.config['SECRET_KEY'], 
+                    {'iat': datetime.datetime.utcnow(), 'exp': datetime.datetime.utcnow(
+                    ) + datetime.timedelta(days=1), 'nbf': datetime.datetime.utcnow(), 'usuario': usuario},
+                    app.config['SECRET_KEY'],
                     algorithm='HS256'
                 )
                 usuario['token'] = token.decode("utf-8")
-                
+
                 return usuario
 
             return False
 
         return False
 
-    def read(self, cpf):        
-        
+    def read(self, cpf):
+
         usuario = self.query.get(cpf)
 
         return {
@@ -70,7 +72,7 @@ class Usuario(Base):
             "nome": usuario.nome,
             "status": usuario.status
         } if usuario else {}
-        
+    '''
     def update(self, usuario):
         
         self = self.query.get(usuario["cpf"])
@@ -80,22 +82,25 @@ class Usuario(Base):
         self.status = int(usuario["status"]) if usuario["status"] else self.status
     
         db_session.commit()
-    
+    '''
+
     def delete(self, cpf):
-        
+
         self = self.query.get(cpf)
         self.status = 0
-        db_session.commit()
+        result = db_session.commit()
+        return result
 
     def list(self):
         usuarios = [
-            {"cpf": usuario.cpf, "nome": usuario.nome, "status": usuario.status } for usuario in self.query.all()
+            {"cpf": usuario.cpf, "nome": usuario.nome, "status": usuario.status} for usuario in self.query.all()
         ]
         return usuarios
 
 #---------------------------------#
 # Motorista
 #---------------------------------#
+
 
 class Motorista(Base):
     __tablename__ = "reg_motorista"
@@ -108,7 +113,7 @@ class Motorista(Base):
     nome = Column("mot_nome", String(100), nullable=False)
     renach = Column("mot_renach", String(11), nullable=False)
     telefone = Column("mot_telefone", String(20), nullable=False)
-    cep = Column("mot_cep", Integer, nullable=False)
+    cep = Column("mot_cep", String(8), nullable=False)
     rua = Column("mot_rua", String(50), nullable=False)
     bairro = Column("mot_bairro", String(50), nullable=False)
     status = Column("mot_status", Integer, nullable=False)
@@ -120,7 +125,7 @@ class Motorista(Base):
             self.nome = motorista['nome']
             self.renach = motorista['renach']
             self.telefone = motorista['telefone']
-            self.cep = int(motorista['cep'])
+            self.cep = motorista['cep']
             self.rua = motorista['rua']
             self.bairro = motorista['bairro']
             self.status = int(motorista['status'])
@@ -131,8 +136,8 @@ class Motorista(Base):
     def __repr__(self):
         return "<Motorista %r>" % self.nome
 
-    def read(self, cpf):        
-        
+    def read(self, cpf):
+
         motorista = self.query.get(cpf)
 
         return {
@@ -142,13 +147,13 @@ class Motorista(Base):
             "renach": motorista.renach,
             "telefone": motorista.telefone,
             "cep": motorista.cep,
-            "rua": motorista.rua,            
+            "rua": motorista.rua,
             "bairro": motorista.bairro,
             "status": motorista.status
         } if motorista else {}
-        
+
     def update(self, motorista):
-        
+
         self = self.query.get(motorista["cpf"])
 
         self.rg = motorista['rg'] if motorista['rg'] else self.rg
@@ -158,12 +163,13 @@ class Motorista(Base):
         self.cep = int(motorista['cep']) if motorista['cep'] else self.cep
         self.rua = motorista['rua'] if motorista['rua'] else self.rua
         self.bairro = motorista['bairro'] if motorista['bairro'] else self.bairro
-        self.status = int(motorista['status']) if motorista['status'] else self.status
-    
+        self.status = int(motorista['status']
+                          ) if motorista['status'] else self.status
+
         db_session.commit()
-    
+
     def delete(self, cpf):
-        
+
         self = self.query.get(cpf)
         self.status = 0
         db_session.commit()
@@ -177,7 +183,7 @@ class Motorista(Base):
                 "renach": motorista.renach,
                 "telefone": motorista.telefone,
                 "cep": motorista.cep,
-                "rua": motorista.rua,            
+                "rua": motorista.rua,
                 "bairro": motorista.bairro,
                 "status": motorista.status
             } for motorista in self.query.all()
@@ -187,6 +193,7 @@ class Motorista(Base):
 #---------------------------------#
 # Taxi
 #---------------------------------#
+
 
 class Taxi(Base):
     __tablename__ = "reg_taxi"
@@ -218,8 +225,8 @@ class Taxi(Base):
     def __repr__(self):
         return "<Taxi %r>" % self.placa
 
-    def read(self, placa):        
-        
+    def read(self, placa):
+
         taxi = self.query.get(placa)
 
         return {
@@ -231,9 +238,9 @@ class Taxi(Base):
             "ano": taxi.ano,
             "status": taxi.status
         } if taxi else None
-        
+
     def update(self, taxi):
-        
+
         self = self.query.get(taxi["placa"])
 
         self.placa = taxi["placa"] if taxi["placa"] else self.placa
@@ -243,11 +250,11 @@ class Taxi(Base):
         self.modelo = taxi["modelo"] if taxi["modelo"] else self.modelo
         self.ano = taxi["ano"] if taxi["ano"] else self.ano
         self.status = int(taxi["status"]) if taxi["status"] else self.status
-    
+
         db_session.commit()
-    
+
     def delete(self, placa):
-        
+
         self = self.query.get(placa)
         self.status = 0
         db_session.commit()
@@ -269,16 +276,22 @@ class Taxi(Base):
 # Permissão
 #---------------------------------#
 
+
 class Permissao(Base):
     __tablename__ = "reg_permissao"
     __table_args__ = (
-        PrimaryKeyConstraint("taxi_placa", "mot_cpf", "usu_cpf", name="PK_reg_permissao"),
+        PrimaryKeyConstraint("taxi_placa", "mot_cpf",
+                             "usu_cpf", name="PK_reg_permissao"),
     )
 
-    taxi = Column("taxi_placa", String(8), ForeignKey("reg_taxi.taxi_placa"), nullable=False)
-    motorista = Column("mot_cpf", String(11), ForeignKey("reg_motorista.mot_cpf"), nullable=False)
-    usuario = Column("usu_cpf", String(11), ForeignKey("reg_usuario.usu_cpf"), nullable=False)
-    data_inicio = Column("perm_data_inicio", DateTime, nullable=False, default=datetime.datetime.utcnow)
+    taxi = Column("taxi_placa", String(8), ForeignKey(
+        "reg_taxi.taxi_placa"), nullable=False)
+    motorista = Column("mot_cpf", String(11), ForeignKey(
+        "reg_motorista.mot_cpf"), nullable=False)
+    usuario = Column("usu_cpf", String(11), ForeignKey(
+        "reg_usuario.usu_cpf"), nullable=False)
+    data_inicio = Column("perm_data_inicio", DateTime,
+                         nullable=False, default=datetime.datetime.utcnow)
     data_fim = Column("perm_data_fim", DateTime, default=None)
     tipo = Column("perm_tipo_motorista", String(15), nullable=False)
     status = Column("perm_status", Integer, nullable=False)
@@ -299,9 +312,10 @@ class Permissao(Base):
     def __repr__(self):
         return "<Permissão %r>" % self.taxi
 
-    def read(self, taxi, motorista, usuario):        
-        
-        permissao = self.query.get({"taxi" : taxi,"motorista" : motorista,"usuario" : usuario})
+    def read(self, taxi, motorista, usuario):
+
+        permissao = self.query.get(
+            {"taxi": taxi, "motorista": motorista, "usuario": usuario})
 
         return {
             "taxi": permissao.taxi,
@@ -312,10 +326,11 @@ class Permissao(Base):
             "tipo": permissao.tipo,
             "status": permissao.status
         } if permissao else {}
-        
+
     def update(self, permissao):
-        
-        self = self.query.get({"taxi" : permissao["taxi"],"motorista" : permissao["motorista"],"usuario" : permissao["usuario"]})
+
+        self = self.query.get(
+            {"taxi": permissao["taxi"], "motorista": permissao["motorista"], "usuario": permissao["usuario"]})
 
         self.taxi = permissao["taxi"] if permissao["taxi"] else self.taxi
         self.motorista = permissao["motorista"] if permissao["motorista"] else self.motorista
@@ -323,13 +338,15 @@ class Permissao(Base):
         self.data_inicio = permissao["data_inicio"] if permissao["data_inicio"] else self.data_inicio
         self.data_fim = permissao["data_fim"] if permissao["data_fim"] else self.data_fim
         self.tipo = permissao["tipo"] if permissao["tipo"] else self.tipo
-        self.status = int(permissao["status"]) if permissao["status"] else self.status
-    
+        self.status = int(permissao["status"]
+                          ) if permissao["status"] else self.status
+
         db_session.commit()
-    
+
     def delete(self, taxi, motorista, usuario):
-        
-        self = self.query.get({"taxi" : taxi,"motorista" : motorista,"usuario" : usuario})
+
+        self = self.query.get(
+            {"taxi": taxi, "motorista": motorista, "usuario": usuario})
         self.status = 0
         db_session.commit()
 
@@ -346,6 +363,6 @@ class Permissao(Base):
             } for permissao in self.query.all()
         ]
         return permissoes
-    
+
     def info_taxi(self, placa):
         pass

@@ -17,7 +17,7 @@ CREATE TABLE "reg_motorista"(
  "mot_renach" Character varying(11) NOT NULL,
  "mot_telefone" Character varying(20) NOT NULL,
  "mot_status" Smallint NOT NULL,
- "mot_cep" Integer NOT NULL,
+ "mot_cep" Character varying(8) NOT NULL,
  "mot_rua" Character varying(50),
  "mot_bairro" Character varying(50)
 )
