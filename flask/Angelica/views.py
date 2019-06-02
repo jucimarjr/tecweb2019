@@ -864,7 +864,7 @@ def get_permissions():
 def register_perm():
     """
     Método para registrar uma permissão no sistema
-    Recebe um objeto do tipo JSON com chaves placa,
+    Recebe um objeto do tipo JSON com chaves taxi,
     motorista, usuario, data_inicio, data_fim, tipo, status
     Exemplo:
     --------
@@ -872,8 +872,8 @@ def register_perm():
         "taxi": "IKH2241",
         "motorista": "67786605673",
         "usuario": "30759131091",
-        "data_inicio": "2018-11-14T00:00:00",
-        "data_fim": "2019-03-06T00:00:00",
+        "data_inicio": "2018-11-14",
+        "data_fim": "2019-03-06",
         "tipo": "motorista",
         "status": 1
     }
@@ -909,10 +909,76 @@ def register_perm():
     return resp_ok('per', MSG_RESOURCE_CREATED.format('Permissão'),  data=result.data,)
 
 
-@app.route('/permissao/update', methods=['POST'])
+@app.route('/perm/update', methods=['POST'])
 #@jwt_required()
-def update_permissao():
+def update_perm():
+    """
+    Método para atualizar uma permissão existente no sistema
+    Recebe um objeto do tipo JSON com chaves taxi,
+    motorista, usuario, data_inicio, data_fim, tipo, status
+    Exemplo:
+    --------
+    {
+        "taxi": "IKH2241",
+        "motorista": "67786605673",
+        "usuario": "30759131091",
+        "data_inicio": "2018-11-14",
+        "data_fim": "2019-03-06",
+        "tipo": "motorista",
+        "status": 1
+    }
+    """
 
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('perm', [], msg=MSG_NO_DATA)
+
+    schema = PermSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('perm', errors)
+
+    try:
+        model = Permissao().query.get(data['taxi'], data['motorista'], data['usuario'])
+
+    except IntegrityError:
+        return resp_already_exists('perm', data)
+
+    except Exception as e:
+        return resp_exception('perm')
+
+    if model:
+        try:
+            model.taxi = data['taxi']
+            model.motorista = data['motorista']
+            model.usuario = data['usuario']
+            model.data_inicio = data['data_inicio']
+            model.data_fim = data['data_fim']
+            model.tipo = data['tipo']
+            model.status = data['status']
+            db_session.commit()
+        
+        except IntegrityError:
+            return resp_already_exists('perm', data)
+    
+        except DataError:
+            return resp_data_error('perm')
+
+        except Exception as e:
+            return resp_exception('perm', description=e)
+    else:
+        return resp_not_exist('perm', data)
+
+    schema = PermSchema()
+    result = schema.dump(model)
+
+    return resp_ok('perm', MSG_RESOURCE_UPDATE.format('Permissão'),  data=result.data,)
+
+
+    '''
     motorista = request.form["motorista"] if "motorista" in request.form else None
     usuario = request.form["usuario"] if "usuario" in request.form else None
     taxi = request.form["taxi"] if "taxi" in request.form else None
@@ -934,6 +1000,7 @@ def update_permissao():
         return mensagem_feedback(True, "Permissão atualizada com sucesso!")
 
     return mensagem_feedback(False, "Dados insuficientes para atualização")
+    '''
 
 
 @app.route('/permissao/delete', methods=['POST'])
