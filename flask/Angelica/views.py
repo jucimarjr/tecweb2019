@@ -402,7 +402,7 @@ def get_drivers():
         model = Motorista().query.all()
 
     except Exception as e:
-        return resp_exception('user', description=e)
+        return resp_exception('drivers', description=e)
 
     schema = DriverSchema(many=True)
     result = schema.dump(model)
@@ -696,9 +696,23 @@ def get_taxi():
     '''
 
 
-@app.route('/taxis/get', methods=['GET'])
+@app.route('/taxis', methods=['GET'])
 # @jwt_required()
 def get_taxis():
+
+    try:
+        model = Taxi().query.all()
+
+    except Exception as e:
+        return resp_exception('taxi', description=e)
+
+    schema = TaxiSchema(many=True)
+    result = schema.dump(model)
+
+    return resp_ok('taxi', MSG_RESOURCE_FIND.format('Taxis'),  data=result.data,)
+
+
+    '''
 
     try:
         model = Taxi().query.all()
@@ -710,6 +724,7 @@ def get_taxis():
     result = schema.dump(model)
 
     return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
+    '''
 
 
 @app.route('/taxi/create', methods=['POST'])
