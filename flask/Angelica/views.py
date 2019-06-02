@@ -1035,14 +1035,11 @@ def delete_perm():
 def perm_info():
     """
     Método retorna um taxi registrado no sistema
-    Recebe um objeto do tipo JSON com chave taxi,
-    motorista, usuario
+    Recebe um objeto do tipo JSON com chave taxi
     Exemplo:
     --------
     {
-        'taxi': 'IKH2241',
-        'motorista': '09889009890',
-        'usuario': '12332112321'
+        'taxi': 'IKH2241'
     }
     """
 
