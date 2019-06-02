@@ -984,22 +984,51 @@ def update_perm():
     return resp_ok('perm', MSG_RESOURCE_UPDATE.format('Permissão'),  data=result.data,)
 
 
-@app.route('/permissao/delete', methods=['POST'])
+@app.route('/perm/delete', methods=['POST'])
 #@jwt_required()
-def delete_permissao():
+def delete_perm():
+    """
+    Método para desativar uma permissão no sistema
+    Recebe um objeto do tipo JSON com a chave placa
+    motorista, usuario
+    Exemplo:
+    --------
+    {
+        "taxi": "IKH2241",
+        "motorista": "67786605673",
+        "usuario": "30759131091"
+    }
+    """
 
-    motorista = request.form["motorista"] if "motorista" in request.form else None
-    usuario = request.form["usuario"] if "usuario" in request.form else None
-    taxi = request.form["taxi"] if "taxi" in request.form else None
+    req_data = request.get_json()
+    data, errors, result = None, None, None
 
-    if(taxi and usuario and motorista):
+    if req_data is None:
+        return resp_data_invalid('perm', [], msg=MSG_NO_DATA)
 
-        permissao = Permissao().delete(taxi, motorista, usuario)
+    schema = PermFindSchema()
+    data, errors = schema.load(req_data)
 
-        return mensagem_feedback(True, "Permissão desativado com sucesso!")
+    if errors:
+        return resp_data_invalid('perm', errors)
 
-    return mensagem_feedback(False, "Dados insuficientes para exclusão")
+    try:
+        model = Permissao().query.get(data)
 
+    except Exception as e:
+        return resp_exception('perm', description=e)
+
+    if model:
+        model.status = 0
+        db_session.commit()
+    else:
+        return resp_not_exist('perm', data)
+
+    schema = PermSchema()
+    result = schema.dump(model)
+
+    return resp_ok('perm', MSG_RESOURCE_DELETE.format('Permissão'),  data=result.data,)
+    
 
 @app.route('/info/taxi', methods=['POST'])
 def info_taxi():
