@@ -20,7 +20,6 @@ from Angelica.schemas import (
     DriverSchema,
     UpdateDriverSchema,
     TaxiSchema,
-    TaxiInfoSchema,
     TaxiBoardSchema
 )
 
@@ -683,13 +682,13 @@ def register_taxi():
     Exemplo:
     --------
     {
-        "placa": "27555738996",
-        "renavam": "Amir Berry",
-        "chassi": "17808343",
-        "marca": "Wisconsin",
-        "modelo": "Kennewick",
-        "ano": "69025571",
-        "status": 1,
+        "placa": "IKH2000",
+        "renavam": "32819427000",
+        "chassi": "4LXSNPW2014JY4000",
+        "marca": "Volks",
+        "modelo": "Gol",
+        "ano": 2015,
+        "status": 1
     }
     """
 
@@ -726,42 +725,70 @@ def register_taxi():
 @app.route('/taxi/update', methods=['POST'])
 # @jwt_required()
 def update_taxi():
+    """
+    Método para atualizar um taxi existente no sistema
+    Recebe um objeto do tipo JSON com chaves placa,
+    renavam, chassi, marca, modelo, ano e status.
+    Exemplo:
+    --------
+    {
+        "placa": "IKH2000",
+        "renavam": "32819427000",
+        "chassi": "4LXSNPW2014JY4000",
+        "marca": "Volks",
+        "modelo": "Gol",
+        "ano": 2015,
+        "status": 1
+    }
+    """
 
     req_data = request.get_json()
     data, errors, result = None, None, None
 
     if req_data is None:
-        return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
+        return resp_data_invalid('taxi', [], msg=MSG_NO_DATA)
 
-    schema = TaxiInfoSchema()
+    schema = TaxiSchema()
     data, errors = schema.load(req_data)
 
-    print(data)
-
     if errors:
-        return resp_data_invalid('Taxi', errors)
+        return resp_data_invalid('driver', errors)
 
     try:
-        taxi = Taxi().query.get(data['placa'])
-        #data, errors = schema.load(data, instance=Taxi().query.get(data['placa']), partial=True)
-        #model = Taxi().update().where(placa==data['placa']).values(data)
+        model = Taxi().query.get(data['placa'])
 
-    except Taxi.DoesNotExist:
-        return resp_not_exist('Taxi', data['placa'])
+    except IntegrityError:
+        return resp_already_exists('driver', data['placa'])
 
     except Exception as e:
-        return resp_exception('Taxi', description=e)
+        return resp_exception('taxi', description=e)
 
-    print(taxi)
+    if model:
+        try:
+            model.placa = data['placa']
+            model.renavam = data['renavam']
+            model.chassi = data['chassi']
+            model.marca = data['marca']
+            model.modelo = data['modelo']
+            model.ano = data['ano']
+            model.status = data['status']
+            db_session.commit()
+        
+        except IntegrityError:
+            return resp_already_exists('taxi', data['placa'])
+    
+        except DataError:
+            return resp_data_error('taxi')
 
-    update_query = taxi.update(data)
-    update_query.execute()
-    result = schema.dump(taxi)
+        except Exception as e:
+            return resp_exception('taxi', description=e)
+    else:
+        return resp_not_exist('taxi', data['placa'])
 
-    # Retorno 200
-    return resp_ok(
-        'Taxi', MSG_RESOURCE_CREATED.format('Taxi'),  data=data,
-    )
+    schema = TaxiSchema()
+    result = schema.dump(model)
+
+    return resp_ok('taxi', MSG_RESOURCE_UPDATE.format('Taxi'),  data=result.data,)
 
 
 @app.route('/taxi/delete', methods=['POST'])
