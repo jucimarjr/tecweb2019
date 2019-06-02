@@ -1,5 +1,5 @@
 from marshmallow import Schema
-from marshmallow.fields import Str, Int
+from marshmallow.fields import Str, Int, Date
 from Angelica.messages import MSG_FIELD_REQUIRED
 
 class AuthSchema(Schema):
@@ -55,3 +55,17 @@ class TaxiSchema(Schema):
 
 class TaxiBoardSchema(Schema):
     placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+
+class PermitFindSchema(Schema):
+    taxi = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    motorista = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    usuario = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+
+class PermitSchema(Schema):
+    placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    mototista = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    ususario = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    data_inicio = Date(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    data_fim = Date(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    tipo = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    status = Int(required=True, error_messages={'required': MSG_FIELD_REQUIRED})

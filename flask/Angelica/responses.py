@@ -7,7 +7,8 @@ from .messages import (
     MSG_ALREADY_EXISTS,
     MSG_DOES_NOT_EXIST,
     MSG_REFUSED_CREDENTIALS,
-    MSG_DATA_ERROR
+    MSG_DATA_ERROR,
+    MSG_INVALIDI_REQUEST_ERROR
 )
 
 def resp_data_invalid(resource :str, errors: dict, msg: str = MSG_INVALID_DATA):
@@ -105,6 +106,22 @@ def resp_data_error(resource :str, description :str = ''):
         'resource': resource,
         'message': MSG_DATA_ERROR.format(description),
         'status': 422
+    })
+
+    return resp
+
+def resp_invalid_request_error(resource :str, description :str = ''):
+    '''
+    Responses 500
+    '''
+
+    if not isinstance(resource, str):
+        raise ValueError('O recurso precisa ser uma string.')
+
+    resp = jsonify({
+        'resource': resource,
+        'message': MSG_INVALIDI_REQUEST_ERROR.format(description),
+        'status': 500
     })
 
     return resp

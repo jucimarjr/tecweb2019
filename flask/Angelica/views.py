@@ -20,7 +20,9 @@ from Angelica.schemas import (
     DriverSchema,
     UpdateDriverSchema,
     TaxiSchema,
-    TaxiBoardSchema
+    TaxiBoardSchema,
+    PermitFindSchema,
+    PermitSchema
 )
 
 from Angelica.responses import (
@@ -30,6 +32,7 @@ from Angelica.responses import (
     resp_data_invalid,
     resp_not_exist,
     resp_data_error,
+    resp_invalid_request_error,
     resp_ok
 )
 
@@ -39,9 +42,7 @@ from Angelica.messages import (
     MSG_RESOURCE_FIND,
     MSG_USER_AUTH,
     MSG_RESOURCE_UPDATE,
-    MSG_RESOURCE_DELETE
-)
-from Angelica.messages import (
+    MSG_RESOURCE_DELETE,
     MSG_RESOURCE_CREATED,
     MSG_DOES_NOT_EXIST
 )
@@ -51,7 +52,9 @@ from flask_jwt import jwt_required
 
 from sqlalchemy.exc import (
     IntegrityError,
-    DataError
+    DataError,
+    InvalidRequestError
+    
 )
 
 from sqlalchemy.orm.exc import NoResultFound
@@ -451,6 +454,9 @@ def register_driver():
     
     except DataError:
         return resp_data_error('driver')
+    
+    except InvalidRequestError:
+        return resp_invalid_request_error('driver')
 
     except Exception as e:
         return resp_exception('driver', description=e)
@@ -611,34 +617,6 @@ def get_taxi():
     result = schema.dump(model)
 
     return resp_ok('taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
-
-    '''
-    req_data = request.get_json()
-    data, errors, result = None, None, None
-
-    if req_data is None:
-        return resp_data_invalid('Taxi', [], msg=MSG_NO_DATA)
-
-    schema = TaxiPlacaSchema()
-    data, errors = schema.load(req_data)
-
-    if errors:
-        return resp_data_invalid('Taxi', errors)
-
-    try:
-        model = Taxi().query.get(data)
-
-    except Exception as e:
-        return resp_exception('Taxi', description=e)
-
-    if not model:
-        return resp_not_exist('Taxi', data['placa'])
-
-    schema = TaxiInfoSchema()
-    result = schema.dump(model)
-
-    return resp_ok('Taxi', MSG_RESOURCE_FIND.format('Taxi'),  data=result.data,)
-    '''
 
 
 @app.route('/taxis', methods=['GET'])
@@ -834,27 +812,54 @@ def delete_taxi():
     return resp_ok('taxi', MSG_RESOURCE_DELETE.format('Taxi'),  data=result.data,)
 
 
-@app.route('/permissao/get', methods=['POST'])
-@jwt_required()
-def get_permissao():
+@app.route('/permit', methods=['POST'])
+#@jwt_required()
+def get_permit():
+    """
+    Método retorna um taxi registrado no sistema
+    Recebe um objeto do tipo JSON com chave taxi,
+    motorista, usuario
+    Exemplo:
+    --------
+    {
+        'taxi': 'IKH2241',
+        'motorista': '09889009890',
+        'usuario': '12332112321'
+    }
+    """
 
-    motorista = request.form["motorista"] if "motorista" in request.form else None
-    usuario = request.form["usuario"] if "usuario" in request.form else None
-    taxi = request.form["taxi"] if "taxi" in request.form else None
+    req_data = request.get_json()
+    data, errors, result = None, None, None
 
-    if(taxi and usuario and motorista):
-        permissao = Permissao().read(taxi, motorista, usuario)
+    if req_data is None:
+        return resp_data_invalid('permit', [], msg=MSG_NO_DATA)
 
-        if(permissao != {}):
-            return jsonify(permissao)
+    schema = PermitFindSchema()
+    data, errors = schema.load(req_data)
 
-        return mensagem_feedback(False, "Permissão não encontrada na base de dados")
+    if errors:
+        return resp_data_invalid('permit', errors)
 
-    return mensagem_feedback(False, "Faltam informações necessárias")
+    try:
+        model = Permissao().query.get(data)
+    
+    except InvalidRequestError:
+        return resp_invalid_request_error('permit')
+
+    except Exception as e:
+        return resp_exception('permit', description=e)
+
+    if not model:
+        return resp_not_exist('permit', data)
+
+    schema = PermitSchema()
+    result = schema.dump(model)
+
+    return resp_ok('permit', MSG_RESOURCE_FIND.format('Permit'),  data=result.data,)
 
 
 @app.route('/permissoes/get', methods=['GET'])
-@jwt_required()
+#@jwt_required()
 def get_permissoes():
     permissoes = Permissao().list()
 
@@ -862,7 +867,7 @@ def get_permissoes():
 
 
 @app.route('/permissao/create', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def create_permissao():
 
     motorista = request.form["motorista"] if "motorista" in request.form else None
@@ -893,7 +898,7 @@ def create_permissao():
 
 
 @app.route('/permissao/update', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def update_permissao():
 
     motorista = request.form["motorista"] if "motorista" in request.form else None
@@ -920,7 +925,7 @@ def update_permissao():
 
 
 @app.route('/permissao/delete', methods=['POST'])
-@jwt_required()
+#@jwt_required()
 def delete_permissao():
 
     motorista = request.form["motorista"] if "motorista" in request.form else None
