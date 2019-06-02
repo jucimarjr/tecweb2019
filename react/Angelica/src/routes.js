@@ -6,8 +6,8 @@ import ListUser from "screens/User/ListUsers.jsx";
 import AddUser from "screens/User/AddUser.jsx";
 import EditUser from "screens/User/EditUser.jsx";
 import AddTaxi from "screens/Taxi/AddTaxi.jsx";
-import List from "screens/Taxi/List.jsx";
-import ListMotoristas from "screens/Motorista/ListMotoristas.jsx";
+import ListTaxi from "screens/Taxi/ListTaxi.jsx";
+import ListMotorista from "screens/Motorista/ListMotorista.jsx";
 import AddMotorista from "screens/Motorista/AddMotorista.jsx";
 import EditMotorista from "screens/Motorista/EditMotorista.jsx";
 
@@ -45,10 +45,10 @@ var routes = [
     layout: "/login"
   },
   {
-    path: "/list",
+    path: "/list-taxi",
     name: "Táxi",
     icon: "ni ni-circle-08 text-pink",
-    component: List,
+    component: ListTaxi,
     layout: "/taxi"
    
   },
@@ -65,7 +65,14 @@ var routes = [
     name: "Search",
     icon: "ni ni-circle-08 text-pink",
     component: Search,
-    layout: "/user"
+    layout: "/admin"
+  },
+  {
+    path: "/list-motorista",
+    name: "Motorista",
+    icon: "ni ni-circle-08 text-pink",
+    component: ListMotorista,
+    layout: "/motorista"
   },
  
 ];

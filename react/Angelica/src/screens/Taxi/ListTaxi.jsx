@@ -33,7 +33,7 @@ import {
 import Header from "components/Taxi/Headers/Header.jsx";
 
 
-class List extends React.Component {
+class ListTaxi extends React.Component {
   render() {
     return (
       <>
@@ -239,4 +239,4 @@ class List extends React.Component {
   }
 }
 
-export default List;
+export default ListTaxi;
