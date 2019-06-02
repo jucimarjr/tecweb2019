@@ -18,6 +18,7 @@ from Angelica.schemas import (
     RegisterUserSchema,
     GetDriverSchema,
     DriverSchema,
+    UpdateDriverSchema,
     TaxiSchema,
     TaxiInfoSchema,
     TaxiPlacaSchema
@@ -490,9 +491,75 @@ def register_driver():
     '''
 
 
-@app.route('/motorista/update', methods=['POST'])
+@app.route('/driver/update', methods=['POST'])
 # @jwt_required()
-def update_motorista():
+def update_driver():
+    """
+    Método para atualizar um motorista existente no sistema
+    Recebe um objeto do tipo JSON com chaves cpf, nome, 
+    bairro, rua, cep, telefone e status.
+    Apenas as chaves
+    Exemplo:
+    --------
+    {
+        "cpf": "27555738996",
+        "nome": "Amir Berry",
+        "bairro": "Wisconsin",
+        "rua": "Kennewick",
+        "cep": "69025571",
+        "telefone": "11993281"
+        "status": 1,
+    }
+    """
+
+    req_data = request.get_json()
+    data, errors, result = None, None, None
+
+    if req_data is None:
+        return resp_data_invalid('driver', [], msg=MSG_NO_DATA)
+
+    schema = UpdateDriverSchema()
+    data, errors = schema.load(req_data)
+
+    if errors:
+        return resp_data_invalid('driver', errors)
+
+    try:
+        model = Motorista().query.get(data['cpf'])
+
+    except IntegrityError:
+        return resp_already_exists('driver', data['cpf'])
+
+    except Exception as e:
+        return resp_exception('driver', description=e)
+
+    if model:
+        try:
+            model.nome = data['nome']
+            model.telefone = data['telefone']
+            model.cep = data['cep']
+            model.rua = data['rua']
+            model.bairro = data['bairro']
+            model.status = data['status']
+            db_session.commit()
+        
+        except IntegrityError:
+            return resp_already_exists('driver', data['cpf'])
+    
+        except DataError:
+            return resp_data_error('driver')
+
+        except Exception as e:
+            return resp_exception('driver', description=e)
+    else:
+        return resp_not_exist('driver', data['cpf'])
+
+    schema = DriverSchema()
+    result = schema.dump(model)
+
+    return resp_ok('driver', MSG_RESOURCE_UPDATE.format('Motorista'),  data=result.data,)
+
+    '''
     req_data = request.get_json()
     cpf = req_data['cpf']
 
@@ -515,6 +582,7 @@ def update_motorista():
             return mensagem_feedback(False, "Preencha todos os campos.")
 
     return mensagem_feedback(False, "É necessário informar um CPF")
+    '''
 
 
 @app.route('/motorista/delete', methods=['POST'])

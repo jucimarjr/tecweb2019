@@ -34,6 +34,15 @@ class DriverSchema(Schema):
     bairro = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
     status = Int(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
 
+class UpdateDriverSchema(Schema):
+    cpf = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    nome = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    telefone = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    cep = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    rua = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    bairro = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+    status = Int(required=True, error_messages={'required': MSG_FIELD_REQUIRED})
+
 
 class TaxiSchema(Schema):
     placa = Str(required=True, error_messages={'required': MSG_FIELD_REQUIRED})

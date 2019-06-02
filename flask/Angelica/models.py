@@ -113,7 +113,7 @@ class Motorista(Base):
     nome = Column("mot_nome", String(100), nullable=False)
     renach = Column("mot_renach", String(11), nullable=False)
     telefone = Column("mot_telefone", String(20), nullable=False)
-    cep = Column("mot_cep", Integer, nullable=False)
+    cep = Column("mot_cep", String(8), nullable=False)
     rua = Column("mot_rua", String(50), nullable=False)
     bairro = Column("mot_bairro", String(50), nullable=False)
     status = Column("mot_status", Integer, nullable=False)
@@ -125,7 +125,7 @@ class Motorista(Base):
             self.nome = motorista['nome']
             self.renach = motorista['renach']
             self.telefone = motorista['telefone']
-            self.cep = int(motorista['cep'])
+            self.cep = motorista['cep']
             self.rua = motorista['rua']
             self.bairro = motorista['bairro']
             self.status = int(motorista['status'])
