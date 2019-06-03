@@ -54,7 +54,7 @@ class Auth extends React.Component {
             .catch(e => {
                 this.setState({ message: e.message });
             });
-    }
+      }
 
   render() {
     return (

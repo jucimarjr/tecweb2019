@@ -60,33 +60,59 @@ class ListTaxi extends React.Component {
     }
     this.onChangePage = this.onChangePage.bind(this)
     this.search = this.search.bind(this)
+    this.dados = []
+  }
 
+  search = () => {
+     
+     
+      if (this.placa !== undefined) {
+        
+        const data = { placa: this.placa };
+      
+        const requestInfo = {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            }),
+        };
+
+        fetch('/taxi', requestInfo)
+          .then(res => res.json())
+            .then((data) => {
+              this.dados.push(data.data)
+              this.setState({ taxis: this.dados,
+                              pageOfItems: []
+                        })
+            } 
+            )
+          .catch(console.log)
+            .catch(e => {
+            });
+        }else{
+          this.componentDidMount()
+        }
+  
   }
 
   
-  
 
   componentDidMount() {
-    fetch('/taxis')
-    .then(res => res.json())
-    .then((data) => {
-      this.setState({ taxis: data.data,
-                      pageOfItems: []
-       })
-    }
-    
+      fetch('/taxis')
+      .then(res => res.json())
+      .then((data) => {
+        this.setState({ taxis: data.data,
+                        pageOfItems: []
+        })
+      }
     )
-    .catch(console.log)
-
+      .catch(console.log)
   }
 
   onChangePage(pageOfItems) {
     // update state with new page of items
     this.setState({ pageOfItems: pageOfItems });
-  }
-
-  search(e){
-    console.log(this.placa)
   }
 
 
@@ -182,7 +208,6 @@ class ListTaxi extends React.Component {
                         </Button>
                       </InputGroup>
                     </FormGroup>
-                    
                   </Col>
                   <Col md="4">
                     <Button className="btn-icon btn-2" 
