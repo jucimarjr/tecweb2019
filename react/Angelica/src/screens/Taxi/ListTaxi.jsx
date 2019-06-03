@@ -104,10 +104,23 @@ class ListTaxi extends React.Component {
                       <td>{item.marca}</td>
                       <td>{item.modelo}</td>
                       <td>
-                        <Badge color="" className="badge-dot mr-4">
-                          <i className="bg-warning" />
-                          Inativo
-                        </Badge>
+                      
+                          {
+                            item.status ? ( 
+                              <Badge color="primary" pill>
+                                Ativo
+                              </Badge>
+
+                            ) : (
+                              <Badge color="danger" pill>
+                                Inativo
+                            </Badge>
+                          )}
+                        
+
+                             
+                          
+                          
                       </td>
                       <td className="text-right">
                         <UncontrolledDropdown>
@@ -122,12 +135,6 @@ class ListTaxi extends React.Component {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
-                            >
-                              Adicionar
-                            </DropdownItem>
                             <DropdownItem
                               href="#pablo"
                               onClick={e => e.preventDefault()}
@@ -190,8 +197,8 @@ class ListTaxi extends React.Component {
                   <thead className="thead-light">
                     <tr>
                       <th scope="col">PLACA</th>
-                      <th scope="col">PROPRIETÁRIO</th>
-                      <th scope="col">AUXILIAR</th>
+                      <th scope="col">MARCA</th>
+                      <th scope="col">MODELO</th>
                       <th scope="col">STATUS</th>
                       <th scope="col" className="text-right">AÇÃO</th>
                       <th scope="col" />
@@ -202,7 +209,10 @@ class ListTaxi extends React.Component {
                   </tbody>
                 </Table>
                 <CardFooter>
-                 <Pagination items={this.state.taxis} onChangePage={this.onChangePage} customStyle={customElements.style} customLabels={customLabels} />
+                 <Pagination items={this.state.taxis} 
+                              onChangePage={this.onChangePage} 
+                              customStyle={customElements.style} 
+                              customLabels={customLabels} />
                 </CardFooter>
               </Card>
              
