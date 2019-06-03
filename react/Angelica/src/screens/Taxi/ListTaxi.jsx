@@ -1,5 +1,6 @@
 import React from "react";
 
+
 // reactstrap components
 import {
   Badge,
@@ -12,7 +13,6 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   Media,
-  Pagination,
   PaginationItem,
   PaginationLink,
   Progress,
@@ -33,18 +33,129 @@ import {
 } from "reactstrap";
 // core components
 import Header from "components/Taxi/Headers/Header.jsx";
+import Pagination from "components/Admin/Pagination/Pagination.jsx"
+  
+const customLabels = {
+
+      first: '<<',
+      last: '>>',
+      previous: '<',
+      next: '>'
+  
+};
+
+const customStyle = {
+  cursor: "Pointer"
+
+};
 
 
 class ListTaxi extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      taxis: [],
+      pageOfItems: []
+  
+    }
+    this.onChangePage = this.onChangePage.bind(this);
+
+  }
+
+  
+  
+
+  componentDidMount() {
+    fetch('/taxis')
+    .then(res => res.json())
+    .then((data) => {
+      this.setState({ taxis: data.data,
+                      pageOfItems: []
+       })
+    }
+    
+    )
+    .catch(console.log)
+
+  }
+
+  onChangePage(pageOfItems) {
+    // update state with new page of items
+    this.setState({ pageOfItems: pageOfItems });
+  }
+
+  
+
+
+
+
   render() {
+      const taxis  = this.state.pageOfItems.map((item, key) =>
+                 <tr>
+                      <th scope="row">
+                        <Media className="align-items-center">
+                          <Media>
+                            <span className="mb-0 text-sm">
+                            {item.placa}
+                            </span>
+                          </Media>
+                        </Media>
+                      </th>
+                      <td>{item.marca}</td>
+                      <td>{item.modelo}</td>
+                      <td>
+                        <Badge color="" className="badge-dot mr-4">
+                          <i className="bg-warning" />
+                          Inativo
+                        </Badge>
+                      </td>
+                      <td className="text-right">
+                        <UncontrolledDropdown>
+                          <DropdownToggle
+                            className="btn-icon-only text-light"
+                            href="#pablo"
+                            role="button"
+                            size="sm"
+                            color=""
+                            onClick={e => e.preventDefault()}
+                          >
+                            <i className="fas fa-ellipsis-v" />
+                          </DropdownToggle>
+                          <DropdownMenu className="dropdown-menu-arrow" right>
+                            <DropdownItem
+                              href="#pablo"
+                              onClick={e => e.preventDefault()}
+                            >
+                              Adicionar
+                            </DropdownItem>
+                            <DropdownItem
+                              href="#pablo"
+                              onClick={e => e.preventDefault()}
+                            >
+                              Editar
+                            </DropdownItem>
+                            <DropdownItem
+                              href="#pablo"
+                              onClick={e => e.preventDefault()}
+                            >
+                              Excluir
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                      </td>
+                </tr>
+      )
+    
+    
+
     return (
       <>
+     
         <Header />
         {/* Page content */}
         <Container className="mt--7" fluid>
           {/* Table */}
           <Row>
-         
             <div className="col">
               <Card className="shadow">
                 <CardHeader className="border-0">
@@ -87,163 +198,15 @@ class ListTaxi extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th scope="row">
-                        <Media className="align-items-center">
-                          <Media>
-                            <span className="mb-0 text-sm">
-                              UEA-2015
-                            </span>
-                          </Media>
-                        </Media>
-                      </th>
-                      <td>Raí</td>
-                      <td>Wilson</td>
-                      <td>
-                        <Badge color="" className="badge-dot mr-4">
-                          <i className="bg-warning" />
-                          Ativo
-                        </Badge>
-                      </td>
-                      <td className="text-right">
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            className="btn-icon-only text-light"
-                            href="#pablo"
-                            role="button"
-                            size="sm"
-                            color=""
-                            onClick={e => e.preventDefault()}
-                          >
-                            <i className="fas fa-ellipsis-v" />
-                          </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-arrow" right>
-                            
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
-                            >
-                              Editar
-                            </DropdownItem>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
-                            >
-                              Excluir
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <Media className="align-items-center">
-                          <Media>
-                            <span className="mb-0 text-sm">
-                              NOP-0531
-                            </span>
-                          </Media>
-                        </Media>
-                      </th>
-                      <td>Fulano</td>
-                      <td>Sicrano</td>
-                      <td>
-                        <Badge color="" className="badge-dot mr-4">
-                          <i className="bg-warning" />
-                          Inativo
-                        </Badge>
-                      </td>
-                      <td className="text-right">
-                        <UncontrolledDropdown>
-                          <DropdownToggle
-                            className="btn-icon-only text-light"
-                            href="#pablo"
-                            role="button"
-                            size="sm"
-                            color=""
-                            onClick={e => e.preventDefault()}
-                          >
-                            <i className="fas fa-ellipsis-v" />
-                          </DropdownToggle>
-                          <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
-                            >
-                              Adicionar
-                            </DropdownItem>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
-                            >
-                              Editar
-                            </DropdownItem>
-                            <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
-                            >
-                              Excluir
-                            </DropdownItem>
-                          </DropdownMenu>
-                        </UncontrolledDropdown>
-                      </td>
-                    </tr>
-                    
+                      {taxis}
                   </tbody>
                 </Table>
-                <CardFooter className="py-4">
-                  <nav aria-label="...">
-                    <Pagination
-                      className="pagination justify-content-end mb-0"
-                      listClassName="justify-content-end mb-0"
-                    >
-                      <PaginationItem className="disabled">
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                          tabIndex="-1"
-                        >
-                          <i className="fas fa-angle-left" />
-                          <span className="sr-only">Previous</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem className="active">
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          1
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          2 <span className="sr-only">(current)</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          3
-                        </PaginationLink>
-                      </PaginationItem>
-                      <PaginationItem>
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={e => e.preventDefault()}
-                        >
-                          <i className="fas fa-angle-right" />
-                          <span className="sr-only">Next</span>
-                        </PaginationLink>
-                      </PaginationItem>
-                    </Pagination>
-                  </nav>
+                <CardFooter>
+                 <Pagination items={this.state.taxis} onChangePage={this.onChangePage} customStyle={customElements.style} customLabels={customLabels} />
                 </CardFooter>
               </Card>
+             
+
             </div>
           </Row>
         </Container>

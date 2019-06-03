@@ -46,10 +46,12 @@
   "dependencies": {
     "chart.js": "2.7.3",
     "classnames": "2.2.6",
+    "jw-react-pagination": "^1.1.0",
     "moment": "2.24.0",
     "node-sass": "4.11.0",
     "nouislider": "13.1.1",
     "react": "16.8.4",
+    "react-bootstrap": "^1.0.0-beta.9",
     "react-chartjs-2": "2.7.4",
     "react-copy-to-clipboard": "5.0.1",
     "react-datetime": "2.16.3",
