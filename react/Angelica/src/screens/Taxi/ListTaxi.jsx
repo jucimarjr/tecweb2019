@@ -58,7 +58,8 @@ class ListTaxi extends React.Component {
       pageOfItems: []
   
     }
-    this.onChangePage = this.onChangePage.bind(this);
+    this.onChangePage = this.onChangePage.bind(this)
+    this.search = this.search.bind(this)
 
   }
 
@@ -84,13 +85,13 @@ class ListTaxi extends React.Component {
     this.setState({ pageOfItems: pageOfItems });
   }
 
-  
-
-
+  search(e){
+    console.log(this.placa)
+  }
 
 
   render() {
-      const taxis  = this.state.pageOfItems.map((item, key) =>
+      const taxis  = this.state.pageOfItems.map((item) =>
                  <tr>
                       <th scope="row">
                         <Media className="align-items-center">
@@ -167,25 +168,29 @@ class ListTaxi extends React.Component {
               <Card className="shadow">
                 <CardHeader className="border-0">
                 <Row>
-                  <Col md="4">
+                  <Col md="3">
                     <FormGroup>
                       <h3 className="mb-0">Buscar Táxi</h3>
                     </FormGroup>
                   </Col>
-                  <Col md="4">
+                  <Col md="5">
                     <FormGroup>
                       <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="fas fa-search" /> 
-                          </InputGroupText>
-                        </InputGroupAddon>
-                      <Input placeholder="Placa" type="text" />
+                      <Input placeholder="Placa" type="text" onChange={e => this.placa = e.target.value}  />
+                      <Button className="btn-icon btn-3" color="primary" type="button" onClick={this.search}>
+                          Procurar
+                        </Button>
                       </InputGroup>
                     </FormGroup>
+                    
                   </Col>
                   <Col md="4">
-                    <Button className="btn-icon btn-2" color="primary" type="button" className="float-right">
+                    <Button className="btn-icon btn-2" 
+                          color="primary" 
+                          type="button" 
+                          className="float-right"
+                          href="/taxi/addtaxi"
+                    >
                           <span className="btn-inner--icon">
                             <i className="ni ni-fat-add" />
                           </span>
