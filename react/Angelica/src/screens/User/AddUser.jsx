@@ -32,7 +32,7 @@ class Profile extends React.Component {
                 <CardHeader className="bg-white border-0">
                   <Row className="align-items-center">
                     <Col xs="8">
-                      <h3 className="mb-0">Cadastrar Motorista</h3>
+                      <h3 className="mb-0">Cadastrar Usuário</h3>
                     </Col>
                   </Row>
                 </CardHeader>
@@ -40,57 +40,7 @@ class Profile extends React.Component {
                   <Form>
                     <div className="pl-lg-4">
                       <Row>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-cpf"
-                            >
-                              CPF
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              id="input-cpf"
-                              placeholder="123.456.789-10"
-                              type="text"
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-rg"
-                            >
-                              RG
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              id="input-rg"
-                              placeholder="1234567-8"
-                              type="text"
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-renach"
-                            >
-                              Renach
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              id="input-renach"
-                              placeholder="AM123456789"
-                              type="text"
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col lg="4">
+                        <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -106,83 +56,55 @@ class Profile extends React.Component {
                             />
                           </FormGroup>
                         </Col>
-                        <Col lg="4">
+                        <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-tel"
+                              htmlFor="input-cpf"
                             >
-                              Telefone
+                              CPF
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-tel"
-                              placeholder="(92) 91234-5678"
+                              id="input-cpf"
+                              placeholder="123.456.789-10"
                               type="text"
                             />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="4">
-                          <FormGroup>
-                            <div class="form-group">
-                              <label className="form-control-label" for="exampleFormControlSelect1">Status</label>
-                              <select class="form-control" id="exampleFormControlSelect1">
-                                <option>Escolha...</option>
-                                <option>Ativo</option>
-                                <option>Inativo</option>
-                              </select>
-                            </div>
                           </FormGroup>
                         </Col>
                       </Row>
                       <Row>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-cep"
-                            >
-                              CEP
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              id="input-cep"
-                              placeholder="69123-456"
-                              type="text"
-                            />
-                          </FormGroup>
+                        <Col lg="6">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-cpf"
+                              >
+                                Senha
+                              </label>
+                              <Input
+                                className="form-control-alternative"
+                                id="input-senha"
+                                placeholder="161651651"
+                                type="text"
+                              />
+                            </FormGroup>
                         </Col>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-bairro"
-                            >
-                              Bairro
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              id="input-bairro"
-                              placeholder="Aleixo"
-                              type="text"
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="4">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-rua"
-                            >
-                              Rua
-                            </label>
-                            <Input
-                              className="form-control-alternative"
-                              id="input-rua"
-                              placeholder="Rua Tiradentes"
-                              type="text"
-                            />
-                          </FormGroup>
+                        <Col lg="6">
+                            <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-conf-senha"
+                              >
+                                Confirme sua senha
+                              </label>
+                              <Input
+                                className="form-control-alternative"
+                                id="input-cpf"
+                                placeholder="161651651"
+                                type="text"
+                              />
+                            </FormGroup>
                         </Col>
                       </Row>
                     </div>

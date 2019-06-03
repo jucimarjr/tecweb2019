@@ -29,6 +29,16 @@ var routes = [
     icon: "ni ni-single-02 text-yellow",
     component: ListUser,
     layout: "/admin"
+  }, 
+  {
+    path: "/edit-user",
+    component: EditUser,
+    layout: "/admin"
+  },
+  {
+    path: "/add-user",
+    component: AddUser,
+    layout: "/admin"
   },
   {
     path: "/register",
