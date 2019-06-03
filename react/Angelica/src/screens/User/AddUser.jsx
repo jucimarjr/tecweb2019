@@ -19,6 +19,47 @@ import Header from "components/Login/Headers/UserHeader.jsx";
 
 
 class Profile extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+        message : ''
+    };
+  }
+
+  add = () => {
+    const data = { cpf: this.cpf, 
+                  nome: this.nome,
+                  senha: this.senha,
+                  status: this.status
+                };
+    const requestInfo = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        }),
+    };
+
+    fetch('/user/register', requestInfo)
+            .then(response => {
+                if(response.ok) {
+                    return response.json()
+                }
+                throw new Error("...");
+            })
+            .then(resposta => {
+                if (resposta) {
+                    
+                }else {
+                    this.setState({message: resposta.message})
+                }
+            })
+            .catch(e => {
+                this.setState({ message: e.message });
+            });
+
+
+  }
   render() {
     return (
       <>
@@ -53,6 +94,7 @@ class Profile extends React.Component {
                               id="input-nome"
                               placeholder="José da Silva"
                               type="text"
+                              onChange={e => this.nome = e.target.value}
                             />
                           </FormGroup>
                         </Col>
@@ -67,8 +109,8 @@ class Profile extends React.Component {
                             <Input
                               className="form-control-alternative"
                               id="input-cpf"
-                              placeholder="123.456.789-10"
                               type="text"
+                              onChange={e => this.cpf = e.target.value}
                             />
                           </FormGroup>
                         </Col>
@@ -78,15 +120,15 @@ class Profile extends React.Component {
                             <FormGroup>
                               <label
                                 className="form-control-label"
-                                htmlFor="input-cpf"
+                                htmlFor="input-senha"
                               >
                                 Senha
                               </label>
                               <Input
                                 className="form-control-alternative"
                                 id="input-senha"
-                                placeholder="161651651"
                                 type="text"
+                                onChange={e => this.senha = e.target.value}
                               />
                             </FormGroup>
                         </Col>
@@ -100,8 +142,7 @@ class Profile extends React.Component {
                               </label>
                               <Input
                                 className="form-control-alternative"
-                                id="input-cpf"
-                                placeholder="161651651"
+                                id="input-conf-senha"
                                 type="text"
                               />
                             </FormGroup>
