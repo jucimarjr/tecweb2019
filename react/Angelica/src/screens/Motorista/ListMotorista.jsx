@@ -24,15 +24,105 @@ import {
 } from "reactstrap";
 // core components
 
+import axios from 'axios';
+
 import Header from "components/Login/Headers/UserHeader.jsx";
 
 
 class ListMotorista extends React.Component {
+
+  constructor() {
+    super();
+
+    
+    this.state = {
+      motoristas: [],
+    }
+  }
+
+  componentDidMount() {
+
+    const requestInfo = {
+      method: 'GET',
+      crossDomain:true,
+      // mode: 'no-cors',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json', 'accept':'application/json' }
+    };
+    axios.get(`http://191.252.184.28/drivers`,{ headers: requestInfo})
+    .then(res => {
+      console.log(res)
+      // const persons = res.data;
+      // this.setState({ persons }
+    });
+    // fetch('http://191.252.184.28/drivers').then(results =>  console.log(results)).catch( r => console.log)
+    // fetch('https://randomuser.me/api/?results=10', requestInfo).then(results =>  console.log(results))//.then(data => {
+      // let motoristas = data.results.map((drive) => {
+      //   return (
+      //     <tr>
+      //       <th scope="row">
+      //         <span className="mb-0 text-sm">
+      //           drive.cpf
+      //         </span>
+      //       </th>
+      //       <td>
+      //         <span className="mb-0 text-sm">
+      //           drive.rg
+      //         </span></td>
+      //       <td>
+      //         <span className="mb-0 text-sm">
+      //           drive.nome
+      //         </span>
+      //       </td>
+      //       <td>
+      //         <span className="mb-0 text-sm">
+      //           drive.renach
+      //         </span>
+      //       </td>
+      //       <td>
+      //         <span className="mb-0 text-sm">
+      //           drive.telefone
+      //         </span>
+      //       </td>
+      //       <td>
+      //         <span className="mb-0 text-sm">
+      //           drive.cep
+      //         </span>
+      //       </td>
+      //       <td>
+      //         <span className="mb-0 text-sm">
+      //           drive.rua
+      //         </span>
+      //       </td>
+      //       <td>
+      //         <span className="mb-0 text-sm">
+      //           drive.bairro
+      //         </span>
+      //       </td>
+      //       <td className="text-right">
+      //         <Button
+      //           color="primary"
+      //           href="edit-motorista"
+      //           // onClick={e => e.preventDefault()}
+      //           size="sm"
+      //         >
+      //           Editar
+      //                 </Button>
+      //       </td>
+      //     </tr>
+      //   )
+      // })
+    //   this.setState({motoristas: data});
+    //   console.log("Motoristas", this.state.motoristas);
+    // })
+  }
+
+
   render() {
     return (
       <>
         {/* <Header /> */}
-        <Header/>
+        <Header />
         {/* Page content */}
         <Container className="mt-3" fluid>
           {/* Dark table */}
@@ -46,7 +136,7 @@ class ListMotorista extends React.Component {
                   <Col className="text-right" xs="12">
                     <Button
                       color="primary"
-                      href="adicionar"
+                      href="add-motorista"
                       // onClick={e => e.preventDefault()}
                       size="sm"
                     >
@@ -74,62 +164,7 @@ class ListMotorista extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th scope="row">
-                        <span className="mb-0 text-sm">
-                          123.456.789-10
-                        </span>
-                      </th>
-                      <td>
-                        <span className="mb-0 text-sm">
-                          1234567-8
-                        </span></td>
-                      <td>
-                        <span className="mb-0 text-sm">
-                          João da Silva
-                        </span>
-                      </td>
-                      <td>
-                        <span className="mb-0 text-sm">
-                          AM123456789
-                        </span>
-                      </td>
-                      <td>
-                        <span className="mb-0 text-sm">
-                          (92) 91234-5678
-                        </span>
-                      </td>
-                      <td>
-                        <span className="mb-0 text-sm">
-                          Ativo
-                        </span>
-                      </td>
-                      <td>
-                        <span className="mb-0 text-sm">
-                          69123-456
-                        </span>
-                      </td>
-                      <td>
-                        <span className="mb-0 text-sm">
-                          Rua Tiradentes
-                        </span>
-                      </td>
-                      <td>
-                        <span className="mb-0 text-sm">
-                          Aleixo
-                        </span>
-                      </td>
-                      <td className="text-right">
-                        <Button
-                          color="primary"
-                          href="editar"
-                          // onClick={e => e.preventDefault()}
-                          size="sm"
-                        >
-                          Editar
-                      </Button>
-                      </td>
-                    </tr>
+                    {this.state.motoristas}
                   </tbody>
                 </Table>
               </Card>

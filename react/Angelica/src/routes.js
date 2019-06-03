@@ -84,6 +84,20 @@ var routes = [
     component: ListMotorista,
     layout: "/motorista"
   },
+  {
+    path: "/add-motorista",
+    name: "Motorista",
+    icon: "ni ni-circle-08 text-pink",
+    component: AddMotorista,
+    layout: "/motorista"
+  },
+  {
+    path: "/edit-motorista",
+    name: "Motorista",
+    icon: "ni ni-circle-08 text-pink",
+    component: EditMotorista,
+    layout: "/motorista"
+  }
  
 ];
 export default routes;
