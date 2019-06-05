@@ -1,0 +1,31 @@
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 3px;
+  text-decoration: none;
+  font-size: 11px
+}
+
+li a:active {
+  text-decoration: underline;
+  color: blue;
+
+
+}
+
+li a:hover {
+  text-decoration: underline;
+
+}

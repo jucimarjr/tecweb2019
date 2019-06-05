@@ -35,78 +35,32 @@ import {
 import Header from "components/Taxi/Headers/Header.jsx";
 import Pagination from "components/Admin/Pagination/Pagination.jsx"
   
-const customLabels = {
-
-      first: '<<',
-      last: '>>',
-      previous: '<',
-      next: '>'
-  
-};
-
-const customStyle = {
-  cursor: "Pointer"
-
-};
-
 
 class ListTaxi extends React.Component {
   constructor(props) {
     super(props)
+    this.placa = ''
+    this.taxisObjetos = ''
     this.state = {
       taxis: [],
       pageOfItems: []
-  
     }
     this.onChangePage = this.onChangePage.bind(this)
-    this.search = this.search.bind(this)
-    this.dados = []
+    this.onclick = this.onclick.bind(this)
+    this.componentDidMount = this.componentDidMount(this)
   }
-
-  search = () => {
-     
-     
-      if (this.placa !== undefined) {
-        
-        const data = { placa: this.placa };
-      
-        const requestInfo = {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            }),
-        };
-
-        fetch('/taxi', requestInfo)
-          .then(res => res.json())
-            .then((data) => {
-              this.dados.push(data.data)
-              this.setState({ taxis: this.dados,
-                              pageOfItems: []
-                        })
-            } 
-            )
-          .catch(console.log)
-            .catch(e => {
-            });
-        }else{
-          this.componentDidMount()
-        }
-  
-  }
-
-  
 
   componentDidMount() {
       fetch('/taxis')
       .then(res => res.json())
       .then((data) => {
+        this.taxisObjetos = data
         this.setState({ taxis: data.data,
-                        pageOfItems: []
+                         pageOfItems: []
+
         })
       }
-    )
+    ) 
       .catch(console.log)
   }
 
@@ -114,10 +68,23 @@ class ListTaxi extends React.Component {
     // update state with new page of items
     this.setState({ pageOfItems: pageOfItems });
   }
-
+  
+  onclick = () => {
+    console.log(this.placa)
+    if (this.placa !== '') {
+        const dados = []
+        const data = this.state.taxis.filter(taxi => {
+        return taxi.placa.toLowerCase().indexOf(this.placa.toLowerCase()) !== -1;
+      })
+      this.setState({ taxis: data})
+    }else{
+      this.setState({taxis: this.taxisObjetos.data})
+    }
+  
+  }
 
   render() {
-      const taxis  = this.state.pageOfItems.map((item) =>
+      const renderTaxis  = this.state.pageOfItems.map( item  =>
                  <tr>
                       <th scope="row">
                         <Media className="align-items-center">
@@ -130,6 +97,7 @@ class ListTaxi extends React.Component {
                       </th>
                       <td>{item.marca}</td>
                       <td>{item.modelo}</td>
+                      <td>{item.ano}</td>
                       <td>
                       
                           {
@@ -143,11 +111,7 @@ class ListTaxi extends React.Component {
                                 Inativo
                             </Badge>
                           )}
-                        
-
-                             
-                          
-                          
+                      
                       </td>
                       <td className="text-right">
                         <UncontrolledDropdown>
@@ -202,8 +166,8 @@ class ListTaxi extends React.Component {
                   <Col md="5">
                     <FormGroup>
                       <InputGroup className="input-group-alternative">
-                      <Input placeholder="Placa" type="text" onChange={e => this.placa = e.target.value}  />
-                      <Button className="btn-icon btn-3" color="primary" type="button" onClick={this.search}>
+                      <Input placeholder="Placa" type="text"  onChange={e => this.placa = e.target.value}  />
+                      <Button className="btn-icon btn-3" color="primary" type="button" onClick={this.onclick}>
                           Procurar
                         </Button>
                       </InputGroup>
@@ -229,20 +193,20 @@ class ListTaxi extends React.Component {
                       <th scope="col">PLACA</th>
                       <th scope="col">MARCA</th>
                       <th scope="col">MODELO</th>
+                      <th scope="col">Ano</th>
                       <th scope="col">STATUS</th>
                       <th scope="col" className="text-right">AÇÃO</th>
                       <th scope="col" />
                     </tr>
                   </thead>
                   <tbody>
-                      {taxis}
+                      {renderTaxis}
                   </tbody>
                 </Table>
                 <CardFooter>
                  <Pagination items={this.state.taxis} 
                               onChangePage={this.onChangePage} 
-                              customStyle={customElements.style} 
-                              customLabels={customLabels} />
+                             />
                 </CardFooter>
               </Card>
              

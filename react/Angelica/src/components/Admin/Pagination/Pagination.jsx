@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
+import styles from './Pagination.css'
+
+
 
 const propTypes = {
     items: PropTypes.array.isRequired,
     onChangePage: PropTypes.func.isRequired,
     initialPage: PropTypes.number,
     pageSize: PropTypes.number
+
 }
 
 const defaultProps = {
@@ -113,10 +117,10 @@ class Pagination extends React.Component {
         }
 
         return (
-            <ul className="pagination">
-                <li className={pager.currentPage === 1 ? 'disabled' : ''}>
-                    <a onClick={() => this.setPage(1)}>Primeiro</a>
-                </li>
+            <ul className="pagination justify-content-center" >
+                <li   className={pager.currentPage === 1 ? 'disabled' : ''} >
+                    <a onClick={() => this.setPage(1)}> Primeiro </a>
+                 </li>
                 <li className={pager.currentPage === 1 ? 'disabled' : ''}>
                     <a onClick={() => this.setPage(pager.currentPage - 1)}>Anterior</a>
                 </li>
@@ -133,6 +137,7 @@ class Pagination extends React.Component {
                 </li>
             </ul>
 
+
                 
             
         );
@@ -141,4 +146,5 @@ class Pagination extends React.Component {
 
 Pagination.propTypes = propTypes;
 Pagination.defaultProps = defaultProps;
+
 export default Pagination;
