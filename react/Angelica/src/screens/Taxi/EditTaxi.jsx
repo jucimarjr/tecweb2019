@@ -23,7 +23,7 @@ import Header from "components/Taxi/Headers/Header.jsx";
 
 
 
-class AddTaxi extends React.Component {
+class EditTaxi extends React.Component {
 
   constructor(props) {
     super(props)
@@ -34,7 +34,33 @@ class AddTaxi extends React.Component {
     };
 }
 
-  add = () => {
+componentDidMount() {
+  fetch('/taxis')
+  .then(res => res.json())
+  .then((data) => {
+    this.taxisObjetos = data
+    this.setState({ taxis: data.data,
+                     pageOfItems: []
+
+    })
+    
+    if (this.props.location.state.message !== '' ) {
+      this.setState({message: this.props.location.state.message,                        
+                     visible:  true
+                    })
+      
+    }
+    console.log(this.props.location.state.message)
+    
+
+
+  }
+) 
+  .catch(console.log)
+}  
+
+
+  edit = () => {
     const data = { renavam: this.renavam, 
                   chassi: this.chassi,
                   marca: this.marca,
