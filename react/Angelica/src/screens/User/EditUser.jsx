@@ -32,7 +32,7 @@ class Profile extends React.Component {
                 <CardHeader className="bg-white border-0">
                   <Row className="align-items-center">
                     <Col xs="8">
-                      <h3 className="mb-0">Cadastrar Usuário</h3>
+                      <h3 className="mb-0">Editar Usuário</h3>
                     </Col>
                   </Row>
                 </CardHeader>
@@ -51,7 +51,7 @@ class Profile extends React.Component {
                             <Input
                               className="form-control-alternative"
                               id="input-nome"
-                              placeholder="José da Silva"
+                              onChange={e => this.nome = e.target.value}
                               type="text"
                             />
                           </FormGroup>
@@ -67,7 +67,7 @@ class Profile extends React.Component {
                             <Input
                               className="form-control-alternative"
                               id="input-cpf"
-                              placeholder="123.456.789-10"
+                              onChange={e => this.cpf = e.target.value}
                               type="text"
                             />
                           </FormGroup>
@@ -85,7 +85,7 @@ class Profile extends React.Component {
                               <Input
                                 className="form-control-alternative"
                                 id="input-senha"
-                                placeholder="161651651"
+                                onChange={e => this.senha = e.target.value}
                                 type="text"
                               />
                             </FormGroup>
@@ -101,7 +101,6 @@ class Profile extends React.Component {
                               <Input
                                 className="form-control-alternative"
                                 id="input-cpf"
-                                placeholder="161651651"
                                 type="text"
                               />
                             </FormGroup>
@@ -110,14 +109,18 @@ class Profile extends React.Component {
                       <Row>
                         <Col lg="4">
                           <FormGroup>
-                            <div class="form-status">
-                              <label className="form-control-label" for="exampleFormControlSelect1">Status</label>
-                              <select class="form-control" id="exampleFormControlSelect1">
-                                <option>Escolha...</option>
-                                <option>Ativo</option>
-                                <option>Inativo</option>
-                              </select>
-                            </div>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-status"
+                            >
+                              Status
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-status"
+                              type="integer"
+                              onChange={e => this.status = e.target.value}
+                            />
                           </FormGroup>
                         </Col>
                       </Row>
