@@ -110,6 +110,12 @@ class ListTaxi extends React.Component {
     });
   }
 
+  editTaxi = (e) => {
+
+   // console.log(e.current.target.textContent)
+
+  }
+
   render() {
       const renderTaxis  = this.state.pageOfItems.map( item  =>
                  <tr>
@@ -154,13 +160,12 @@ class ListTaxi extends React.Component {
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
                             <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
+                              href=""
+                              onClick={this.editTaxi}
                             >
                               Editar
                             </DropdownItem>
                             <DropdownItem
-                              href="#pablo"
                               onClick={e => e.preventDefault()}
                             >
                               Excluir
