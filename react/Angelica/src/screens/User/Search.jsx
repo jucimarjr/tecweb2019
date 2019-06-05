@@ -12,6 +12,8 @@ import {
   Col,
   Container,
   Button,
+  Card,
+  CardBody
   
 } from "reactstrap";
 import Header from "components/Taxi/Headers/Header.jsx";
@@ -22,7 +24,9 @@ class Forms extends React.Component {
     super(props)
     this.state = {
         message : '',
-        status: ''
+        status: '',
+        result: '',
+        driver: {}
 
     };
 }
@@ -48,18 +52,22 @@ class Forms extends React.Component {
                 throw new Error("...");
             })
             .then(resposta => {
-                if (resposta) {
+                if (resposta.status == 200) {
+                  //console.log(resposta.data)
                   this.setState({message: resposta.message
                   })
+                  this.setState({driver: resposta.data[0]})
                   this.props.history.push({
                             pathname: '/user/search-result',
-                            state: { message: resposta.message}
+                            taxi: { message: resposta.message, dados: resposta.data[0]}
 
                   })
                   
                 }else {
                     this.setState({message: resposta.message})
                 }
+
+              
             })
             .catch(e => {
                 this.setState({ message: e.message });
@@ -67,47 +75,36 @@ class Forms extends React.Component {
 
 
   }
+
+  onclick = () => {
+    console.log(this.taxi)
+
+  }
+  onChangePage(result) {
+    // update state with new page of items
+    this.setState({ result: result });
+  }
   
 
   render() {
     
-      const renderSearch = <Container>
-      {
-        this.state.status == '200' ? (
-          
-          console.log("ok")
-        ) :
-
-        this.state.status !== '' && this.state.status !== '200' ? (
-          console.log("erro")
-        ) : ''
-      }
-      <SearchResult />
-       
-        </Container>
-      
+    //const renderSearch = <SearchResult taxi= {this.state.driver} />
     
-
     return (
       <>
-      
-      <form className="mt-4 mb-3 d-md-none">
-          <div className="input-group-rounded input-group-merge input-group">
-          <InputGroup className="input-group-alternative">
-          <Input placeholder="Placa" type="text"  onChange={e => this.taxi = e.target.value}  />
-          <Button className="btn-icon btn-3" color="primary" type="button" onClick={this.search}>
-              Procurar
-            </Button>
-          </InputGroup>
-            
-          </div>
+        <form className="mt-4 mb-3 d-md-none">
+            <div className="input-group-rounded input-group-merge input-group">
+            <InputGroup className="input-group-alternative">
+            <Input placeholder="Placa" type="text"  onChange={e => this.taxi = e.target.value}  />
+            <Button className="btn-icon btn-3" color="primary" type="button" onClick={this.search}>
+                Procurar
+              </Button>
+            </InputGroup>
+              
+            </div>
         </form>
-        
-    </>
-
+      </>
     );
-
-    
   }
 }
 

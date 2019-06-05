@@ -20,11 +20,27 @@ import {
   CardText
 } from "reactstrap";
 
+import Search from "screens/User/Search.jsx";
+
 class SearchResult extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      driver: {}
+
+    };
+  }
+
   render() {
+
+
+    {
+      console.log(this.props)
+    }
     return (
       <>
         <Container className="mt-4 mb-3 " fluid>
+          <Search />
           <Row>
             <Col className="order-xl-2 mb-xl-0" xl="1">
               <Card className="">
@@ -40,9 +56,10 @@ class SearchResult extends React.Component {
                       onClick={e => e.preventDefault()}
                       size="sm"
                     >
-                      {/*status user*/}
-                      Ativo
-                        </Button>
+                    {
+                      this.props.location.taxi.dados.reg_taxi_taxi_status == 0 ? 'Ativo' : 'Inativo'
+                    }
+                    </Button>
                   </Col>
                 </Row>
 
@@ -51,15 +68,27 @@ class SearchResult extends React.Component {
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                         <div>
-                          <span className="heading">ABC-123</span>
+                          <span className="heading">
+                            {
+                              this.props.location.taxi.dados.reg_taxi_taxi_placa
+                            }
+                          </span>
                           <span className="description">Placa</span>
                         </div>
                         <div>
-                          <span className="heading">11111</span>
+                          <span className="heading">
+                            {
+                              this.props.location.taxi.dados.reg_taxi_taxi_renavam
+                            }
+                          </span>
                           <span className="description">Renavam</span>
                         </div>
                         <div>
-                          <span className="heading">Wolks</span>
+                          <span className="heading">
+                          {
+                              this.props.location.taxi.dados.reg_taxi_taxi_marca
+                          }
+                          </span>
                           <span className="description">Marca</span>
                         </div>
                         
@@ -68,28 +97,51 @@ class SearchResult extends React.Component {
                     <div className="col">
                       <div className="card-profile-stats d-flex justify-content-center">
                       <div>
-                          <span className="heading">ABCSDFS-123</span>
+                          <span className="heading">
+                          {
+                              this.props.location.taxi.dados.reg_taxi_taxi_chassi
+                          }
+                          </span>
                           <span className="description">Chassi</span>
                         </div>
                         <div>
-                          <span className="heading">Gol</span>
+                          <span className="heading">
+                          {
+                              this.props.location.taxi.dados.reg_taxi_taxi_modelo
+                          }
+                          </span>
                           <span className="description">Modelo</span>
                         </div>
-                        <div>
-                          <span className="heading">2010</span>
+                      </div>
+                      
+                    </div>
+                    <div className="col">
+                      <div className="card-profile-stats d-flex justify-content-center">
+                      <div>
+                          <span className="heading">
+                          {
+                              this.props.location.taxi.dados.reg_taxi_taxi_ano
+                          }
+                          </span>
                           <span className="description">Ano</span>
-                        </div>
+                      </div>
                       </div>
                     </div>
                   </Row>
                   <div className="text-center">
                     <h3>
-                      João Batista
-                    <span className="font-weight-light">, 019.176.942-44</span>
+                      {
+                        this.props.location.taxi.dados.reg_motorista_mot_nome
+                      }
+                    <span className="font-weight-light">, 
+                      {
+                        this.props.location.taxi.dados.reg_motorista_mot_cpf
+                      }
+                    </span>
                     </h3>
                     <div className="h5 font-weight-300">
                       <i className="ni location_pin mr-2" />
-                      Motorista Proprietário
+                        Motorista Principal
                   </div>
                     <h3>
                       Marcos Lima
