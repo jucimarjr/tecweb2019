@@ -17,14 +17,15 @@ import {
 // core components
 
 import Header from "components/Login/Headers/UserHeader.jsx";
-
+import { Redirect } from 'react-router-dom'
 
 class Profile extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      message: ''
+      message: '',
+      status: ''
     };
   }
 
@@ -41,7 +42,6 @@ class Profile extends React.Component {
       status: parseInt(this.status)
     };
 
-    console.log(data);
     const requestInfo = {
       method: 'POST',
       body: JSON.stringify(data),
@@ -59,10 +59,9 @@ class Profile extends React.Component {
       })
       .then(resposta => {
         if (resposta) {
-            console.log(resposta);
-        } else {
-
-          this.setState({ message: resposta.message })
+          console.log(resposta);
+          this.setState({ message: resposta.message });
+          this.setState({ status: resposta.status });
         }
       })
       .catch(e => {
@@ -85,7 +84,12 @@ class Profile extends React.Component {
                       Cadastrar Motorista
                     </h6>
                     {
-                      this.state.message !== '' ? (
+                      this.state.status == '200' ? (
+                        <Alert color="success" className="text-center" href="/motorista/list-motorista"> {this.state.message} </Alert>,
+                        <Redirect to="/motorista/list-motorista"></Redirect>
+                      ) :
+
+                      this.state.status !== '' && this.state.status !== '200' ? (
                         <Alert color="danger" className="text-center"> {this.state.message} </Alert>
                       ) : ''
                     }
@@ -103,8 +107,9 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="cpf"
                               type="integer"
-                              onChange={e => this.cpf = e.target.value}
+                              onChange={ e => {this.cpf = e.target.value}}
                             />
+                           
                           </FormGroup>
                           <FormGroup>
                             <label
@@ -117,7 +122,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="nome"
                               type="text"
-                              onChange={e => this.nome = e.target.value}
+                              onChange={e => {this.nome = e.target.value;}}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -131,7 +136,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="rg"
                               type="integer"
-                              onChange={e => this.rg = e.target.value}
+                              onChange={e => {this.rg = e.target.value;}}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -145,7 +150,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="renach"
                               type="text"
-                              onChange={e => this.renach = e.target.value}
+                              onChange={e => {this.renach = e.target.value;}}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -159,7 +164,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="bairro"
                               type="text"
-                              onChange={e => this.bairro = e.target.value}
+                              onChange={e => {this.bairro = e.target.value;}}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -173,7 +178,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="rua"
                               type="text"
-                              onChange={e => this.rua = e.target.value}
+                              onChange={e => {this.rua = e.target.value;}}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -187,7 +192,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="cep"
                               type="integer"
-                              onChange={e => this.cep = e.target.value}
+                              onChange={e => {this.cep = e.target.value;}}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -201,7 +206,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="telefone"
                               type="integer"
-                              onChange={e => this.telefone = e.target.value}
+                              onChange={e => {this.telefone = e.target.value;}}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -215,7 +220,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="status"
                               type="integer"
-                              onChange={e => this.status = e.target.value}
+                              onChange={e => {this.status = e.target.value;}}
                             />
                           </FormGroup>
                         </Col>

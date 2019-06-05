@@ -31,6 +31,7 @@ import {
 
 import Header from "components/Login/Headers/UserHeader.jsx";
 import Pagination from "components/Admin/Pagination/Pagination.jsx"
+import { Redirect } from 'react-router-dom'
 
 const customLabels = {
 
@@ -49,14 +50,19 @@ const customStyle = {
 
 class ListMotorista extends React.Component {
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       motoristas: [],
-      pageOfItems: []
+      pageOfItems: [],
+      cpf: ''
     }
     this.onChangePage = this.onChangePage.bind(this)
     this.search = this.search.bind(this)
+  }
+
+  myCallback = (dataCpf) => {
+    this.setState({ cpf: dataCpf });
   }
 
   componentDidMount() {
@@ -102,7 +108,6 @@ class ListMotorista extends React.Component {
         <td>{item.rua}</td>
         <td>{item.cep}</td>
         <td>{item.telefone}</td>
-        <td>{item.status}</td>
         <td>
 
           {
@@ -136,8 +141,8 @@ class ListMotorista extends React.Component {
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-arrow" right>
               <DropdownItem
-                href="#pablo"
-                onClick={e => e.preventDefault()}
+                href="/motorista/edit-motorista/"
+                
               >
                 Editar
                             </DropdownItem>
@@ -206,7 +211,6 @@ class ListMotorista extends React.Component {
                       <th scope="col">RUA</th>
                       <th scope="col">CEP</th>
                       <th scope="col">TELEFONE</th>
-                      <th scope="col">STATUS</th>
                       <th scope="col" className="text-right">AÇÃO</th>
                       <th scope="col" />
                     </tr>
