@@ -19,6 +19,7 @@ import {
   Table,
   Container,
   Row,
+  Alert,
   Col,
   FormGroup,
   UncontrolledTooltip,
@@ -26,6 +27,7 @@ import {
   InputGroupAddon,
   InputGroup,
   Input,
+  UncontrolledAlert
 
 
 
@@ -43,11 +45,19 @@ class ListTaxi extends React.Component {
     this.taxisObjetos = ''
     this.state = {
       taxis: [],
-      pageOfItems: []
+      pageOfItems: [],
+      message: '',
+      visible: false,
+      message: ''
+
+
     }
     this.onChangePage = this.onChangePage.bind(this)
     this.onclick = this.onclick.bind(this)
+    this.onDismiss = this.onDismiss(this)
     this.componentDidMount = this.componentDidMount(this)
+    
+      
   }
 
   componentDidMount() {
@@ -59,6 +69,17 @@ class ListTaxi extends React.Component {
                          pageOfItems: []
 
         })
+        
+        if (this.props.location.state.message !== '' ) {
+          this.setState({message: this.props.location.state.message,                        
+                         visible:  true
+                        })
+          
+        }
+        console.log(this.props.location.state.message)
+        
+
+
       }
     ) 
       .catch(console.log)
@@ -81,6 +102,12 @@ class ListTaxi extends React.Component {
       this.setState({taxis: this.taxisObjetos.data})
     }
   
+  }
+
+  onDismiss() {
+    this.setState({ visible: false ,
+                    message: ''
+    });
   }
 
   render() {
@@ -144,6 +171,7 @@ class ListTaxi extends React.Component {
                 </tr>
       )
     
+      
     
 
     return (
@@ -155,9 +183,24 @@ class ListTaxi extends React.Component {
           {/* Table */}
           <Row>
             <div className="col">
+            {
+                    this.state.message !== ''? (
+                      <UncontrolledAlert    color="success" fade={false}>
+                      <span className="alert-inner--icon">
+                        <i className="ni ni-like-2" />
+                      </span>{" "}
+                      <span className="alert-inner--text">
+                        <strong>Success!</strong> {this.state.message}
+                      </span>
+                      </UncontrolledAlert>
+                    ) : ''
+                    
+            }
               <Card className="shadow">
+             
                 <CardHeader className="border-0">
                 <Row>
+               
                   <Col md="3">
                     <FormGroup>
                       <h3 className="mb-0">Buscar Táxi</h3>
@@ -187,6 +230,7 @@ class ListTaxi extends React.Component {
                   </Col>
                 </Row>
                 </CardHeader>
+
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>

@@ -1,4 +1,7 @@
 import React from "react";
+import {
+  withRouter
+} from 'react-router-dom'
 
 // reactstrap components
 import {
@@ -25,7 +28,9 @@ class AddTaxi extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        message : ''
+        message : '',
+        toDashboard: false
+
     };
 }
 
@@ -46,7 +51,7 @@ class AddTaxi extends React.Component {
         }),
     };
 
-    fetch('/taxi/create', requestInfo)
+    fetch('/taxi/register', requestInfo)
             .then(response => {
                 if(response.ok) {
                     return response.json()
@@ -55,7 +60,14 @@ class AddTaxi extends React.Component {
             })
             .then(resposta => {
                 if (resposta) {
-                    
+                  this.setState({message: resposta.message
+                  })
+                  this.props.history.push({
+                            pathname: '/taxi/list-taxi',
+                            state: { message: resposta.message}
+
+                  })
+                  
                 }else {
                     this.setState({message: resposta.message})
                 }
@@ -70,27 +82,27 @@ class AddTaxi extends React.Component {
 
 
   render() {
+
+
     return (
       <>
         {/* Page content */}
         <Header />
         <Container className="mt--7" fluid>
           <Row>
-            <Col className="order-xl-1" xl="8">
+            <div className="col">
               <Card className="bg-secondary shadow">
                 <CardBody>
                   <Form>
-                    <h6 className="heading-small text-muted mb-4">
-                      Cadastrar Táxi
-                    </h6>
+                    <h6 className="heading-small text-muted mb-4">Cadastrar Táxi</h6>
                     {
                     this.state.message !== ''? (
                         <Alert color="danger" className="text-center"> {this.state.message} </Alert>
                     ) : ''
-                }
+                    }
                     <div className="pl-lg-4">
                       <Row>
-                        <Col lg="6">
+                        <Col md="4" lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -133,6 +145,7 @@ class AddTaxi extends React.Component {
                               onChange={e => this.marca = e.target.value}
                             />
                           </FormGroup>
+                    
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -147,6 +160,8 @@ class AddTaxi extends React.Component {
                               onChange={e => this.placa = e.target.value}
                             />
                           </FormGroup>
+                          </Col>
+                          <Col md="4" lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -189,7 +204,7 @@ class AddTaxi extends React.Component {
                               onChange={e => this.status = e.target.value}
                             />
                           </FormGroup>
-                        </Col>
+                       </Col>
                       </Row>
                     </div>
                     <Button className="mt-4 center" color="primary" type="button" onClick={this.add} >
@@ -198,7 +213,7 @@ class AddTaxi extends React.Component {
                   </Form>
                 </CardBody>
               </Card>
-            </Col>
+            </div>
           </Row>
         </Container>
       </>
@@ -206,4 +221,4 @@ class AddTaxi extends React.Component {
   }
 }
 
-export default AddTaxi;
+export default withRouter(AddTaxi);
