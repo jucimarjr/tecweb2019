@@ -97,7 +97,6 @@ class ListTaxi extends React.Component {
   
   onclick = () => {
     if (this.placa !== '') {
-        const dados = []
         const data = this.state.taxis.filter(taxi => {
         return taxi.placa.toLowerCase().indexOf(this.placa.toLowerCase()) !== -1;
       })
@@ -126,6 +125,42 @@ class ListTaxi extends React.Component {
     })
 
   }
+
+  deleteTaxi(e) {
+      const data = { placa: e.target.value };
+      const requestInfo = {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: new Headers({
+              'Content-Type': 'application/json'
+          }),
+      };
+  
+      fetch('/taxi/delete', requestInfo)
+              .then(response => {
+                  if(response.ok) {
+                      return response.json()
+                  }
+                  throw new Error("...");
+              })
+              .then(resposta => {
+                console.log(resposta)
+                  if (resposta) {
+                    this.setState({message: resposta.message
+                    })
+                    this.props.history.push({
+                              pathname: '/taxi/list-taxi',
+                              state: { message: resposta.message}
+                    })
+                  }else {
+                      this.setState({message: resposta.message})
+                  }
+              })
+              .catch(e => {
+              });
+  
+    }
+  
 
   render() {
       const renderTaxis  = this.state.pageOfItems.map( item  =>
@@ -176,9 +211,9 @@ class ListTaxi extends React.Component {
                               Editar
                             </DropdownItem>
                             <DropdownItem
-                              onClick={e => e.preventDefault()}
+                              onClick={this.deleteTaxi} value={item.placa}
                             >
-                              Excluir
+                              Desativar
                             </DropdownItem>
                           </DropdownMenu>
                         </UncontrolledDropdown>
