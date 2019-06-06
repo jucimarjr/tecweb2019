@@ -9,11 +9,11 @@ import UserNavBar from "components/User/NavBar/UserNavBar.jsx";
 
 import routes from "routes.js";
 
-class Admin extends React.Component {
+class User extends React.Component {
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
-    this.refs.mainContent.scrollTop = 0;
+    //this.refs.mainContent.scrollTop = 0;
   }
   getRoutes = routes => {
     return routes.map((prop, key) => {
@@ -57,4 +57,4 @@ class Admin extends React.Component {
   }
 }
 
-export default Admin;
+export default User;

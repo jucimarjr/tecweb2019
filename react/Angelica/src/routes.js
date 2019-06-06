@@ -13,6 +13,7 @@ import AddMotorista from "screens/Motorista/AddMotorista.jsx";
 import EditMotorista from "screens/Motorista/EditMotorista.jsx";
 
 import Search from "screens/User/Search.jsx";
+import SearchResult from "screens/User/SearchResult.jsx";
 
 
 
@@ -106,6 +107,20 @@ var routes = [
     icon: "ni ni-circle-08 text-pink",
     component: EditMotorista,
     layout: "/motorista"
+  },
+  {
+    path: "/search",
+    name: "User",
+    icon: "ni ni-circle-08 text-pink",
+    component: Search,
+    layout: "/user"
+  },
+  {
+    path: "/search-result",
+    name: "User",
+    icon: "ni ni-circle-08 text-pink",
+    component: SearchResult,
+    layout: "/user"
   }
  
 ];

@@ -31,7 +31,7 @@ class AddTaxi extends React.Component {
         message : '',
         toDashboard: false
 
-    };
+    }; 
 }
 
   add = () => {
@@ -208,7 +208,7 @@ class AddTaxi extends React.Component {
                       </Row>
                     </div>
                     <Button className="mt-4 center" color="primary" type="button" onClick={this.add} >
-                      Salvar
+                      Enviar
                     </Button>
                   </Form>
                 </CardBody>
