@@ -7,6 +7,7 @@ import AddUser from "screens/User/AddUser.jsx";
 import EditUser from "screens/User/EditUser.jsx";
 import AddTaxi from "screens/Taxi/AddTaxi.jsx";
 import ListTaxi from "screens/Taxi/ListTaxi.jsx";
+import EditTaxi from "screens/Taxi/EditTaxi.jsx";
 import ListMotorista from "screens/Motorista/ListMotorista.jsx";
 import AddMotorista from "screens/Motorista/AddMotorista.jsx";
 import EditMotorista from "screens/Motorista/EditMotorista.jsx";
@@ -59,6 +60,14 @@ var routes = [
     name: "Táxi",
     icon: "ni ni-circle-08 text-pink",
     component: ListTaxi,
+    layout: "/taxi"
+   
+  },
+  {
+    path: "/edit-taxi",
+    name: "Táxi",
+    icon: "ni ni-circle-08 text-pink",
+    component: EditTaxi,
     layout: "/taxi"
    
   },

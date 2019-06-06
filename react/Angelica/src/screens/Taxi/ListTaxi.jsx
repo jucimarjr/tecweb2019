@@ -1,4 +1,8 @@
 import React from "react";
+import {
+  withRouter
+} from 'react-router-dom'
+
 
 
 // reactstrap components
@@ -55,7 +59,8 @@ class ListTaxi extends React.Component {
     this.onChangePage = this.onChangePage.bind(this)
     this.onclick = this.onclick.bind(this)
     this.onDismiss = this.onDismiss(this)
-    this.componentDidMount = this.componentDidMount(this)
+    this.componentDidMount = this.componentDidMount.bind(this)
+    this.editTaxi = this.editTaxi.bind(this)
     
       
   }
@@ -91,7 +96,6 @@ class ListTaxi extends React.Component {
   }
   
   onclick = () => {
-    console.log(this.placa)
     if (this.placa !== '') {
         const dados = []
         const data = this.state.taxis.filter(taxi => {
@@ -110,15 +114,22 @@ class ListTaxi extends React.Component {
     });
   }
 
-  editTaxi = (e) => {
+  editTaxi(e)  {
+    
+    const data = this.state.taxis.filter(taxi => {
+      return taxi.placa.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1; 
+    })
+    this.props.history.push({
+      pathname: '/taxi/edit-taxi',
+      state: { taxiEdit: data[0]}
 
-   // console.log(e.current.target.textContent)
+    })
 
   }
 
   render() {
       const renderTaxis  = this.state.pageOfItems.map( item  =>
-                 <tr>
+                   <tr>
                       <th scope="row">
                         <Media className="align-items-center">
                           <Media>
@@ -144,6 +155,8 @@ class ListTaxi extends React.Component {
                                 Inativo
                             </Badge>
                           )}
+
+                        
                       
                       </td>
                       <td className="text-right">
@@ -159,10 +172,7 @@ class ListTaxi extends React.Component {
                             <i className="fas fa-ellipsis-v" />
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
-                            <DropdownItem
-                              href=""
-                              onClick={this.editTaxi}
-                            >
+                            <DropdownItem onClick={this.editTaxi} value={item.placa} >
                               Editar
                             </DropdownItem>
                             <DropdownItem
@@ -268,4 +278,4 @@ class ListTaxi extends React.Component {
   }
 }
 
-export default ListTaxi;
+export default withRouter(ListTaxi);

@@ -21,53 +21,56 @@ import {
 import Header from "components/Taxi/Headers/Header.jsx";
 
 
-
-
 class EditTaxi extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
         message : '',
-        toDashboard: false
-
-    };
-}
-
-componentDidMount() {
-  fetch('/taxis')
-  .then(res => res.json())
-  .then((data) => {
-    this.taxisObjetos = data
-    this.setState({ taxis: data.data,
-                     pageOfItems: []
-
-    })
-    
-    if (this.props.location.state.message !== '' ) {
-      this.setState({message: this.props.location.state.message,                        
-                     visible:  true
-                    })
-      
-    }
-    console.log(this.props.location.state.message)
-    
-
-
+        toDashboard: false,
+        taxiEdit: this.props.location.state.taxiEdit
+        };
+        this.mudar = this.mudar.bind(this)
   }
-) 
-  .catch(console.log)
-}  
 
 
   edit = () => {
-    const data = { renavam: this.renavam, 
-                  chassi: this.chassi,
-                  marca: this.marca,
-                  placa: this.placa,
-                  modelo: this.modelo,
-                  ano: this.ano,
-                  status: this.status
+
+    if (this.placa == undefined || this.placa == '' ) {
+      this.placa =  this.state.taxiEdit.placa
+    }
+
+    if (this.renavam == undefined || this.renavam == '' ) {
+      this.renavam =  this.state.taxiEdit.renavam
+    }
+
+    if (this.chassi == undefined || this.chassi == '' ) {
+      this.chassi =  this.state.taxiEdit.chassi
+    }
+
+    if (this.marca == undefined || this.marca == '' ) {
+      this.marca =  this.state.taxiEdit.marca
+    }
+
+    if (this.modelo == undefined || this.modelo == '' ) {
+      this.modelo =  this.state.taxiEdit.modelo
+    }
+
+    if (this.ano == undefined || this.ano == '' ) {
+      this.ano =  this.state.taxiEdit.ano
+    }
+
+    if (this.status == undefined || this.status == '' ) {
+      this.status =  this.state.taxiEdit.status
+    }
+
+    const data = { placa: this.placa,
+                   renavam: this.renavam, 
+                   chassi: this.chassi,
+                   marca: this.marca,
+                   modelo: this.modelo,
+                   ano: this.ano,
+                   status: this.status
                 };
     const requestInfo = {
         method: 'POST',
@@ -77,7 +80,7 @@ componentDidMount() {
         }),
     };
 
-    fetch('/taxi/register', requestInfo)
+    fetch('/taxi/update', requestInfo)
             .then(response => {
                 if(response.ok) {
                     return response.json()
@@ -91,9 +94,7 @@ componentDidMount() {
                   this.props.history.push({
                             pathname: '/taxi/list-taxi',
                             state: { message: resposta.message}
-
                   })
-                  
                 }else {
                     this.setState({message: resposta.message})
                 }
@@ -102,13 +103,12 @@ componentDidMount() {
                 this.setState({ message: e.message });
             });
 
-
   }
-  
-
+  mudar(e) {
+    this.setState({valor: e.target.value})
+  }
 
   render() {
-
 
     return (
       <>
@@ -120,12 +120,7 @@ componentDidMount() {
               <Card className="bg-secondary shadow">
                 <CardBody>
                   <Form>
-                    <h6 className="heading-small text-muted mb-4">Cadastrar Táxi</h6>
-                    {
-                    this.state.message !== ''? (
-                        <Alert color="danger" className="text-center"> {this.state.message} </Alert>
-                    ) : ''
-                    }
+                    <h6 className="heading-small text-muted mb-4">Editar Táxi</h6>
                     <div className="pl-lg-4">
                       <Row>
                         <Col md="4" lg="6">
@@ -140,7 +135,8 @@ componentDidMount() {
                               className="form-control-alternative"
                               id="renavam"
                               type="text"
-                              onChange={e => this.renavam = e.target.value}
+                              defaultValue={this.state.taxiEdit.renavam}
+                              onChange={ e => this.renavam = e.target.value}
                             />
                           </FormGroup>
                           <FormGroup>
@@ -154,8 +150,10 @@ componentDidMount() {
                               className="form-control-alternative"
                               id="chassi"
                               type="text"
+                              defaultValue={this.state.taxiEdit.chassi}
                               onChange={e => this.chassi = e.target.value}
-                            />
+                            >
+                              </Input>
                           </FormGroup>
                           <FormGroup>
                             <label
@@ -168,7 +166,8 @@ componentDidMount() {
                               className="form-control-alternative"
                               id="marca"
                               type="text"
-                              onChange={e => this.marca = e.target.value}
+                              defaultValue={ this.state.taxiEdit.marca }
+                              onChange={ e => this.marca = e.target.value }
                             />
                           </FormGroup>
                     
@@ -183,6 +182,7 @@ componentDidMount() {
                               className="form-control-alternative"
                               id="placa"
                               type="text"
+                              defaultValue={this.state.taxiEdit.placa}
                               onChange={e => this.placa = e.target.value}
                             />
                           </FormGroup>
@@ -199,6 +199,7 @@ componentDidMount() {
                               className="form-control-alternative"
                               id="modelo"
                               type="text"
+                              defaultValue={this.state.taxiEdit.modelo}
                               onChange={e => this.modelo = e.target.value}
                             />
                           </FormGroup>
@@ -213,6 +214,7 @@ componentDidMount() {
                               className="form-control-alternative"
                               id="ano"
                               type="integer"
+                              defaultValue={this.state.taxiEdit.ano}
                               onChange={e => this.ano = e.target.value}
                             />
                           </FormGroup>
@@ -227,13 +229,14 @@ componentDidMount() {
                               className="form-control-alternative"
                               id="status"
                               type="integer"
+                              defaultValue={this.state.taxiEdit.status}
                               onChange={e => this.status = e.target.value}
                             />
                           </FormGroup>
                        </Col>
                       </Row>
                     </div>
-                    <Button className="mt-4 center" color="primary" type="button" onClick={this.add} >
+                    <Button className="mt-4 center" color="primary" type="button" onClick={this.edit} >
                       Salvar
                     </Button>
                   </Form>
@@ -247,4 +250,4 @@ componentDidMount() {
   }
 }
 
-export default withRouter(AddTaxi);
+export default withRouter(EditTaxi);
