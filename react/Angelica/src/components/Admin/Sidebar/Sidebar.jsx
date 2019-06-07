@@ -75,7 +75,7 @@ class Sidebar extends React.Component {
             Dashboard
           </NavLink>
           <NavLink
-            to="/admin/list-user"
+            to="/user/list-user"
             tag={NavLinkRRD}
             onClick={this.closeCollapse}
             activeClassName="active"

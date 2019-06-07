@@ -28,8 +28,7 @@ class EditTaxi extends React.Component {
     this.state = {
         message : '',
         toDashboard: false,
-        taxiEdit: this.props.location.state.taxiEdit
-        };
+        taxiEdit: this.props.location.state.taxiEdit};
         this.mudar = this.mudar.bind(this)
   }
 
@@ -104,9 +103,7 @@ class EditTaxi extends React.Component {
             });
 
   }
-  mudar(e) {
-    this.setState({valor: e.target.value})
-  }
+  
 
   render() {
 

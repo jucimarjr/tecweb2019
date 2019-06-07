@@ -1,4 +1,8 @@
 import React from "react";
+import {
+  withRouter
+} from 'react-router-dom'
+
 
 // reactstrap components
 import {
@@ -18,7 +22,77 @@ import {
 import Header from "components/Login/Headers/UserHeader.jsx";
 
 
-class Profile extends React.Component {
+class EditUser extends React.Component {
+  
+  constructor(props) {
+    super(props)
+    this.state = {
+        message : '',
+        toDashboard: false,
+        userEdit: this.props.location.state.userEdit
+        };
+  }
+
+
+  edit = () => {
+
+    if (this.cpf == undefined || this.cpf == '' ) {
+      this.cpf =  this.state.userEdit.cpf
+    }
+
+    if (this.nome == undefined || this.nome == '' ) {
+      this.nome =  this.state.userEdit.nome
+    }
+
+    if (this.senha == undefined || this.senha == '' ) {
+      this.senha =  this.state.userEdit.senha
+    }
+
+    if (this.status == undefined || this.status == '' ) {
+      this.status =  this.state.userEdit.status
+    }
+
+    const data = { cpf: this.cpf,
+                   nome: this.nome, 
+                   senha: this.senha,
+                   status: this.status
+                };
+    const requestInfo = {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: new Headers({
+            'Content-Type': 'application/json'
+        }),
+    };
+
+    fetch('/user/update', requestInfo)
+            .then(response => {
+                if(response.ok) {
+                    return response.json()
+                }
+                throw new Error("...");
+            })
+            .then(resposta => {
+                if (resposta.status == "200" ) {
+                  console.log(resposta)
+                  this.setState({message: resposta.message
+                  })
+                  this.props.history.push({
+                            pathname: '/user/list-user',
+                            state: { message: resposta.message}
+                  })
+                }else {
+                    this.setState({message: resposta.message})
+                }
+            })
+            .catch(e => {
+                this.setState({ message: e.message });
+            });
+
+  }
+ 
+  
+  
   render() {
     return (
       <>
@@ -51,6 +125,7 @@ class Profile extends React.Component {
                             <Input
                               className="form-control-alternative"
                               id="input-nome"
+                              defaultValue={this.state.userEdit.nome}
                               onChange={e => this.nome = e.target.value}
                               type="text"
                             />
@@ -67,6 +142,7 @@ class Profile extends React.Component {
                             <Input
                               className="form-control-alternative"
                               id="input-cpf"
+                              defaultValue={this.state.userEdit.cpf}
                               onChange={e => this.cpf = e.target.value}
                               type="text"
                             />
@@ -85,6 +161,7 @@ class Profile extends React.Component {
                               <Input
                                 className="form-control-alternative"
                                 id="input-senha"
+                                defaultValue={this.state.userEdit.senha}
                                 onChange={e => this.senha = e.target.value}
                                 type="text"
                               />
@@ -119,6 +196,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="input-status"
                               type="integer"
+                              defaultValue={this.state.userEdit.status}
                               onChange={e => this.status = e.target.value}
                             />
                           </FormGroup>
@@ -130,7 +208,7 @@ class Profile extends React.Component {
                   <Col className="text-right" xs="7">
                       <Button
                         color="danger"
-                        href="/admin/list-user"
+                        href="/user/list-user"
                         onClick={e => e.preventDefault()}
                         size="lg"
                       >
@@ -138,8 +216,7 @@ class Profile extends React.Component {
                       </Button>
                       <Button
                         color="primary"
-                        href="/admin/list-user"
-                        onClick={e => e.preventDefault()}
+                        onClick={this.edit}
                         size="lg"
                       >
                         Confirmar
@@ -156,4 +233,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default withRouter(EditUser);

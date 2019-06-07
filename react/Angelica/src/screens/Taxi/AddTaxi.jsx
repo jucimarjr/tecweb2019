@@ -60,8 +60,7 @@ class AddTaxi extends React.Component {
             })
             .then(resposta => {
                 if (resposta) {
-                  this.setState({message: resposta.message
-                  })
+                  this.setState({message: resposta.message})
                   this.props.history.push({
                             pathname: '/taxi/list-taxi',
                             state: { message: resposta.message}

@@ -1,4 +1,7 @@
 import React from "react";
+import {
+  withRouter
+} from 'react-router-dom'
 
 // reactstrap components
 import {
@@ -17,21 +20,22 @@ import {
 
 import Header from "components/Login/Headers/UserHeader.jsx";
 
-
-class Profile extends React.Component {
+class AddUser extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
         message : ''
     };
+    this.add =  this.add.bind(this)
   }
 
   add = () => {
     const data = { cpf: this.cpf, 
                   nome: this.nome,
                   senha: this.senha,
-                  status: this.status
+                  status: "1"
                 };
+
     const requestInfo = {
         method: 'POST',
         body: JSON.stringify(data),
@@ -39,6 +43,8 @@ class Profile extends React.Component {
             'Content-Type': 'application/json'
         }),
     };
+
+    console.log(requestInfo)
 
     fetch('/user/register', requestInfo)
             .then(response => {
@@ -49,7 +55,12 @@ class Profile extends React.Component {
             })
             .then(resposta => {
                 if (resposta) {
-                    
+                  console.log(resposta)
+                  this.setState({message: resposta.message})
+                  this.props.history.push({
+                    pathname: '/user/list-user',
+                    state: { message: resposta.message}
+                  })
                 }else {
                     this.setState({message: resposta.message})
                 }
@@ -154,7 +165,7 @@ class Profile extends React.Component {
                   <Col className="text-right" xs="7">
                       <Button
                         color="danger"
-                        href="/admin/list-user"
+                        href="/user/list-user"
                         onClick={e => e.preventDefault()}
                         size="lg"
                       >
@@ -162,8 +173,7 @@ class Profile extends React.Component {
                       </Button>
                       <Button
                         color="primary"
-                        href="/admin/list-user"
-                        onClick={e => e.preventDefault()}
+                        onClick={this.add}
                         size="lg"
                       >
                         Confirmar
@@ -180,4 +190,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export  default withRouter(AddUser);

@@ -2,7 +2,7 @@ import Index from "screens/Index.jsx";
 import Profile from "screens/Login/Profile.jsx";
 import Register from "screens/Login/Register.jsx";
 import Login from "screens/Login/Auth.jsx";
-import ListUser from "screens/User/ListUsers.jsx";
+import ListUsers from "screens/User/ListUsers.jsx";
 import AddUser from "screens/User/AddUser.jsx";
 import EditUser from "screens/User/EditUser.jsx";
 import AddTaxi from "screens/Taxi/AddTaxi.jsx";
@@ -29,18 +29,18 @@ var routes = [
     path: "/list-user",
     name: "Usuários",
     icon: "ni ni-single-02 text-yellow",
-    component: ListUser,
-    layout: "/admin"
+    component: ListUsers,
+    layout: "/user"
   }, 
   {
     path: "/edit-user",
     component: EditUser,
-    layout: "/admin"
+    layout: "/user"
   },
   {
     path: "/add-user",
     component: AddUser,
-    layout: "/admin"
+    layout: "/user"
   },
   {
     path: "/register",

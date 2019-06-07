@@ -3,9 +3,9 @@ import { Route, Switch } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
 // core components
-import AdminNavbar from "components/Admin/Navbars/AdminNavbar.jsx";
-//import// AdminFooter from "components/Admin/Footers///AdminFooter.jsx";
-import UserNavBar from "components/User/NavBar/UserNavBar.jsx";
+import Sidebar from "components/Admin/Sidebar/Sidebar.jsx";
+
+import AdminFooter from "components/Admin/Footers/AdminFooter.jsx";
 
 import routes from "routes.js";
 
@@ -45,13 +45,21 @@ class User extends React.Component {
   render() {
     return (
       <>
-        <UserNavBar
+        <Sidebar
           {...this.props}
           routes={routes}
+          logo={{
+            innerLink: "/admin/index",
+            imgSrc: require("assets/img/brand/argon-react.png"),
+            imgAlt: "..."
+          }}
         />
+        <div className="main-content" ref="mainContent">
+        <Switch>{this.getRoutes(routes)}</Switch>
         <Container>
-          <Switch>{this.getRoutes(routes)}</Switch>
-        </Container>
+          <AdminFooter />
+      </Container>
+      </div>
       </>
     );
   }

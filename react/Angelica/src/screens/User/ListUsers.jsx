@@ -17,12 +17,14 @@ import {
   PaginationLink,
   Progress,
   Table,
+  FormGroup,
+  InputGroup,
+  Input,
   Container,
   Row,
   UncontrolledTooltip
 } from "reactstrap";
 // core components
-
 import Header from "components/Login/Headers/UserHeader.jsx";
 import Pagination from "components/Admin/Pagination/Pagination.jsx"
 
@@ -48,7 +50,12 @@ class ListUsers extends React.Component {
       pageOfItems: []
   
     }
-    this.onChangePage = this.onChangePage.bind(this);
+    this.onChangePage = this.onChangePage.bind(this)
+    this.onclick = this.onclick.bind(this)
+    this.onDismiss = this.onDismiss(this)
+    this.componentDidMount = this.componentDidMount.bind(this)
+    this.edituser = this.edituser.bind(this)
+    
 
   }
 
@@ -56,6 +63,7 @@ class ListUsers extends React.Component {
     fetch('/users')
     .then(res => res.json())
     .then((data) => {
+      this.usersObjetos = data
       this.setState({ users: data.data,
                       pageOfItems: []
        })
@@ -70,6 +78,77 @@ class ListUsers extends React.Component {
     // update state with new page of items
     this.setState({ pageOfItems: pageOfItems });
   }
+
+
+  onclick = () => {
+    if (this.cpf !== '') {
+        const data = this.state.users.filter(user => {
+              return user.cpf.toLowerCase().indexOf(this.cpf.toLowerCase()) !== -1;})
+        if (data.length !== 0 ){
+            this.setState({ users: data})
+        }
+    }else{
+      this.setState({users: this.usersObjetos.data})
+    }
+  
+  }
+
+  onDismiss() {
+    this.setState({ visible: false ,
+                    message: ''
+    });
+  }
+
+  edituser(e)  {
+    
+    const data = this.state.users.filter(user => {
+      return user.cpf.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1; 
+    })
+    this.props.history.push({
+      pathname: '/user/edit-user',
+      state: { userEdit: data[0]}
+
+    })
+
+  }
+
+  deleteuser(e) {
+      const data = { placa: e.target.value };
+      const requestInfo = {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: new Headers({
+              'Content-Type': 'application/json'
+          }),
+      };
+  
+      fetch('/user/delete', requestInfo)
+              .then(response => {
+                  if(response.ok) {
+                      return response.json()
+                  }
+                  throw new Error("...");
+              })
+              .then(resposta => {
+                console.log(resposta)
+                  if (resposta) {
+                    this.setState({message: resposta.message
+                    })
+                    this.props.history.push({
+                              pathname: '/user/list-user',
+                              state: { message: resposta.message}
+                    })
+                  }else {
+                      this.setState({message: resposta.message})
+                  }
+              })
+              .catch(e => {
+              });
+  
+    }
+  
+
+
 
   render() {
     const users  = this.state.pageOfItems.map((item, key) =>
@@ -112,8 +191,7 @@ class ListUsers extends React.Component {
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
                             <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
+                              onClick={this.edituser}
                             >
                               Editar
                             </DropdownItem>
@@ -121,7 +199,7 @@ class ListUsers extends React.Component {
                               href="#pablo"
                               onClick={e => e.preventDefault()}
                             >
-                              Excluir
+                              Desativar
                             </DropdownItem>
                           </DropdownMenu>
                         </UncontrolledDropdown>
@@ -136,23 +214,41 @@ class ListUsers extends React.Component {
         {/* Page content */}
         <Container className="mt--7" fluid>
           {/* Dark table */}
-          <Row className="mt-5">
+          <Row>
             <div className="col">
               <Card className="shadow">
                 <CardHeader className="bg-transparent border-0">
-                  <Col xs="8">
+                  <Row>
+                  <Col md="3">
+                  <FormGroup>
                     <h3 className="mb-0">Buscar Usuários</h3>
+                    </FormGroup>
                   </Col>
-                  <Col className="text-right" xs="12">
-                    <Button
-                        color="primary"
-                        href="add-user"
-                        // onClick={e => e.preventDefault()}
-                        size="sm"
-                      >
-                        Cadastrar
+                  <Col md="5">
+                   
+                  <FormGroup>
+                      <InputGroup className="input-group-alternative">
+                      <Input placeholder="CPF" type="text" onChange={e => this.cpf = e.target.value}  />
+                      <Button className="btn-icon btn-3" color="primary" type="button" onClick={this.onclick}>
+                          Procurar
                       </Button>
+                      </InputGroup>
+                    </FormGroup>
+                    
                   </Col>
+                  <Col  md="4">
+                  <Button className="btn-icon btn-2" 
+                          color="primary" 
+                          type="button" 
+                          className="float-right"
+                          href="/user/add-user"
+                    >
+                          <span className="btn-inner--icon">
+                            <i className="ni ni-fat-add" />
+                          </span>
+                    </Button>
+                  </Col>
+                </Row>
                 </CardHeader>
                 <Table
                   className="align-items-center table-flush"

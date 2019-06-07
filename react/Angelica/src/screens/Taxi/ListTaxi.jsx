@@ -38,7 +38,7 @@ import {
 
 } from "reactstrap";
 // core components
-import Header from "components/Taxi/Headers/Header.jsx";
+import Header from "components/Login/Headers/UserHeader.jsx";
 import Pagination from "components/Admin/Pagination/Pagination.jsx"
   
 
@@ -100,7 +100,11 @@ class ListTaxi extends React.Component {
         const data = this.state.taxis.filter(taxi => {
         return taxi.placa.toLowerCase().indexOf(this.placa.toLowerCase()) !== -1;
       })
-      this.setState({ taxis: data})
+
+      if (data.length !== 0 ){
+        this.setState({ taxis: data})
+      }
+
     }else{
       this.setState({taxis: this.taxisObjetos.data})
     }
