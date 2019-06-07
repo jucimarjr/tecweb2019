@@ -45,6 +45,7 @@ class User extends React.Component {
   render() {
     return (
       <>
+      
         <Sidebar
           {...this.props}
           routes={routes}
@@ -54,12 +55,14 @@ class User extends React.Component {
             imgAlt: "..."
           }}
         />
-        <div className="main-content" ref="mainContent">
-        <Switch>{this.getRoutes(routes)}</Switch>
-        <Container>
-          <AdminFooter />
-      </Container>
-      </div>
+        
+          <div className="main-content" ref="mainContent">
+            <Switch>{this.getRoutes(routes)}</Switch>
+            <Container maxWidth="ml-3 mr-3 sm">
+              <AdminFooter />
+            </Container>
+          </div>
+        
       </>
     );
   }

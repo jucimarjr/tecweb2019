@@ -92,6 +92,7 @@ class Forms extends React.Component {
     
     return (
       <>
+      <Container maxWidth="sm">
       <div className="ml-3 mr-3">
         <form className="mt-4 mb-3">
             <div className="input-group-rounded input-group-merge input-group">
@@ -105,6 +106,7 @@ class Forms extends React.Component {
             </div>
         </form>
         </div>
+        </Container>
         
       </>
     );
