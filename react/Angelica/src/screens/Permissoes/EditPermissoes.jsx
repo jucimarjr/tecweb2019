@@ -29,32 +29,48 @@ class EditPermissoes extends React.Component {
     this.state = {
         message : '',
         toDashboard: false,
-        userEdit: this.props.location.state.userEdit
+        permissionEdit: this.props.location.state.permissionEdit
         };
   }
 
 
   edit = () => {
 
-    if (this.cpf == undefined || this.cpf == '' ) {
-      this.cpf =  this.state.userEdit.cpf
+    if (this.taxi == undefined || this.taxi == '' ) {
+      this.taxi =  this.state.permissionEdit.taxi
     }
 
-    if (this.nome == undefined || this.nome == '' ) {
-      this.nome =  this.state.userEdit.nome
+    if (this.motorista == undefined || this.motorista == '' ) {
+      this.motorista =  this.state.permissionEdit.motorista
     }
 
-    if (this.senha == undefined || this.senha == '' ) {
-      this.senha =  this.state.userEdit.senha
+    if (this.usuario == undefined || this.usuario == '' ) {
+      this.usuario =  this.state.permissionEdit.usuario
+    }
+
+    if (this.data_inicio == undefined || this.data_inicio == '' ) {
+      this.data_inicio =  this.state.permissionEdit.data_inicio
+    }
+
+    if (this.data_fim == undefined || this.data_fim == '' ) {
+      this.data_fim =  this.state.permissionEdit.data_fim
+    }
+
+    if (this.tipo == undefined || this.tipo == '' ) {
+      this.tipo =  this.state.permissionEdit.tipo
     }
 
     if (this.status == undefined || this.status == '' ) {
-      this.status =  this.state.userEdit.status
+      this.status =  this.state.permissionEdit.status
     }
 
-    const data = { cpf: this.cpf,
-                   nome: this.nome, 
-                   senha: this.senha,
+
+    const data = { taxi: this.taxi,
+                   motorista: this.motorista, 
+                   usuario: this.usuario,
+                   data_inicio: this.data_inicio,
+                   data_fim: this.data_fim,
+                   tipo: this.tipo,
                    status: this.status
                 };
     const requestInfo = {
@@ -65,7 +81,7 @@ class EditPermissoes extends React.Component {
         }),
     };
 
-    fetch('/user/update', requestInfo)
+    fetch('/perm/update', requestInfo)
             .then(response => {
                 if(response.ok) {
                     return response.json()
@@ -78,7 +94,7 @@ class EditPermissoes extends React.Component {
                   this.setState({message: resposta.message
                   })
                   this.props.history.push({
-                            pathname: '/user/list-user',
+                            pathname: '/perm/list-permissoes',
                             state: { message: resposta.message}
                   })
                 }else {
@@ -99,14 +115,14 @@ class EditPermissoes extends React.Component {
         {/* <UserHeader /> */}
         <Header/>
         {/* Page content */}
-        <Container className="mt--7" fluid>
+        *<Container className="mt--7" fluid>
           <Row className="mt-5">
             <Col className="order-xl-1 center" xl="8">
               <Card className="bg-secondary shadow">
                 <CardHeader className="bg-white border-0">
                   <Row className="align-items-center">
                     <Col xs="8">
-                      <h3 className="mb-0">Editar Usuário</h3>
+                      <h3 className="mb-0">Editar Permissões</h3>
                     </Col>
                   </Row>
                 </CardHeader>
@@ -118,15 +134,15 @@ class EditPermissoes extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-nome"
+                              htmlFor="input-taxi"
                             >
-                              Nome
+                              Taxi
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-nome"
-                              defaultValue={this.state.userEdit.nome}
-                              onChange={e => this.nome = e.target.value}
+                              id="input-taxi"
+                              defaultValue={this.state.permissionEdit.taxi}
+                              onChange={e => this.taxi = e.target.value}
                               type="text"
                             />
                           </FormGroup>
@@ -135,15 +151,15 @@ class EditPermissoes extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-cpf"
+                              htmlFor="input-motorista"
                             >
-                              CPF
+                              Motorista
                             </label>
                             <Input
                               className="form-control-alternative"
-                              id="input-cpf"
-                              defaultValue={this.state.userEdit.cpf}
-                              onChange={e => this.cpf = e.target.value}
+                              id="input-motorista"
+                              defaultValue={this.state.permissionEdit.motorista}
+                              onChange={e => this.motorista = e.target.value}
                               type="text"
                             />
                           </FormGroup>
@@ -154,33 +170,69 @@ class EditPermissoes extends React.Component {
                             <FormGroup>
                               <label
                                 className="form-control-label"
-                                htmlFor="input-cpf"
+                                htmlFor="input-motorista"
                               >
-                                Senha
+                                Usuario
                               </label>
                               <Input
                                 className="form-control-alternative"
-                                id="input-senha"
-                                defaultValue={this.state.userEdit.senha}
-                                onChange={e => this.senha = e.target.value}
+                                id="input-usuario"
+                                defaultValue={this.state.permissionEdit.usuario}
+                                onChange={e => this.usuario = e.target.value}
                                 type="text"
                               />
                             </FormGroup>
                         </Col>
                         <Col lg="6">
-                            <FormGroup>
+                           <FormGroup>
                               <label
                                 className="form-control-label"
-                                htmlFor="input-conf-senha"
+                                htmlFor="input-motorista"
                               >
-                                Confirme sua senha
+                                Data Inicio
                               </label>
                               <Input
                                 className="form-control-alternative"
-                                id="input-cpf"
+                                id="input-usuario"
+                                defaultValue={this.state.permissionEdit.data_inicio}
+                                onChange={e => this.data_inicio = e.target.value}
                                 type="text"
                               />
                             </FormGroup>
+                        </Col>
+                        <Col lg="6">
+                           <FormGroup>
+                              <label
+                                className="form-control-label"
+                                htmlFor="input-motorista"
+                              >
+                                Data Fim
+                              </label>
+                              <Input
+                                className="form-control-alternative"
+                                id="input-usuario"
+                                defaultValue={this.state.permissionEdit.data_fim}
+                                onChange={e => this.data_fim = e.target.value}
+                                type="text"
+                              />
+                            </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-status"
+                            >
+                              Tipo
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-status"
+                              type="integer"
+                              defaultValue={this.state.permissionEdit.tipo}
+                              onChange={e => this.tipo = e.target.value}
+                            />
+                          </FormGroup>
                         </Col>
                       </Row>
                       <Row>
@@ -196,7 +248,7 @@ class EditPermissoes extends React.Component {
                               className="form-control-alternative"
                               id="input-status"
                               type="integer"
-                              defaultValue={this.state.userEdit.status}
+                              defaultValue={this.state.permissionEdit.status}
                               onChange={e => this.status = e.target.value}
                             />
                           </FormGroup>
@@ -227,7 +279,7 @@ class EditPermissoes extends React.Component {
               </Card>
             </Col>
           </Row>
-        </Container>
+    </Container>
       </>
     );
   }

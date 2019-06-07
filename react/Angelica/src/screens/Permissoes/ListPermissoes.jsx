@@ -102,10 +102,10 @@ class ListPermissoes extends React.Component {
   editpermission(e)  {
     
     const data = this.state.permissions.filter(permission => {
-      return permission.placa.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1; 
+      return permission.taxi.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1; 
     })
     this.props.history.push({
-      pathname: '/permission/edit-permission',
+      pathname: '/permissoes/edit-permissoes',
       state: { permissionEdit: data[0]}
 
     })
@@ -196,7 +196,7 @@ class ListPermissoes extends React.Component {
                           </DropdownToggle>
                           <DropdownMenu className="dropdown-menu-arrow" right>
                             <DropdownItem
-                              onClick={this.editpermission}
+                              onClick={this.editpermission} value={item.placa}  
                             >
                               Editar
                             </DropdownItem>

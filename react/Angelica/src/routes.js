@@ -12,11 +12,11 @@ import ListMotorista from "screens/Motorista/ListMotorista.jsx";
 import AddMotorista from "screens/Motorista/AddMotorista.jsx";
 import EditMotorista from "screens/Motorista/EditMotorista.jsx";
 import ListPermissoes from "screens/Permissoes/ListPermissoes.jsx";
-
+import EditPermissoes from "screens/Permissoes/EditPermissoes.jsx";
 
 import Search from "screens/User/Search.jsx";
 import SearchResult from "screens/User/SearchResult.jsx";
-
+ 
 
 
 var routes = [
@@ -129,6 +129,13 @@ var routes = [
     name: "Permissoes",
     icon: "ni ni-circle-08 text-pink",
     component: ListPermissoes,
+    layout: "/permissoes"
+  },
+  {
+    path: "/edit-permissoes",
+    name: "Permissoes",
+    icon: "ni ni-circle-08 text-pink",
+    component: EditPermissoes,
     layout: "/permissoes"
   }
  
