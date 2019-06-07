@@ -55,6 +55,8 @@ class ListUsers extends React.Component {
     this.onDismiss = this.onDismiss(this)
     this.componentDidMount = this.componentDidMount.bind(this)
     this.edituser = this.edituser.bind(this)
+    this.deleteUser = this.deleteUser.bind(this)
+
     
 
   }
@@ -112,8 +114,10 @@ class ListUsers extends React.Component {
 
   }
 
-  deleteuser(e) {
-      const data = { placa: e.target.value };
+  
+  deleteUser(e) {
+    console.log(e.target.value)
+      const data = { cpf: e.target.value };
       const requestInfo = {
           method: 'POST',
           body: JSON.stringify(data),
@@ -196,8 +200,7 @@ class ListUsers extends React.Component {
                               Editar
                             </DropdownItem>
                             <DropdownItem
-                              href="#pablo"
-                              onClick={e => e.preventDefault()}
+                              onClick={this.deleteUser} value={item.cpf}
                             >
                               Desativar
                             </DropdownItem>
