@@ -101,6 +101,15 @@ class Sidebar extends React.Component {
             <i className="ni ni-single-02 text-yellow" />
             Táxi
           </NavLink>
+          <NavLink
+            to="/permissoes/list-permissoes"
+            tag={NavLinkRRD}
+            onClick={this.closeCollapse}
+            activeClassName="active"
+          >
+            <i className="ni ni-single-02 text-yellow" />
+            Permissões
+          </NavLink>
         </NavItem>
       );
     
