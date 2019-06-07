@@ -98,7 +98,7 @@ class Sidebar extends React.Component {
             onClick={this.closeCollapse}
             activeClassName="active"
           >
-            <i className="ni ni-single-02 text-yellow" />
+            <i className="ni ni-bus-front-12 text-yellow" />
             Táxi
           </NavLink>
           <NavLink
@@ -107,7 +107,7 @@ class Sidebar extends React.Component {
             onClick={this.closeCollapse}
             activeClassName="active"
           >
-            <i className="ni ni-single-02 text-yellow" />
+            <i className="ni ni-lock-circle-open text-yellow" />
             Permissões
           </NavLink>
         </NavItem>

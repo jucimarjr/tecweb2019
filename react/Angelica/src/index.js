@@ -11,7 +11,7 @@ import "assets/scss/argon-dashboard-react.scss";
 import AdminLayout from "layouts/Admin.jsx";
 import AuthLayout from "layouts/Login.jsx";
 import TaxiLayout from "layouts/Taxi.jsx";
-import UserLayout from "layouts/User.jsx";
+import UserLayout from "layouts/UserSearch.jsx";
 import MotoristaLayout from "layouts/Motorista.jsx";
 import PermissoesLayout from "layouts/Permissoes.jsx";
 
