@@ -180,7 +180,7 @@ class AddPermission extends React.Component {
                   <Col className="text-right" xs="7">
                       <Button
                         color="danger"
-                        href="/user/list-user"
+                        href="/permissoes/list-permission"
                         onClick={e => e.preventDefault()}
                         size="lg"
                       >
