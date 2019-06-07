@@ -115,7 +115,7 @@ class EditPermissoes extends React.Component {
         {/* <UserHeader /> */}
         <Header/>
         {/* Page content */}
-        *<Container className="mt--7" fluid>
+        <Container className="mt--7" fluid>
           <Row className="mt-5">
             <Col className="order-xl-1 center" xl="8">
               <Card className="bg-secondary shadow">
@@ -153,7 +153,7 @@ class EditPermissoes extends React.Component {
                               className="form-control-label"
                               htmlFor="input-motorista"
                             >
-                              Motorista
+                              CPF do Motorista
                             </label>
                             <Input
                               className="form-control-alternative"
@@ -172,7 +172,7 @@ class EditPermissoes extends React.Component {
                                 className="form-control-label"
                                 htmlFor="input-motorista"
                               >
-                                Usuario
+                                CPF do Usuario
                               </label>
                               <Input
                                 className="form-control-alternative"
@@ -260,7 +260,7 @@ class EditPermissoes extends React.Component {
                   <Col className="text-right" xs="7">
                       <Button
                         color="danger"
-                        href="/user/list-user"
+                        href="/permissoes/list-permissions"
                         onClick={e => e.preventDefault()}
                         size="lg"
                       >

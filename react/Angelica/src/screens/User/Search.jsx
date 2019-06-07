@@ -16,7 +16,7 @@ import {
   CardBody
   
 } from "reactstrap";
-import Header from "components/Taxi/Headers/Header.jsx";
+import Header from "components/User/NavBar/UserNavBar.jsx";
 import SearchResult from "screens/User/SearchResult.jsx";
 
 class Forms extends React.Component {
