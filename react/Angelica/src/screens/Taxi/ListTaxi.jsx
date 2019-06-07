@@ -194,8 +194,6 @@ class ListTaxi extends React.Component {
                                 Inativo
                             </Badge>
                           )}
-
-                        
                       
                       </td>
                       <td className="text-right">

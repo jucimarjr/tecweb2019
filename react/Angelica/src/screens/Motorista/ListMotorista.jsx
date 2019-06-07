@@ -1,4 +1,7 @@
 import React from "react";
+import {
+  withRouter
+} from 'react-router-dom'
 
 // reactstrap components
 import {
@@ -57,8 +60,14 @@ class ListMotorista extends React.Component {
       pageOfItems: [],
       cpf: ''
     }
+    
     this.onChangePage = this.onChangePage.bind(this)
-    this.search = this.search.bind(this)
+    this.onclick = this.onclick.bind(this)
+    //this.onDismiss = this.onDismiss(this)
+    this.componentDidMount = this.componentDidMount.bind(this)
+    this.editMotorista = this.editMotorista.bind(this)
+
+
   }
 
   myCallback = (dataCpf) => {
@@ -69,10 +78,14 @@ class ListMotorista extends React.Component {
     fetch('/drivers')
       .then(res => res.json())
       .then((data) => {
+        this.motoristasObjetos = data
         this.setState({
           motoristas: data.data,
           pageOfItems: []
         })
+        
+        
+
         console.log(data);
       }
 
@@ -85,9 +98,70 @@ class ListMotorista extends React.Component {
     this.setState({ pageOfItems: pageOfItems });
   }
 
-  search(e){
-    console.log(this.cpf)
+  onclick = () => {
+    if (this.cpf !== '') {
+        const data = this.state.motoristas.filter(motorista => {
+        return motorista.cpf.toLowerCase().indexOf(this.cpf.toLowerCase()) !== -1;
+      })
+
+      if (data.length !== 0 ){
+        this.setState({ motoristas: data})
+      }
+
+    }else{
+      this.setState({motoristas: this.motoristasObjetos.data})
+    }
+  
   }
+
+  editMotorista(e)  {
+    const data = this.state.motoristas.filter(motorista => {
+      return motorista.cpf.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1; 
+    })
+    this.props.history.push({
+      pathname: '/motorista/edit-motorista',
+      state: { motoristaEdit: data[0]}
+
+    })
+
+  }
+
+  deleteMotorista(e) {
+      const data = { cpf: e.target.value };
+      const requestInfo = {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: new Headers({
+              'Content-Type': 'application/json'
+          }),
+      };
+  
+      fetch('/driver/delete', requestInfo)
+              .then(response => {
+                  if(response.ok) {
+                      return response.json()
+                  }
+                  throw new Error("...");
+              })
+              .then(resposta => {
+                console.log(resposta)
+                  if (resposta) {
+                    this.setState({message: resposta.message
+                    })
+                    this.props.history.push({
+                              pathname: '/motorista/list-motorista',
+                              state: { message: resposta.message}
+                    })
+                  }else {
+                      this.setState({message: resposta.message})
+                  }
+              })
+              .catch(e => {
+              });
+  
+    }
+  
+  
 
   render() {
     const motoristas = this.state.pageOfItems.map((item) =>
@@ -140,17 +214,13 @@ class ListMotorista extends React.Component {
               <i className="fas fa-ellipsis-v" />
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu-arrow" right>
+              <DropdownItem onClick={this.editMotorista} value={item.cpf} >
+                                Editar
+              </DropdownItem>
               <DropdownItem
-                href="/motorista/edit-motorista/"
-                
+                onClick={this.deleteMotorista} value={item.cpf}
               >
-                Editar
-                            </DropdownItem>
-              <DropdownItem
-                href="#pablo"
-                onClick={e => e.preventDefault()}
-              >
-                Excluir
+                Desativar
                             </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -179,7 +249,7 @@ class ListMotorista extends React.Component {
                     <FormGroup>
                       <InputGroup className="input-group-alternative">
                       <Input placeholder="CPF" type="text" onChange={e => this.cpf = e.target.value}  />
-                      <Button className="btn-icon btn-3" color="primary" type="button" onClick={this.search}>
+                      <Button className="btn-icon btn-3" color="primary" type="button" onClick={this.onclick}>
                           Procurar
                         </Button>
                       </InputGroup>
@@ -211,6 +281,7 @@ class ListMotorista extends React.Component {
                       <th scope="col">RUA</th>
                       <th scope="col">CEP</th>
                       <th scope="col">TELEFONE</th>
+                      <th scope="col">STATUS</th>
                       <th scope="col" className="text-right">AÇÃO</th>
                       <th scope="col" />
                     </tr>
@@ -236,4 +307,4 @@ class ListMotorista extends React.Component {
   }
 }
 
-export default ListMotorista;
+export default withRouter(ListMotorista);

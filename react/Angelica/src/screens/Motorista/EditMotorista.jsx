@@ -1,4 +1,7 @@
 import React from "react";
+import {
+  withRouter
+} from  'react-router-dom'
 
 // reactstrap components
 import {
@@ -19,7 +22,7 @@ import {
 import Header from "components/Login/Headers/UserHeader.jsx";
 import { Redirect } from 'react-router-dom'
 
-class Profile extends React.Component {
+class EditMotorista extends React.Component {
 
   constructor(props) {
     super(props)
@@ -27,11 +30,51 @@ class Profile extends React.Component {
 
     this.state = {
       message: '',
-      status: ''
-    };
+      status: '',
+      motoristaEdit: this.props.location.state.motoristaEdit};
+      this.edit = this.edit.bind(this)
   }
 
   edit = () => {
+
+    if (this.cpf == undefined || this.cpf == '' ) {
+      this.cpf =  this.state.motoristaEdit.cpf
+    }
+
+    if (this.nome == undefined || this.nome == '' ) {
+      this.nome =  this.state.motoristaEdit.nome
+    }
+
+    if (this.rg == undefined || this.rg == '' ) {
+      this.rg =  this.state.motoristaEdit.rg
+    }
+
+    if (this.renach == undefined || this.renach == '' ) {
+      this.renach =  this.state.motoristaEdit.renach
+    }
+
+    if (this.bairro == undefined || this.bairro == '' ) {
+      this.bairro =  this.state.motoristaEdit.bairro
+    }
+
+    if (this.rua == undefined || this.rua == '' ) {
+      this.rua =  this.state.motoristaEdit.rua
+    }
+
+    if (this.cep == undefined || this.cep == '' ) {
+      this.cep =  this.state.motoristaEdit.cep
+    }
+
+    if (this.telefone == undefined || this.telefone == '' ) {
+      this.telefone =  this.state.motoristaEdit.telefone
+    }
+
+    if (this.status == undefined || this.status == '' ) {
+      this.status =  this.state.motoristaEdit.status
+    }
+
+
+
     const data = {
       cpf: this.cpf,
       nome: this.nome,
@@ -41,7 +84,7 @@ class Profile extends React.Component {
       rua: this.rua,
       cep: this.cep,
       telefone: this.telefone,
-      status: parseInt(this.status)
+      status: this.status
     };
 
     const requestInfo = {
@@ -61,9 +104,17 @@ class Profile extends React.Component {
       })
       .then(resposta => {
         if (resposta) {
-          console.log(resposta);
-          this.setState({ message: resposta.message });
-          this.setState({ status: resposta.status });
+          if (resposta) {
+            console.log(resposta)
+            this.setState({message: resposta.message
+            })
+            this.props.history.push({
+                      pathname: '/motorista/list-motorista',
+                      state: { message: resposta.message}
+            })
+          }else {
+              this.setState({message: resposta.message})
+          }
         }
       })
       .catch(e => {
@@ -109,6 +160,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="cpf"
                               type="integer"
+                              defaultValue={this.state.motoristaEdit.cpf}
                               onChange={ e => {this.cpf = e.target.value}}
                             />
                            
@@ -124,6 +176,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="nome"
                               type="text"
+                              defaultValue={this.state.motoristaEdit.nome}
                               onChange={e => {this.nome = e.target.value;}}
                             />
                           </FormGroup>
@@ -138,6 +191,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="rg"
                               type="integer"
+                              defaultValue={this.state.motoristaEdit.rg}
                               onChange={e => {this.rg = e.target.value;}}
                             />
                           </FormGroup>
@@ -152,6 +206,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="renach"
                               type="text"
+                              defaultValue={this.state.motoristaEdit.renach}
                               onChange={e => {this.renach = e.target.value;}}
                             />
                           </FormGroup>
@@ -166,6 +221,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="bairro"
                               type="text"
+                              defaultValue={this.state.motoristaEdit.bairro}
                               onChange={e => {this.bairro = e.target.value;}}
                             />
                           </FormGroup>
@@ -180,6 +236,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="rua"
                               type="text"
+                              defaultValue={this.state.motoristaEdit.rua}
                               onChange={e => {this.rua = e.target.value;}}
                             />
                           </FormGroup>
@@ -194,6 +251,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="cep"
                               type="integer"
+                              defaultValue={this.state.motoristaEdit.cep}
                               onChange={e => {this.cep = e.target.value;}}
                             />
                           </FormGroup>
@@ -208,6 +266,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="telefone"
                               type="integer"
+                              defaultValue={this.state.motoristaEdit.telefone}
                               onChange={e => {this.telefone = e.target.value;}}
                             />
                           </FormGroup>
@@ -222,6 +281,7 @@ class Profile extends React.Component {
                               className="form-control-alternative"
                               id="status"
                               type="integer"
+                              defaultValue={this.state.motoristaEdit.status}
                               onChange={e => {this.status = e.target.value;}}
                             />
                           </FormGroup>
@@ -242,4 +302,4 @@ class Profile extends React.Component {
   }
 }
 
-export default Profile;
+export default withRouter(EditMotorista);
