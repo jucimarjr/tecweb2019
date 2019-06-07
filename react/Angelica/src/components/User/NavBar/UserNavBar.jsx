@@ -79,7 +79,7 @@ class UserSearch extends React.Component {
     }
     return (
       <Navbar
-          className="navbar-vertical fixed-left navbar-light bg-white navbar navbar-expand-md"
+          className="navbar-horizontal fixed-left navbar-light bg-white navbar navbar-expand-md"
           expand="lg"
         >
           <Container>

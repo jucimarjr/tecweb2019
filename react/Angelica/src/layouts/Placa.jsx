@@ -17,7 +17,7 @@ class User extends React.Component {
   }
   getRoutes = routes => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/user") {
+      if (prop.layout === "/placa") {
         return (
           <Route
             path={prop.layout + prop.path}

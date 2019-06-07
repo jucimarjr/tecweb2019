@@ -20,7 +20,7 @@ import {
   CardText
 } from "reactstrap";
 
-import Search from "screens/User/Search.jsx";
+import Search from "screens/Placa/Search.jsx";
 
 class SearchResult extends React.Component {
   constructor(props) {

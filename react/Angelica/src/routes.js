@@ -15,8 +15,8 @@ import ListPermissoes from "screens/Permissoes/ListPermissoes.jsx";
 import EditPermissoes from "screens/Permissoes/EditPermissoes.jsx";
 import AddPermission from "screens/Permissoes/AddPermission.jsx";
 
-import Search from "screens/User/Search.jsx";
-import SearchResult from "screens/User/SearchResult.jsx";
+import Search from "screens/Placa/Search.jsx";
+import SearchResult from "screens/Placa/SearchResult.jsx";
  
 
 
@@ -116,14 +116,14 @@ var routes = [
     name: "User",
     icon: "ni ni-circle-08 text-pink",
     component: Search,
-    layout: "/user"
+    layout: "/placa"
   },
   {
     path: "/search-result",
     name: "User",
     icon: "ni ni-circle-08 text-pink",
     component: SearchResult,
-    layout: "/user"
+    layout: "/placa"
   },
   {
     path: "/list-permissions",

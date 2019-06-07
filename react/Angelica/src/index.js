@@ -11,7 +11,8 @@ import "assets/scss/argon-dashboard-react.scss";
 import AdminLayout from "layouts/Admin.jsx";
 import AuthLayout from "layouts/Login.jsx";
 import TaxiLayout from "layouts/Taxi.jsx";
-import UserLayout from "layouts/UserSearch.jsx";
+import UserLayout from "layouts/User.jsx";
+import PlacaLayout from "layouts/Placa.jsx";
 import MotoristaLayout from "layouts/Motorista.jsx";
 import PermissoesLayout from "layouts/Permissoes.jsx";
 
@@ -24,6 +25,7 @@ ReactDOM.render(
       <Route path="/login" render={props => <AuthLayout {...props} />} />
       <Route path="/motorista" render={props => <MotoristaLayout {...props} />} />
       <Route path="/user" render={props => <UserLayout {...props} />} />
+      <Route path="/placa" render={props => <PlacaLayout {...props} />} />
       <Route path="/permissoes" render={props => <PermissoesLayout {...props} />} />
 
 

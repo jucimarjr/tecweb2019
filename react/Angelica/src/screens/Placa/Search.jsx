@@ -17,7 +17,7 @@ import {
   
 } from "reactstrap";
 import Header from "components/User/NavBar/UserNavBar.jsx";
-import SearchResult from "screens/User/SearchResult.jsx";
+import SearchResult from "screens/Placa/SearchResult.jsx";
 
 class Forms extends React.Component {
   constructor(props) {
@@ -58,7 +58,7 @@ class Forms extends React.Component {
                   })
                   this.setState({driver: resposta.data[0]})
                   this.props.history.push({
-                            pathname: '/user/search-result',
+                            pathname: '/placa/search-result',
                             taxi: { message: resposta.message, dados: resposta.data[0]}
 
                   })
@@ -92,10 +92,11 @@ class Forms extends React.Component {
     
     return (
       <>
-        <form className="mt-4 mb-3 d-md-none">
+      <div className="ml-3 mr-3">
+        <form className="mt-4 mb-3">
             <div className="input-group-rounded input-group-merge input-group">
             <InputGroup className="input-group-alternative">
-            <Input placeholder="Placa" type="text"  onChange={e => this.taxi = e.target.value}  />
+            <Input placeholder="Digite a placa" type="text"  onChange={e => this.taxi = e.target.value}  />
             <Button className="btn-icon btn-3" color="primary" type="button" onClick={this.search}>
                 Procurar
               </Button>
@@ -103,6 +104,8 @@ class Forms extends React.Component {
               
             </div>
         </form>
+        </div>
+        
       </>
     );
   }
