@@ -115,7 +115,7 @@ class ListPermissoes extends React.Component {
   
   deletepermission(e) {
     console.log(e.target.value)
-      const data = { placa: e.target.value };
+      const data = { taxi: e.target.value };
       const requestInfo = {
           method: 'POST',
           body: JSON.stringify(data),
@@ -201,7 +201,7 @@ class ListPermissoes extends React.Component {
                               Editar
                             </DropdownItem>
                             <DropdownItem
-                              onClick={this.deletepermission} value={item.placa}
+                              onClick={this.deletepermission} value={item.taxi}
                             >
                               Desativar
                             </DropdownItem>
@@ -245,7 +245,7 @@ class ListPermissoes extends React.Component {
                           color="primary" 
                           type="button" 
                           className="float-right"
-                          href="/permission/add-permission"
+                          href="/permissoes/add-permission"
                     >
                           <span className="btn-inner--icon">
                             <i className="ni ni-fat-add" />

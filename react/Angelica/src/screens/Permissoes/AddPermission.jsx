@@ -18,9 +18,10 @@ import {
 } from "reactstrap";
 // core components
 
-import AddPermissoes from "components/Login/Headers/UserHeader.jsx";
+import Header from "components/Login/Headers/UserHeader.jsx";
 
-class AddUser extends React.Component {
+
+class AddPermission extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -30,9 +31,13 @@ class AddUser extends React.Component {
   }
 
   add = () => {
-    const data = { cpf: this.cpf, 
-                  nome: this.nome,
-                  senha: this.senha,
+    const data = { 
+                  taxi: this.taxi, 
+                  motorista: this.motorista,
+                  usuario: this.usuario,
+                  data_inicio: this.data_inicio,
+                  data_fim: this.data_fim,
+                  tipo: this.tipo,
                   status: "1"
                 };
 
@@ -44,9 +49,7 @@ class AddUser extends React.Component {
         }),
     };
 
-    console.log(requestInfo)
-
-    fetch('/user/register', requestInfo)
+    fetch('/perm/register', requestInfo)
             .then(response => {
                 if(response.ok) {
                     return response.json()
@@ -58,7 +61,7 @@ class AddUser extends React.Component {
                   console.log(resposta)
                   this.setState({message: resposta.message})
                   this.props.history.push({
-                    pathname: '/user/list-user',
+                    pathname: '/perm/list-permissions',
                     state: { message: resposta.message}
                   })
                 }else {
@@ -84,7 +87,7 @@ class AddUser extends React.Component {
                 <CardHeader className="bg-white border-0">
                   <Row className="align-items-center">
                     <Col xs="8">
-                      <h3 className="mb-0">Cadastrar Usuário</h3>
+                      <h3 className="mb-0">Cadastrar Autorizações</h3>
                     </Col>
                   </Row>
                 </CardHeader>
@@ -96,18 +99,32 @@ class AddUser extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-nome"
-                            >
-                              Nome
+                              htmlFor="input-placa">
+                              Placa
                             </label>
                             <Input
                               className="form-control-alternative"
                               id="input-nome"
-                              placeholder="José da Silva"
+                              placeholder="Selecione a Placa"
                               type="text"
-                              onChange={e => this.nome = e.target.value}
+                              onChange={e => this.taxi = e.target.value}
                             />
                           </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-placa">
+                              Data  Início
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-nome"
+                              placeholder="Data do início da autorização"
+                              type="text"
+                              onChange={e => this.data_inicio = e.target.value}
+                            />
+                          </FormGroup>
+
                         </Col>
                         <Col lg="6">
                           <FormGroup>
@@ -115,49 +132,47 @@ class AddUser extends React.Component {
                               className="form-control-label"
                               htmlFor="input-cpf"
                             >
-                              CPF
+                              Motorista
                             </label>
                             <Input
                               className="form-control-alternative"
                               id="input-cpf"
                               type="text"
-                              onChange={e => this.cpf = e.target.value}
+                              placeholder="Insira o motorista"
+                              onChange={e => this.motorista = e.target.value}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-placa">
+                              Data Final
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-nome"
+                              placeholder="Data de término da autorização"
+                              type="text"
+                              onChange={e => this.data_fim = e.target.value}
+                            />
+                          </FormGroup>
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-placa">
+                              Tipo de Motorista
+                            </label>
+                            <Input
+                              className="form-control-alternative"
+                              id="input-nome"
+                              placeholder="Selecione o tipo de motorista"
+                              type="text"
+                              onChange={e => this.data_fim = e.target.value}
                             />
                           </FormGroup>
                         </Col>
                       </Row>
                       <Row>
-                        <Col lg="6">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-senha"
-                              >
-                                Senha
-                              </label>
-                              <Input
-                                className="form-control-alternative"
-                                id="input-senha"
-                                type="text"
-                                onChange={e => this.senha = e.target.value}
-                              />
-                            </FormGroup>
-                        </Col>
-                        <Col lg="6">
-                            <FormGroup>
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-conf-senha"
-                              >
-                                Confirme sua senha
-                              </label>
-                              <Input
-                                className="form-control-alternative"
-                                id="input-conf-senha"
-                                type="text"
-                              />
-                            </FormGroup>
-                        </Col>
                       </Row>
                     </div>
                   </Form>
@@ -165,7 +180,7 @@ class AddUser extends React.Component {
                   <Col className="text-right" xs="7">
                       <Button
                         color="danger"
-                        href="/user/list-user"
+                        href="/permissoes/list-permission"
                         onClick={e => e.preventDefault()}
                         size="lg"
                       >
@@ -190,4 +205,4 @@ class AddUser extends React.Component {
   }
 }
 
-export  default withRouter(AddPermissoes);
+export  default withRouter(AddPermission);
