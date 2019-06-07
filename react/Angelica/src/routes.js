@@ -12,6 +12,8 @@ import ListMotorista from "screens/Motorista/ListMotorista.jsx";
 import AddMotorista from "screens/Motorista/AddMotorista.jsx";
 import EditMotorista from "screens/Motorista/EditMotorista.jsx";
 import ListPermissoes from "screens/Permissoes/ListPermissoes.jsx";
+import AddPermission from "screens/Permissoes/AddPermission.jsx";
+
 
 
 import Search from "screens/User/Search.jsx";
@@ -125,10 +127,17 @@ var routes = [
     layout: "/user"
   },
   {
-    path: "/list-permissoes",
+    path: "/list-permissions",
     name: "Permissoes",
     icon: "ni ni-circle-08 text-pink",
     component: ListPermissoes,
+    layout: "/permissoes"
+  },
+  {
+    path: "/add-permission",
+    name: "Permissoes",
+    icon: "ni ni-circle-08 text-pink",
+    component: AddPermission,
     layout: "/permissoes"
   }
  

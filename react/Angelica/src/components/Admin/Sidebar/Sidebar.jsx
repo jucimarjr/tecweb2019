@@ -102,7 +102,7 @@ class Sidebar extends React.Component {
             Táxi
           </NavLink>
           <NavLink
-            to="/permissoes/list-permissoes"
+            to="/permissoes/list-permissions"
             tag={NavLinkRRD}
             onClick={this.closeCollapse}
             activeClassName="active"
