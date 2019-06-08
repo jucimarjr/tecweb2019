@@ -2,6 +2,10 @@ import React from "react";
 import {
   withRouter
 } from 'react-router-dom'
+import { throttle, debounce } from "throttle-debounce";
+import Autosuggest from 'react-autosuggest';
+
+
 
 // reactstrap components
 import {
@@ -25,18 +29,41 @@ class AddPermission extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-        message : ''
+        message : '',
+        q: '',
+        value: '',
+        suggestions: []
     };
     this.add =  this.add.bind(this)
+
   }
+
+  
+
+
+  componentDidMount() {
+    fetch('/taxis')
+      .then(res => res.json())
+      .then((data) => {
+        this.taxisObjetos = data
+        this.setState({
+          taxis: data.data,
+        })
+        console.log(data);
+      }
+      )
+      .catch(console.log)
+  }
+
+  
 
   add = () => {
     const data = { 
                   taxi: this.taxi, 
                   motorista: this.motorista,
-                  usuario: this.usuario,
-                  data_inicio: this.data_inicio,
-                  data_fim: this.data_fim,
+                  usuario: "30759131091",
+                  data_inicio: "2018-05-02T00:00:00",
+                  data_fim: "2019-03-13T00:00:00",
                   tipo: this.tipo,
                   status: "1"
                 };
@@ -61,7 +88,7 @@ class AddPermission extends React.Component {
                   console.log(resposta)
                   this.setState({message: resposta.message})
                   this.props.history.push({
-                    pathname: '/perm/list-permissions',
+                    pathname: '/permissoes/list-permissions',
                     state: { message: resposta.message}
                   })
                 }else {
@@ -75,6 +102,16 @@ class AddPermission extends React.Component {
 
   }
   render() {
+    const _searches = this.state._searches || [];
+    const inputProps = {
+      placeholder: 'Type a programming language',
+      value,
+      onChange: this.onChange
+    };
+
+    const { value, suggestions } = this.state;
+
+
     return (
       <>
         {/* <UserHeader /> */}
@@ -107,8 +144,9 @@ class AddPermission extends React.Component {
                               id="input-nome"
                               placeholder="Selecione a Placa"
                               type="text"
-                              onChange={e => this.taxi = e.target.value}
+                              onChange={ e => this.taxi = e.target.value }
                             />
+                         
                           </FormGroup>
                           <FormGroup>
                             <label
@@ -167,7 +205,7 @@ class AddPermission extends React.Component {
                               id="input-nome"
                               placeholder="Selecione o tipo de motorista"
                               type="text"
-                              onChange={e => this.data_fim = e.target.value}
+                              onChange={e => this.tipo = e.target.value}
                             />
                           </FormGroup>
                         </Col>
