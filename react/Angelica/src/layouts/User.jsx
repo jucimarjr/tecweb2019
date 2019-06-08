@@ -58,7 +58,7 @@ class User extends React.Component {
         
           <div className="main-content" ref="mainContent">
             <Switch>{this.getRoutes(routes)}</Switch>
-            <Container maxWidth="ml-3 mr-3 sm">
+            <Container maxWidth="sm">
               <AdminFooter />
             </Container>
           </div>
