@@ -17,6 +17,8 @@ services:
     build: ./react
     container_name: react
     restart: always
+    ports:
+      - "3000:3000"
     expose:
       - "3000"
 
